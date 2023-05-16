@@ -1,0 +1,11 @@
+<div class="">
+    <a  href="javascript:void(0)"  th:onclick="tripLikeHandler([[${id}]])"
+       class="d-flex align-items-center mb-1 text-danger text-decoration-none me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="좋아요">
+        <i class="bi fs-4" th:classappend="${(likes.status)?'bi-heart-fill':'bi-heart'}"></i>
+        <small class="text-dark fs-6 ms-1" th:text="${likes.likes}"></small> <!-- 좋아요개수 -->
+<!--        <th:block th:text="${id}"></th:block>-->
+<!--        <th:block th:text="${likes.tId}"></th:block>-->
+<!--        <th:block th:text="${likes.status}"></th:block>-->
+    </a>
+</div>
+

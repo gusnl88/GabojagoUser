@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.sells.SellOderMapper">
+    <insert id="insertOne"  useGeneratedKeys="true" keyProperty="soId">
+        INSERT INTO sell_orders ( u_id, s_id, total_price,info) VALUE
+        (#{uId},#{sId},#{totalPrice},#{info})
+    </insert>
+    <select id="findBySoId" resultType="com.project.gabojago.gabojagouser.dto.sells.SellOrderDto">
+        SELECT * FROM sell_orders where so_id=#{soId}
+    </select>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.plan.PlanContentsMapper">
+    <resultMap id="planContentsMap" type="planContentsDto">
+        <id column="con_id" property="conId"/>
+        <result column="p_id" property="pId"/>
+        <result column="t_id" property="tId"/>
+        <result column="s_id" property="sId"/>
+        <result column="day_n" property="dayN"/>
+        <result column="title" property="title"/>
+        <result column="info" property="info"/>
+        <result column="time" property="time"/>
+        <result column="img_path" property="imgPath"/>
+        <collection property="path"
+                    select="com.project.gabojago.gabojagouser.mapper.plan.PlanContentPathsMapper.findByConId"
+                    column="con_id"
+                    fetchType="lazy"/>
+    </resultMap>
+
+
+
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="conId"   parameterType="PlanContentsDto">
+        INSERT INTO plan_contents (p_id, t_id, s_id, title, info, time) value (#{pId}, #{tId}, #{sId}, #{title}, #{info}, #{time})
+    </insert>
+    <update id="updateImg">
+        UPDATE plan_contents
+        SET img_path = #{imgPath}
+        WHERE con_id = #{conId}
+    </update>
+    <update id="updateOne">
+        UPDATE plan_contents
+        SET title = #{title}, info = #{info}, time = #{time}
+        WHERE con_id = #{conId}
+    </update>
+    <delete id="deleteOne">
+        DELETE FROM plan_contents WHERE con_id=#{conId}
+    </delete>
+    <select id="findAll" resultType="com.project.gabojago.gabojagouser.dto.plan.PlanContentsDto">
+
+    </select>
+    <select id="findByPId" resultMap="planContentsMap">
+        SELECT * FROM plan_contents WHERE p_id=#{pId}
+    </select>
+    <select id="findByConId" resultMap="planContentsMap">
+        SELECT * FROM plan_contents WHERE con_id=#{conId}
+    </select>
+
+</mapper>

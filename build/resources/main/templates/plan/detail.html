@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>게시판 상세</title>
+    <link th:href="@{/public/css/plan/plan.css}" rel="stylesheet" />
+</head>
+
+<div layout:fragment="content" class="container-fluid px-0">
+        <div class="row">
+
+            <!--    사이드바 -->
+            <div class="col-md-2" id="forModal"></div>
+
+            <div class="col-md-8 mainSection px-0">
+                <div class="row mainHeader px-0 ">
+                    <img class="mainHeaderImg mx-0 px-0" src="/public/img/plan/planSample2.jpg">
+                    <div class="col-6 titleBox">
+                        <div class="titleInnerBox">
+                            <p class="headerTitle" th:text="${plan.getTitle()}"/>
+                            <span class="headerFrom" th:text="${plan.getPlanFrom()}"
+                                  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="일정 시작" /> ~
+                            <span class="headerTo" th:text="${plan.getPlanTo()}"
+                                  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="일정 끝" />
+                            <br><span class="headerStatus" th:text="${plan.getPlanStatus()}"
+                                  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="공개여부" />
+                            <br>
+                            <span th:text="${plan.getNkName()} + ','"/>
+                            <th:block th:each="mu:${plan.getMUsers()}">
+                                <span th:text="${mu.getNkName()} + ','"/>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="col-6 rightBox">
+                        <div class="toDoListBox">
+                            <div class="tdlTitle">
+                                <span>CHECKLIST</span>
+                                <span><span class="tdlPBtn" th:onclick="'tdlInsert('+${plan.getPId()}+')'" style="margin-right: 5px">+</span></span>
+                            </div>
+                            <div class="tdlContent">
+                                <th:block th:each="checkList:${plan.getCheckLists()}">
+<!--                                    <span th:text="${checkList}"></span>-->
+                                <form class="tdlform px-0">
+                                    <input name="clId" th:value="${checkList.getClId()}" style="display: none">
+                                    <input name="pId" th:value="${plan.getPId()}" style="display: none" readonly>
+                                    <input type="checkbox" class="tdlCheck" name="checkStatus" th:value="${checkList.getCheckStatus()}" th:id="'tdlCheck_'+${checkList.getClId()}"  onclick=tdlModify(this) th:if="${checkList.getCheckStatus()=='CHECKED'}" checked>
+                                    <input type="checkbox" class="tdlCheck" name="checkStatus" th:value="${checkList.getCheckStatus()}" th:id="'tdlCheck_'+${checkList.getClId()}"  onclick=tdlModify(this) th:if="${checkList.getCheckStatus()=='UNCHECKED'}">
+                                    <label class="tdlCheckLabel p-0" th:for="'tdlCheck_'+${checkList.getClId()}"></label>
+                                    <input type="text" class="tdlInput" th:classappend="${checkList.getCheckStatus()} == 'CHECKED' ? 'textCancel'" th:value="${checkList.getContent()}" name="content" readonly>
+                                    <i class="bi bi-check-circle tdlSubmit" onclick=talRegistry(this) style="display: none"></i>
+                                    <span onclick=tdlDelete(this)><span class="tdlMBtn tdlDelete">-</span></span>
+                                </form>
+                                </th:block>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-12 scheduleHeader">
+                    <div class="row">
+                    <div class="col-md-2">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-secondary btn-lg dropdown-toggle dayBtn py-0 border-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                DAY 01
+                            </button>
+
+                            <ul class="dropdown-menu p-0 border-0" style="text-align: center" role="tablist">
+                                <th:block th:each="num : ${#numbers.sequence(1,period)}">
+                                <li><a th:classappend="${num==1 ? 'active' : ''}" class="dropdown-item dayBtn mx-0 catBtnC"  href="#" th:id="day+${num>9?num:'0'+num}+'-tab'" data-bs-toggle="tab"
+                                       th:data-bs-target="'#day'+${num>9?num:'0'+num}" type="button" role="tab" th:aria-controls="'day'+${num>9?num:'0'+num}"
+                                       th:aria-selected="${num==1 ? 'true' : 'false'}" th:text="DAY+${num>9?' '+num:' 0'+num}"></a>
+                                </li>
+                                </th:block>
+                            </ul>
+
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="btnLine" role="group">
+                            <!--이미지 삽입-->
+                            <button type="button" id="imgBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="이미지 삽입">
+                                <i class="bi bi-image"></i>
+                                <input id="imgInput" type="file" style="display: none"/>
+                            </button>
+                            <!--보관함-->
+                            <button type="button" id="loadBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="테스트용">
+                                <i class="bi bi-folder2-open"></i>
+                            </button>
+                            <!--선택-->
+                            <button type="button" id="selectorBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="선택 & 이동">
+                                <i class="bi bi-hand-index"></i>
+                            </button>
+                            <!--펜-->
+                            <button type="button" id="penBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="펜">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <!--직선-->
+                            <button type="button" id="lineBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="직 선">
+                                <i class="bi bi-slash-lg"></i>
+                            </button>
+                            <!--박스 -->
+                            <button type="button"  id="rectBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="사각형">
+                                <i class="bi bi-square"></i>
+                            </button>
+                            <!--텍스트입력-->
+                            <button type="button"  id="textBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="텍스트">
+                                <i class="bi bi-fonts"></i>
+                            </button>
+                            </button>
+                            <!--포스트잇-->
+                            <div class="dropdown py-0" id="postBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="스티커">
+                                <button role="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-stickies"></i></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
+                                    <button id="starBtn" ><i class="bi bi-star"></i></button>
+                                    <button id="postItBtn"><i class="bi bi-sticky"></i></button>
+                                    <button id="postIt2Btn"><i class="bi bi-postage-fill"></i></button>
+                                    <button id="polarBtn"><i class="bi bi-postage"></i></button>
+                                    <button id="heartBtn"><i class="bi bi-heart"></i></button>
+                                    <button id="markerBtn"><i class="bi bi-geo-alt"></i></button>
+                                </ul>
+                            </div>
+                            <!--파레트-->
+                            <div class="dropdown py-0" id="palateBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="색 상">
+                                <button role="button" id="dropdownMenuLink2" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-palette"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink2">
+                                    <button id="red" ></button>
+                                    <button id="orange"></button>
+                                    <button id="yellow"></button>
+                                    <button id="green"></button>
+                                    <button id="blue"></button>
+                                    <button id="navy"></button>
+                                    <button id="purple"></button>
+                                    <button id="black"></button>
+                                    <button id="white"></button>
+                                </ul>
+                            </div>
+                            <!--줌 인-->
+                            <button type="button" id="plusBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="줌 인">
+                                <i class="bi bi-zoom-in"></i>
+                            </button>
+                            <!--줌 아웃-->
+                            <button type="button" id="minusBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="줌 아웃">
+                                <i class="bi bi-zoom-out"></i>
+                            </button>
+                            <!-- 지우기 -->
+                            <button type="button" id="removeBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="캔버스 비우기">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                            <!--이미지 저장-->
+                            <button type="button" id="saveBtn" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="이미지로 저장">
+                                <i class="bi bi-layer-forward"></i>
+                            </button>
+
+                            </div><!--버튼그룹닫기-->
+                        </div> <!--col 9-->
+
+                    <div class="col-md-2 scheduleInputBox">
+                        <div id="newScheduleBtn" onclick=scheduleInsert()>
+                            <i class="bi bi-plus-circle"></i>
+                        </div>
+                    </div>
+                    </div> <!--내부로우 수정필요-->
+
+                </div> <!--스케쥴헤더-->
+                    <div class="accordion .accordion-flush tab-content" id="accordionSection">
+
+                    <th:block th:each="num : ${#numbers.sequence(1,period)}">
+                        <div  th:class="${num==1 ? 'tab-pane fade active show' : 'tab-pane fade' }" th:id="'day'+${num>9?num:'0'+num}" role="tabpanel"
+                             th:aria-labelledby="day+${num>9?num:'0'+num}+'-tab'">
+
+                            <th:block th:each="content:${plan.getContents()}">
+                                <div th:if="${content.getDayN()==num}" class="accordion-item">
+                                    <th:block th:include="/plan/contents"></th:block>
+                                </div>
+                            </th:block>
+
+                        </div>
+                    </th:block>
+                    </div>
+
+            </div> <!--메인섹션닫기-->
+
+            <div class="col-md-2" ></div>
+
+    </div> <!--그리드 row 닫기-->
+
+    <!--      채팅방      -->
+    <i class="bi bi-chat-dots-fill chatBtn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"></i>
+    <th:block th:include="/plan/chatting"></th:block>
+
+    <script th:inline="javascript">
+
+        // ############### 커뮤니티 출력용 캔버스 이미지 & 경로 데이터 업데이트 기능 ############### //
+
+        let activatedCanvas;
+
+        // 캔버스 인스턴스 저장용 맵
+        let canvasMap = new Map();
+
+        // 캔버스 현재 상태 이미지로 업로드
+        const saveBtn = document.getElementById("saveBtn");
+        saveBtn.addEventListener("click", canvasImgSave);
+
+        function canvasImgSave(){
+            canvasMap.forEach(async (ele)=>{
+                let data = new FormData();
+                data.set("conId",ele.conId);
+                data.set("img",ele.canvas.toDataURL());
+                let url =`/plan/contents/imgUpdate.do`
+                const resp = await fetch(url,{method:"PUT",body:data});
+                const result = await resp.json();
+                if(resp.status===200 && result>0){
+                    console.log(ele.conId + " 번 캔버스 이미지 업로드 성공!")
+                } else {
+                    alert(ele.conId + " 번 캔버스 이미지 업로드 실패! status :"+resp.status);
+                }
+            })
+        }
+
+        // 캔버스 현재 상태 layer 데이터로 업로드
+        function canvaslayerSave(){
+            canvasMap.forEach(async (ele)=>{
+                let data = new FormData();
+                data.set("pathId",ele.pathId);
+                data.set("layer",JSON.stringify(ele.layerArr));
+                let url =`/plan/contents/layerUpdate.do`
+                const resp = await fetch(url,{method:"PUT",body:data});
+                const result = await resp.json();
+                if(resp.status===200 && result>0){
+                    console.log(ele.id + "번 캔버스 이미지 업로드 성공")
+                } else {
+                    alert("이미지 업로드 실패 status :"+resp.status);
+                }
+            })
+        }
+
+        window.onbeforeunload = function (){
+            canvaslayerSave();
+        }
+
+
+        // ############### 개별 스케쥴 CRUD ############### //
+
+        // 게시글을 로드 할 때 화면 초기화 스케쥴이 추가되고 그림판까지 만든 경우와, 그림판은 만들지 않은 경우를 구분하여 처리
+        document.addEventListener("DOMContentLoaded",()=>{
+            let initArr=[];
+            let nBtns = document.querySelectorAll(".newCanvasBtn");
+            [# th:each="c,s:${plan.getContents()}"]
+            if([[${c.getPath()}]]!=null) initArr.push([[${c.getPath()}]])
+            [/];
+            initArr.forEach((a)=>{
+               let ele = document.querySelector(`#content_${a.conId}`).lastElementChild;
+                // console.log(a.pathId)
+                // console.log(a.conId)
+                newCanvas(ele, a.conId, a.pathId, a.canPath);
+            });
+        });
+
+        // 화이트보드를 추가 하는 경우
+        async function newCanvasReg(ele){
+            let conId = ele.parentElement.getAttribute("id").split("_")[1]
+            let data = new FormData();
+            data.set("conId",conId)
+            let url =`/plan/contents/canvasHandler.do`
+            const resp = await fetch(url,{method:"POST",body:data});
+            const result = await resp.json();
+            if(resp.status===200){
+                newCanvas(ele, result.conId, result.pathId);
+            }else {
+                alert("캔버스 생성 실패 status :"+resp.status);
+            }
+        }
+
+        // 화이트보드 삭제하는 경우
+        async function newCanvasDel(ele){
+            if(confirm("삭제한 데이터는 복구할 수 없습니다. 그래도 삭제 할까요?")){
+
+                let body = ele.nextElementSibling;
+                let [btn, canvas] = body.children;
+                let pathId = canvas.getAttribute("id")
+                let url =`/plan/contents/canvasHandler.do`
+                const resp = await fetch(url,{method:"DELETE",body:pathId});
+                const result = await resp.json();
+                if(resp.status===200 && result===1){
+
+                    canvas.remove();
+                    btn.style.display="block"
+                    body.style.height="130px"
+
+                }else {
+                    alert("캔버스 삭제 실패 status :"+resp.status);
+                }
+            }
+        }
+
+        // 캔버스 인스턴스 생성용
+        function newCanvas(ele, conId, pathId, path=null){
+            let w = document.querySelector(".accordion-item").clientWidth;
+            let h = 500/1200*w+16; //16은 부트스트랩 아코디언바디에 설정된 상하 패딩값을 보정해준 것
+            ele.style.height = h +"px";
+            let newCanvas = new CanvasCreate(conId, pathId, path);
+            let canvas = newCanvas.canvas;
+            canvas.setAttribute("id",pathId)
+            ele.lastElementChild.style.display = "none"
+            ele.append(canvas);
+            canvasMap.set(pathId, newCanvas);
+        }
+
+        function accordionInsert(conId, time, title, info){
+            return `<div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button class="accordion-button collapsed scheduleBtn" type="button" data-bs-toggle="collapse"
+                           data-bs-target="#content_${conId}" aria-expanded="false" aria-controls="#content_${conId}">
+                             <div class="scheduleTime">${time}</div>
+                              <div class="scheduleLeft"><br><i class="bi bi-three-dots-vertical"></i></div>
+                              <div class="scheduleContainer">
+                                  <p class="scheduleCenter">
+                                      <span class="scheduleTitle">${title}</span>
+                                      <span class="scheduleContent">${info}</span>
+                                  </p>
+                              </div>
+                          </button>
+                        </h2>
+                        <div id="content_${conId}" class="accordion-collapse collapse " data-bs-parent="#accordionSection">
+                            <p class="scheduleSideBtn1 sbHover"><i class="bi bi-three-dots"></i></p>
+                            <p class="scheduleSideBtn2 sbHover" onclick=newCanvasDel(this)><i class="bi bi-trash3"></i></p>
+                            <div class="accordion-body">
+                                <p class="newCanvasBtn" onclick=newCanvasReg(this.parentElement)><i class="bi bi-plus-circle"></i></p>
+                            </div>
+                        </div>
+                    </div>`;
+        }
+
+        // 새 스케쥴 생성하는 경우
+        const forModal = document.getElementById("forModal");
+        let scheduleModal;
+
+        // 새 스케쥴 폼 불러오기
+        async function scheduleInsert(){
+            let url = "/plan/contents/scheduleForm.do"
+            const resp = await fetch(url,{method:"GET"});
+            const result = await resp.text();
+            if (resp.status===200){
+
+                forModal.insertAdjacentHTML("beforeend",result)
+                scheduleModal = new bootstrap.Modal(document.getElementById('newScheduleModal'), {});
+                scheduleModal.show();
+
+            } else {
+                alert("입력 폼 로딩 실패 :"+resp.status);
+            }
+        }
+
+        // 북마크한 자료(트립)를 스케쥴 입력 폼에 삽입
+        function tripBookMarkInsert(tId,title) {
+            const scheduleForm = document.getElementById("scheduleInsertForm")
+            if(scheduleForm.tId.value) {
+                alert("카테고리별 하나의 아이템만 추가 가능!")
+            } else {
+
+                scheduleForm.title.value = title;
+                scheduleForm.bookmarked.value += "["+title+"], ";
+                scheduleForm.tId.value = tId;
+
+            }
+        }
+
+        // 북마크한 자료(상품)를 스케쥴 입력 폼에 삽입
+        function sellBookMarkInsert(sId,title) {
+            const scheduleForm = document.getElementById("scheduleInsertForm");
+            if (scheduleForm.sId.value) {
+                alert("카테고리별 하나의 아이템만 추가 가능!");
+            } else {
+
+                scheduleForm.title.value = title;
+                scheduleForm.bookmarked.value += "["+title+"], ";
+                scheduleForm.sId.value = sId;
+
+            }
+        }
+
+        // 북마크한 자료(커뮤)를 스케쥴 입력 폼에 삽입
+        function commBookMarkInsert(title,time,info){
+
+            const scheduleForm = document.getElementById("scheduleInsertForm")
+            scheduleForm.title.value = title;
+            scheduleForm.sTime.value = time.split(" ~ ")[0];
+            scheduleForm.eTime.value = time.split(" ~ ")[1];
+            scheduleForm.info.value = info;
+            scheduleForm.bookmarked.value += "["+title+"], ";
+
+        }
+
+        // 새 스케쥴 등록 후 아코디언 생성
+        async function registerSchedule(e){
+            const scheduleInsertForm = document.getElementById("scheduleInsertForm");
+            const data=new FormData(scheduleInsertForm);
+            let sTime = !data.get("sTime") ? "--:--" : data.get("sTime");
+            let eTime = !data.get("eTime") ? "--:--" : data.get("eTime");
+            data.append("time", sTime + " ~ " + eTime);
+            data.set("pId", [[${plan.getPId()}]]);
+
+            let url= "/plan/contents/insert.do";
+            const resp = await fetch(url,{method:"POST", body:data});
+            if(resp.status===200){
+                const json=await resp.json();
+                document.getElementById("accordionSection").insertAdjacentHTML("beforeend",accordionInsert(json.conId,json.time,json.title,json.info))
+                scheduleModal.hide();
+                forModal.innerHTML=' ';
+            }else {
+                alert("등록 실패 status :"+resp.status);
+                forModal.innerHTML=' ';
+            }
+        }
+
+        // 수정 버튼 클릭 시 수정 폼 불러오기
+        async function scheduleModify(conId){
+            const header = document.querySelector("#content_"+conId).previousElementSibling
+            let url = "/plan/contents/scheduleForm.do"
+            const resp = await fetch(url,{method:"GET"});
+            const result = await resp.text();
+            if (resp.status===200){
+                forModal.insertAdjacentHTML("beforeend",result)
+
+                const form = document.getElementById("scheduleInsertForm");
+
+                let nTime =  header.querySelector(".scheduleTime").innerHTML.split(" ~ ");
+                form.sTime.value = nTime[0];
+                form.eTime.value = nTime[1];
+                form.title.value = header.querySelector(".scheduleTitle").innerHTML
+                form.info.value = header.querySelector(".scheduleContent").innerHTML
+
+                let modal = document.getElementById('newScheduleModal');
+                let dBtn = modal.querySelector(".dBtn");
+                let sBtn = modal.querySelector(".sBtn");
+                let uBtn = modal.querySelector(".uBtn");
+
+                uBtn.style.display = "inline";
+                dBtn.style.display = "inline";
+                sBtn.style.display = "none";
+
+                dBtn.onclick = (e) => {
+                    deleteSchedule(conId);
+                }
+                uBtn.onclick = (e) => {
+                    updateSchedule(conId)
+                }
+
+                scheduleModal = new bootstrap.Modal(modal, {});
+                scheduleModal.show();
+
+            }else {
+                alert("수정 폼 로딩 실패 :"+resp.status);
+            }
+        }
+
+        // 스케쥴 수정 버튼 클릭 시 실행
+        async function updateSchedule(conId){
+            const scheduleInsertForm = document.getElementById("scheduleInsertForm");
+            const header = document.querySelector("#content_"+conId).previousElementSibling
+
+            const data=new FormData(scheduleInsertForm);
+            let sTime = !data.get("sTime") ? "--:--" : data.get("sTime");
+            let eTime = !data.get("eTime") ? "--:--" : data.get("eTime");
+            data.append("time", sTime + " ~ " + eTime);
+            data.set("pId", [[${plan.getPId()}]]);
+
+            let url= `/plan/contents/${conId}/update.do`;
+            const resp = await fetch(url,{method:"PUT", body:data});
+            const json=await resp.json();
+
+            if(resp.status===200){
+
+                header.querySelector(".scheduleTime").innerHTML = json.time;
+                header.querySelector(".scheduleTitle").innerHTML = json.title;
+                header.querySelector(".scheduleContent").innerHTML = json.info;
+
+                scheduleModal.hide();
+                forModal.innerHTML=' ';
+
+            }else {
+                alert("수정 실패 status :"+resp.status);
+                forModal.innerHTML=' ';
+            }
+        }
+
+        // 스케쥴 삭제 버튼 클릭 시 실행
+        async function deleteSchedule(conId){
+            if(confirm("스케쥴을 삭제 할까요?")){
+                let url= `/plan/contents/${conId}/delete.do`;
+                const resp = await fetch(url,{method:"DELETE"});
+                const result = await resp.json();
+                if(resp.status === 200 && result===1){
+                    scheduleModal.hide();
+                    document.querySelector("#content_"+conId).parentElement.remove();
+                    forModal.innerHTML=' ';
+                } else {
+                    alert("삭제 실패! 관리자에게 문의하세요!");
+                    forModal.innerHTML=' ';
+                }
+            }
+        }
+
+
+        // ############### 체크리스트 CRUD ############### //
+
+        // 체크리스트 폼 생성 하는 경우
+        function tdlInsert(pId){
+            let num = Math.floor(Math.random() * 101);
+            let tdlCon = document.querySelector(".tdlContent")
+            tdlCon.insertAdjacentHTML("beforeend",
+                `<form class="tdlform px-0">
+                    <input name="clId" style="display: none" disabled>
+                    <input name="pId" value="${pId}" style="display: none" readOnly>
+                    <input type="checkbox" class="tdlCheck" value="UNCHECKED" id="tdlCheck+${num}" name="checkStatus" onclick=tdlModify(this)>
+                    <label class="tdlCheckLabel p-0" For="tdlCheck+${num}"></label>
+                    <input type="text" class="tdlInput" placeholder="" name="content">
+                    <i class="bi bi-check-circle tdlSubmit" onClick=talRegistry(this)></i>
+                    <span style="display: none" onclick="tdlDelete(this)"><span class="tdlMBtn tdlDelete">-</span></span>
+                </form>`
+            )
+        }
+
+        // 체크리스트 등록 하는 경우
+        async function talRegistry(ele){
+            const form = ele.parentElement;
+            const data = new FormData(form)
+            data.set("checkStatus",ele.parentElement["checkStatus"].getAttribute("value"))
+            let url ='/plan/checkList.do'
+            const resp = await fetch(url,{method:"POST",body:data});
+            const result = await resp.json();
+            if(resp.status===200){
+                ele.style.display="none";
+                form["clId"].setAttribute("value",result.clId);
+                form["clId"].disabled=false;
+                ele.previousElementSibling.readOnly=true;
+                ele.nextElementSibling.style.display="inline";
+            }else {
+                form.remove();
+                alert("체크리스트 등록 실패 status :"+resp.status);
+            }
+        }
+
+        // 체크리스트 상태 수정 하는 경우
+        async function tdlModify(ele){
+            const form = ele.parentElement;
+            const data = new FormData(form)
+            data.set("checkStatus",ele.getAttribute("value"))
+            let url ='/plan/checkList.do'
+            const resp = await fetch(url,{method:"PUT",body:data});
+            const result = await resp.json();
+            console.log(result)
+            if(resp.status===200){
+                ele.setAttribute("value",result.checkStatus);
+                if(result.checkStatus==="CHECKED"){
+                    ele.checked=true;
+                    form["content"].classList.add("textCancel")
+                } else if (result.checkStatus==="UNCHECKED") {
+                    ele.checked=false;
+                    form["content"].classList.remove("textCancel")
+                }
+            }else {
+                alert("체크리스트 수정 실패 status :"+resp.status);
+            }
+        }
+
+        // 체크리스트 삭제 하는 경우
+        async function tdlDelete(ele){
+            let url ='/plan/checkList.do'
+            const resp = await fetch(url,{method:"DELETE",body:ele.parentElement["clId"].getAttribute("value")});
+            const result = await resp.json();
+            if(resp.status===200 && result===1){
+                ele.parentElement.remove();
+            }else {
+                alert("체크리스트 삭제 실패 status :"+resp.status);
+            }
+        }
+
+
+        // ############### 채팅방 관련 기능 ############### //
+
+        let title = [[${plan.getTitle()}]];
+        let roomId = [[${plan.getPId()}]];;
+        let username = [[${session.loginUser.nkName}]] || "anonymous"
+
+        // console.log(title + ", " + roomId + ", " + username);
+
+        // socketJs가 stomp를 갖고있다
+        let sockJs = new SockJS("/gabojago/plan");
+        let stomp = Stomp.over(sockJs);
+
+        // stomp.connect로 접속하고 구독 상태를 유지
+        stomp.connect({}, function (){
+            stomp.unsubscribe()
+            // subscribe(path, callback) => path 경로로 메세지가 들어오면 콜백 함수를 실행
+            stomp.subscribe("/sub/plan/room/" + roomId, function (chat) {
+                let content = JSON.parse(chat.body);
+                let writer = content.writer;
+                let system = content.system;
+                let msg;
+                if(system){
+                    msg = msgComponent("chatSystem","SYSTEM",content.message);
+                }
+                else if(writer === username ){
+                    msg = msgComponent("chatMy",writer,content.message);
+                }
+                else {
+                    msg = msgComponent("chatOrder",writer,content.message);
+                }
+                document.querySelector("#msgBox").insertAdjacentHTML('beforeend',msg);
+            });
+
+            stomp.subscribe("/sub/plan/path/" + roomId, function (path) {
+                let content = JSON.parse(path.body);
+                let writer = content.writer;
+                if(writer !== username ) {
+                    // console.log(canvasMap.get(content.pk))
+                    canvasMap.get(content.pk).receiver(content.path);
+                }
+            });
+
+            // send(path, header, message)로 메세지를 보낼 수 있음
+            // 최초 연결시 입장 정보 알림
+            stomp.send('/pub/plan/enter', {}, JSON.stringify({roomId: roomId, writer: username, system : true}))
+        });
+
+        // 채팅방 메시지 보낼 시
+        document.querySelector("#msgSendBtn").addEventListener("click", function(e){
+            let msg = document.getElementById("msg");
+            stomp.send('/pub/plan/message', {}, JSON.stringify({roomId: roomId, message: msg.value, writer: username}));
+            msg.value = '';
+        });
+
+        // 채팅방 메시지 수신 시
+        function msgComponent(type,writer,msg){
+            return `<div class='${type}'>
+                     <b>${writer}:${msg}</b>
+                    </div>`
+        }
+
+
+
+
+
+
+
+    </script>
+
+    <script type="text/javascript" th:src="@{/public/js/plan/canvasFunction.js}"></script>
+
+</div> <!--레이아웃 닫기-->
+</html>
+

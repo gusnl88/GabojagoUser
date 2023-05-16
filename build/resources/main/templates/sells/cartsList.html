@@ -1,0 +1,43 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutMy}">
+<head>
+    <meta charset="UTF-8">
+    <title>찜바구니</title>
+    <script src="/public/js/sells/abc.js"></script>
+</head>
+<div layout:fragment="content">
+    <div class="container" style="width: 1000px;margin: 0 auto;">
+        <main role="main" class="container">
+
+            <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <h1 class="display-4">찜바구니</h1>
+
+            </div>
+            <div class="card-deck mb-3 text-center" >
+                <!-- 장바구니 항목 -->
+                <div class="card mb-4 box-shadow" th:each="c:${list}">
+                    <div class="d-flex justify-content-between card-header">
+                        <p><b>카트 ID:</b><span th:text="${c.cartId}"></span></p>
+                        <h4 class="my-0 font-weight-normal">상품 정보</h4>
+                        <p><a th:href="@{'/cart/{cartId}/{sId}/remove.do'(cartId=${c.cartId},sId=${c.getSId()})}" type="button" class="btn btn-danger">장바구니 취소</a></p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4" th:each="s:${c.getSellList()}" th:if="${s.getSId()==c.getSId()}">
+                            <li ><img th:src="${s.imgMain}" style="width: 500px;height: 300px" class="img-thumbnail"></img></li>
+                            <li ><b>제목:</b><span th:text="${s.getTitle()}"></span></li>
+                            <li><b>카테고리:</b><span th:text="${s.category}"></span></li>
+                            <li><b>지역:</b><span th:text="${s.area}"></span></li>
+                            <li><a th:href="@{'/sells/{sId}/detail.do'(sId=${s.getSId()})}"><span>상품 보러가기</span></a></li>
+                        </ul>
+                        <!-- 장바구니 취소 버튼 -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+
+    </script>
+</div>
+</html>

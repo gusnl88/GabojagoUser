@@ -1,0 +1,98 @@
+<div id="tagsCont" class="mb-2"></div>
+
+<div class="input-group">
+  <label class="input-group-text bi bi-hash"></label>
+  <input type="text" id="tagsInput" list="tagsDataList" class="form-control" placeholder="해시태그">
+</div>
+
+<datalist id="tagsDataList"></datalist>
+
+<script>
+  const tagsDataList=document.getElementById("tagsDataList");
+  const tagsInput=document.getElementById("tagsInput");
+  const tagsCont=document.getElementById("tagsCont");
+  const tagsSet=new Set();
+
+  let composition=false; // 한글입력중
+  tagsInput.addEventListener("compositionstart", (e)=>{
+    composition=true; // 하 (자음모음 완성일때)
+  })
+
+  tagsInput.addEventListener("compositionend", (e)=>{
+    composition=false; // 한글입력 끝났을때
+    let tagName=tagsInput.value;
+    let lastVal=tagName[tagName.length-1];
+    if(lastVal===" "){
+      appendTag();
+    }
+  });
+
+  tagsInput.addEventListener("keydown",(e)=>{
+    if((e.code==="Enter" || e.code==="Space") && !composition){
+      e.preventDefault(); // 이벤트 막기
+      appendTag();
+    }
+  })
+
+  tagsInput.addEventListener("change", async (e)=>{
+    appendTag();
+  })
+
+  tagsInput.addEventListener("input", async (e)=>{
+    let tagName=tagsInput.value;
+    if(tagName.length>0) {
+      await searchTags(tagName);
+    }
+  });
+
+  async function searchTags(tagName){
+    let url=`/hashtag/${tagName}/search.do`;
+    const resp=await fetch(url);
+    const tags=await resp.json();
+    tagsDataList.innerHTML="";
+    for(const tag of tags){
+      tagsDataList.insertAdjacentHTML("beforeend", tagOptComponent(tag));
+    }
+  }
+
+  function tagOptComponent(tagObj){
+    return `<option value="${tagObj.tag}">${tagObj.tag} 게시물${tagObj.bCnt}</option>`;
+  }
+
+  function appendTag(){
+    let tagName=tagsInput.value.trim();
+    tagsInput.value="";
+    if(tagName.length===0){
+      alert("한글자 이상 입력하세요");
+      return;
+    }
+    if(!tagsSet.has(tagName)) { // 해시태그네임이 없을때,
+      tagsSet.add(tagName); // 해시태그를 담는다.
+      tagsCont.insertAdjacentHTML("beforeend",tagComponent(tagName)) // 태그 컨포넌트
+    } else{
+      alert("이미 등록된 태그입니다.");
+    }
+  }
+
+
+  function tagComponent(tagName){
+    return `
+      <a href="javascript:void(0)" onclick="removeTag(this,'${tagName}')" class="mb-2 btn btn-sm text-danger text-opacity-70 me-2 rounded-5 bg-danger bg-opacity-10" type=button>
+<!--      <a href="javascript:void(0)" onclick="removeTag(this,'${tagName}')" class="btn btn-light btn-sm rounded-5 text-secondary" type=button>-->
+      <div>
+        <i class="bi bi-hash"></i>
+        <span>${tagName}</span>
+        <i class="bi bi-x ms-1"></i>
+        <input type="hidden" name="tag" value="${tagName}">
+      </div>
+    </a>
+    `;
+  }
+
+
+  function removeTag(tagNode, tagName){
+    tagNode.remove();
+    tagsSet.delete(tagName);
+    alert(tagName+"삭제!");
+  }
+</script>

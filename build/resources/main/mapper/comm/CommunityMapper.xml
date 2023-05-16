@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.comm.CommunityMapper">
+    <resultMap id="CommMap" type="communityDto">
+        <id column="c_id" property="cId"/>
+        <result column="u_id" property="uId"/>
+        <result column="p_id" property="pId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="post_time" property="postTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="status" property="status"/>
+        <result column="area" property="area"/>
+        <result column="istj" property="istj"/>
+        <result column="istp" property="istp"/>
+        <result column="isfj" property="isfj"/>
+        <result column="isfp" property="isfp"/>
+        <result column="intj" property="intj"/>
+        <result column="intp" property="intp"/>
+        <result column="infj" property="infj"/>
+        <result column="infp" property="infp"/>
+        <result column="estj" property="estj"/>
+        <result column="estp" property="estp"/>
+        <result column="esfj" property="esfj"/>
+        <result column="esfp" property="esfp"/>
+        <result column="entj" property="entj"/>
+        <result column="entp" property="entp"/>
+        <result column="enfj" property="enfj"/>
+        <result column="enfp" property="enfp"/>
+        <association property="user"
+                     select="com.project.gabojago.gabojagouser.mapper.user.UserMapper.findUserByUId"
+                     column="u_id"
+                     fetchType="lazy"/>
+        <association property="likes"
+                     select="com.project.gabojago.gabojagouser.mapper.comm.CommLikeMapper.countStatusByCId"
+                     column="c_id"
+                     fetchType="eager"/>
+        <collection property="imgs"
+                    select="com.project.gabojago.gabojagouser.mapper.comm.CommImgMapper.findByCId"
+                    column="c_id"
+                    fetchType="lazy"/>
+        <collection property="replies"
+                    select="com.project.gabojago.gabojagouser.mapper.comm.CommReplyMapper.findByCIdAndParentCrIdIsNull"
+                    column="c_id"/>
+
+
+    </resultMap>
+
+    <insert id="insertOne" parameterType="communityDto" useGeneratedKeys="true" keyProperty="cId">
+        INSERT INTO communitys (u_id, p_id, title, content, area, istj, istp, isfj, isfp, intj, intp, infj, infp, estj, estp, esfj, esfp, entj, entp, enfj, enfp)
+            VALUE (#{uId}, #{pId}, #{title}, #{content}, #{area}, #{istj}, #{istp}, #{isfj}, #{isfp}, #{intj}, #{intp}, #{infj}, #{infp}, #{estj}, #{estp}, #{esfj}, #{esfp}, #{entj}, #{entp}, #{enfj}, #{enfp})
+
+    </insert>
+    <update id="updateOne" parameterType="communityDto">
+        UPDATE communitys SET p_id=#{pId}, title=#{title}, content=#{content}, area=#{area},
+                              istj=#{istj}, istp=#{istp}, isfj=#{isfj},isfp= #{isfp},
+                              intj=#{intj}, intp=#{intp}, infj=#{infj}, infp=#{infp},
+                              estj=#{estj}, estp=#{estp}, esfj=#{esfj}, esfp=#{esfp},
+                              entj=#{entj}, entp=#{entp}, enfj=#{enfj}, enfp=#{enfp}
+        WHERE c_id=#{cId}
+    </update>
+
+
+    <delete id="deleteOne">
+        DELETE FROM communitys WHERE c_id=#{cId}
+    </delete>
+    <select id="findAll" resultMap="CommMap"  parameterType="CommPageDto">
+        SELECT * FROM communitys
+        <if test="searchField!=null and searchValue!=null">
+            WHERE ${searchField} LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+    </select>
+    <select id="findByCId" resultMap="CommMap">
+        SELECT * FROM communitys WHERE c_id=#{cId};
+    </select>
+    <select id="findByCommLikes_likes" resultMap="CommMap">
+        SELECT c.*, COUNT(l.cl_id) AS likes
+        FROM communitys c
+                 LEFT JOIN comm_likes l ON c.c_id = l.c_id
+        GROUP BY c.c_id
+        ORDER BY likes DESC
+    </select>
+
+    <update id="updateIncrementViewCountByCId">
+        UPDATE communitys SET view_count=(view_count+1) WHERE c_id=#{cId}
+    </update>
+</mapper>

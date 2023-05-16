@@ -1,0 +1,47 @@
+<head>
+
+    <style>
+        a{
+            text-decoration: none;
+        }
+        body{
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .ginfo{
+            font-family: 'Do Hyeon', sans-serif;
+        }
+    </style>
+</head>
+<div class="text-center mt-4 h-75 border-1 rounded-2">
+    <ul class="mypage menu m-2 p-0 text-dark  " style="list-style: none;">
+        <li><h5 class="mt-3"><a href="/my/user.do" class="text-decoration-none text-dark">나의정보</a></h5></li>
+        <li><a class="text-dark link-primary " th:href="@{'/user/{uId}/detail.do'(uId=${session.loginUser.getUId()})}">정보수정</a></li>
+        <li><a class="text-dark link-primary" th:href="@{'/user/{uId}/passCheck.do'(uId=${session.loginUser.getUId()})}">비밀번호 변경</a></li>
+        <li><a class="text-dark link-primary" href="/user/dropout.do">회원탈퇴</a></li>
+
+        <li><h5 class="mt-3">일정|커뮤니케이션</h5></li>
+        <li><a class="text-dark link-primary"   href="/plan/list.do">나의 일정</a></li>
+        <li><a class="text-dark link-primary"  th:href="@{'/follow/{uId}/detail.do'(uId=${session.loginUser.getUId()})}">팔로우|팔로워</a></li>
+        <li><a class="text-dark link-primary" href="#">쪽지함</a></li>
+
+
+
+        <li><h5 class="mt-3">나의 구매|마일리지</h5></li>
+
+        <li><a class="text-dark link-primary" th:href="@{'/my/mileage.do'}">마일리지</a></li>
+        <li><a class="text-dark link-primary" th:href="@{'/sells/orderList.do'}" href="#">구매목록</a></li>
+        <li><a class="text-dark link-primary" th:href="@{'/cart/list.do'}">찜바구니</a></li>
+        <li><a class="text-dark link-primary" th:href="@{'/sells/sellBook/list.do'}">상품판매북마크</a></li>
+
+
+        <li><h5 class="mt-3">고객센터</h5></li>
+        <li><a class="text-dark link-primary" th:href="@{'/my/qna/{uId}/serviceList.do'(uId=${session.loginUser.getUId()})}">문의하기/내역</a></li>
+
+        <li><h5 class="mt-3">나의 활동</h5></li>
+        <li th:if="${session.loginUser.permission=='USER'}"><a  class="text-dark link-primary" href="/my/written.do">내가 쓴 글</a></li>
+        <li th:unless="${session.loginUser.permission=='USER'}"><a class="text-dark link-primary" href="/my/writtenPartner.do">내가 쓴 글(P)</a></li>
+        <li><a class="text-dark link-primary" th:href="@{'/my/{uId}/bookMark.do'(uId=${session.loginUser.getUId()})}">북마크</a></li>
+        <li><a class="mb-4 text-dark link-primary" href="/my/calendar.do">출석체크</a></li>
+    </ul>
+
+</div>

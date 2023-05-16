@@ -1,0 +1,47 @@
+<div class="col" th:each="t:${trips}">
+    <div class="card mt-4" style="overflow: hidden">
+        <div style="position: relative" class="d-flex justify-content-between align-items-center">
+            <strong th:text="${t.area}" style="position: absolute; z-index: 100; top:20px; left: 8px;" class="btn bg-light p-1 px-2"></strong>
+<!--            <strong th:text="${t.area}"></strong>-->
+            <div class="likeCont" th:id="'likeCont'+${t.tId}" style="position: absolute; z-index: 110; top:20px; right: 8px;">
+                <th:block th:include="/trip/likes.html" th:with="likes=${t.likes},id=${t.tId}"></th:block>
+                <!--                <th:block th:text="${t.likes}"></th:block>-->
+                <!--                <th:block th:text="${t.tId}"></th:block>-->
+            </div>
+        </div>
+        <!-- 게시글 이미지 + 내용 클릭시 상세보기 이동 -->
+        <a class="text-dark text-decoration-none" th:href="@{'/trip/{tId}/detail.do'(tId=${t.tId})}" style="position: relative;">
+            <!-- imgs 가 null 이 아니면 보이기! null 이면 안보이기! // id 는 유일한 값을 주기 위해서 tId 를 붙임 -->
+<!--            <strong th:text="${t.area}" style="position: absolute; top:20px; left: 8px;" class="btn bg-light p-1 px-2"></strong>-->
+<!--            <div class="likeCont" th:id="'likeCont'+${t.tId}" style="position: absolute; top:8px; right: 8px;">-->
+<!--                <th:block th:include="/trip/likes.html" th:with="likes=${t.likes},id=${t.tId}"></th:block>-->
+<!--                &lt;!&ndash;                <th:block th:text="${t.likes}"></th:block>&ndash;&gt;-->
+<!--                &lt;!&ndash;                <th:block th:text="${t.tId}"></th:block>&ndash;&gt;-->
+<!--            </div>-->
+            <div th:if="${t.imgs!=null}">
+                <div >
+                    <div th:each="img,state : ${t.imgs}"> <!-- main 이미지를 active 로 맨앞에 위치하기 -->
+
+                        <!--                                    <p th:text="${state.current.imgMain}"></p>-->
+                        <!--                                <div class="carousel-item" th:each="img,state : ${t.imgs}" th:classappend="${state.first}?'active':''">-->
+                        <img th:if="${state.current.imgMain==true}" th:src="@{'{path}'(path=${img.imgPath})}" class="d-block w-100" style="object-fit: contain"  alt="...">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <p class="card-title fs-6 mb-0" th:text="${t.title}"></p>
+                </div>
+                <div class="card-text" style="font-size: 12px;">
+                    <th:block th:include="/trip/mbtis.html"></th:block>
+                </div>
+
+                <div class="card-text d-flex justify-content-between">
+                    <th:block th:include="/trip/grade.html"></th:block>
+                    <th:block th:include="/trip/dropdownMenu.html"></th:block>
+                </div>
+
+            </div> <!-- card-body -->
+        </a>
+    </div>
+</div>

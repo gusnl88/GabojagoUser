@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>여행지 등록</title>
+</head>
+<div layout:fragment="content">
+<!--    <script src="/public/js/tripInsert.js" defer></script>-->
+    <form novalidate id="tripInsertFrom" enctype="multipart/form-data" action="./register.do" method="post" style="width: 500px; margin: 0 auto;">
+        <h1 class="my-4">여행지 등록</h1>
+        <p class="form-floating">
+            <input readonly type="text" id="" name="uId" th:value="${session.loginUser.uId}" class="form-control" placeholder="??">
+            <label for="">아이디(글쓴이)</label>
+        </p>
+
+        <p class="form-floating">
+            <select name="category" id="category" class="form-select">
+                <option value="힐링">힐링</option>
+                <option value="체험">체험</option>
+                <option value="반려동물">반려동물</option>
+                <option value="레저">레저</option>
+                <option value="박물관">박물관</option>
+            </select>
+            <label for="category">카테고리</label>
+        </p>
+
+        <p class="form-floating">
+            <select name="area" id="area" class="form-select">
+                <option value="서울">서울</option>
+                <option value="인천">인천</option>
+                <option value="대전">대전</option>
+                <option value="광주">광주</option>
+                <option value="대구">대구</option>
+                <option value="울산">울산</option>
+                <option value="부산">부산</option>
+                <option value="세종">세종</option>
+                <option value="경기">경기</option>
+                <option value="강원">강원</option>
+                <option value="충북">충북</option>
+                <option value="충남">충남</option>
+                <option value="전북">전북</option>
+                <option value="전남">전남</option>
+                <option value="경북">경북</option>
+                <option value="경남">경남</option>
+                <option value="제주">제주</option>
+            </select>
+            <label for="area">지역</label>
+        </p>
+
+        <p class="form-floating">
+            <input type="text" name="title" value="" class="form-control" placeholder="??">
+            <label>여행지명</label>
+            <p id="titleMsg"></p>
+        </p>
+
+        <p class="form-floating">
+            <input type="text" name="address" value="" class="form-control" placeholder="??">
+            <label>주소</label>
+            <p id="addressMsg"></p>
+        </p>
+
+
+        <p class="form-floating">
+            <!-- 로그인한 파트너의 연락처 -->
+            <input type="text" name="phone" th:value="${session.loginUser.phone}" class="form-control" placeholder="??">
+            <label>연락처</label>
+        </p>
+
+        <p class="form-floating">
+            <input type="text" name="urlAddress" value="" class="form-control" placeholder="??">
+            <label>홈페이지</label>
+        </p>
+
+        <p>
+            <label>소개글</label>
+            <textarea name="content" rows="4" class="form-control"></textarea>
+            <p id="contentMsg"></p>
+        </p>
+
+        <div class="mb-3">
+            <th:block th:include="/trip/tagsinput.html"></th:block>
+        </div>
+
+        <p class="input-group">
+            <label class="input-group-text">메인이미지</label>
+            <input class="form-control" type="file" id="mainImg" name="mainImg" required>
+            <p id="mainImgMsg"></p>
+
+        </p>
+
+        <p id="imgCont">
+            <button id="imgAddBtn" class="btn btn-danger w-100" type="button">
+                이미지
+                <i class="bi bi-plus-square"></i>
+            </button>
+        </p>
+
+
+        <label>mbti</label>
+        <div>
+            <p class="d-flex justify-content-around">
+                <label><input type="checkbox" name="istj"> istj</label>
+                <label><input type="checkbox" name="istp"> istp</label>
+                <label><input type="checkbox" name="isfj"> isfj</label>
+                <label><input type="checkbox" name="isfp"> isfp</label>
+                <label><input type="checkbox" name="intj"> intj</label>
+                <label><input type="checkbox" name="intp"> intp</label>
+                <label><input type="checkbox" name="infj"> infj</label>
+                <label><input type="checkbox" name="infp"> infp</label>
+            </p>
+            <p class="d-flex justify-content-around">
+                <label><input type="checkbox" name="estj"> estj</label>
+                <label><input type="checkbox" name="estp"> estp</label>
+                <label><input type="checkbox" name="esfj"> esfj</label>
+                <label><input type="checkbox" name="esfp"> esfp</label>
+                <label><input type="checkbox" name="entj"> entj</label>
+                <label><input type="checkbox" name="entp"> entp</label>
+                <label><input type="checkbox" name="enfj"> enfj</label>
+                <label><input type="checkbox" name="enfp"> enfp</label>
+            </p>
+        </div>
+
+        <div class="text-end my-5">
+            <a href="/trip/list.do" class="btn btn-outline-dark">취소</a>
+            <button id="submitBtn" type="submit" class="btn btn-outline-danger">등록</button>
+        </div>
+    </form>
+
+    <script>
+        const imgAddBtn = document.getElementById("imgAddBtn");
+        const imgCont = document.getElementById("imgCont");
+        let imgAddBtnCount = 0;
+        imgAddBtn.addEventListener("click", (e) => {
+            if(imgAddBtnCount<5){
+                imgCont.insertAdjacentHTML("beforeend", imgInputComponent());
+                imgAddBtnCount++;
+            }
+        });
+
+        function imgInputComponent(label = "이미지", name = "img") { // 🔥 label, name 넣는 이유?
+            return `
+                 <p class="input-group mt-2">
+                    <label class="input-group-text click">${label}</label>
+                    <input class="form-control" type="file" name="${name}">
+
+                    <button type="button" class="btn btn-danger" onclick="this.closest('.input-group').remove()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </p>
+            `
+
+        }
+
+    </script>
+</div>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>해시태그 검색 게시판 리스트</title>
+  <script src="/public/js/tripLike.js" defer></script>
+  <script src="/public/js/tripHashTag.js" defer></script>
+  <style>
+
+    input[type=radio]:checked {
+      accent-color: orangered;
+    }
+
+    .star-rating input[type="radio"] {
+      /*display: none;*/
+    }
+
+    .star-rating label {
+      display: inline-block;
+      font-size: 25px;
+      color: #ccc;
+      cursor: pointer;
+    }
+
+    .star-rating label:hover,
+    .star-rating label:hover~label,
+    .star-rating input[type="radio"]:checked~label{
+      color: orangered;
+
+    }
+
+    .star-ratings-fill {
+      padding: 0;
+      /*position: absolute;*/
+      z-index: 1;
+      display: flex;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      color: orangered;
+    }
+
+    .star-ratings-base {
+      z-index: 0;
+      padding: 0;
+    }
+
+    .star {
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .bi-star {
+      color: #aaa !important;
+    }
+
+  </style>
+</head>
+<div layout:fragment="content" class="container">
+
+  <div class="mt-5 d-flex align-items-center justify-content-between">
+<!--    <h1 class="mt-4">해시태그 검색</h1>-->
+    <h2 class="">
+      <i class="bi bi-hash"></i>
+      <span th:text="${tag}"></span>
+    </h2>
+    <div class="btn bg-dark bg-opacity-10 rounded-5" data-bs-toggle="offcanvas" href="#offcanvasSearch" role="button" aria-controls="offcanvasExample">
+      해시태그 검색
+      <i class="bi bi-search"></i>
+    </div>
+  </div>
+<!--  <h2 class="mb-4">-->
+<!--    <i class="bi bi-hash"></i>-->
+<!--    <span th:text="${tag}"></span>-->
+<!--  </h2>-->
+  <!-- 해시태그 검색창 -->
+  <div>
+    <th:block th:include="/trip/tagNavbar.html"></th:block>
+  </div>
+  <section id="tripListCont" class="row row-cols-lg-3 row-cols-1 g-5">
+    <th:block th:include="/trip/includeList.html"></th:block>
+  </section>
+
+  <script> // 스크롤 페이징 - 1.스크롤이 바닥에 닿을때, 2.다음 페이지가 section 태그 안에 불러와진다.
+  let page=1;
+  let lastPage=[[${trips.pages}]]; // 페이징헬퍼 pages : 마지막 페이지
+  const tripListCont=document.getElementById("tripListCont");
+  window.addEventListener("scroll",async ()=>{ // 스크롤이벤트 발생시, 이벤트 실행
+    // console.log("움직이는 중");
+    let scrollTop=document.documentElement.scrollTop || document.body.scrollTop;
+    let clientHeight=document.documentElement.clientHeight || document.body.clientHeight;
+    let scrollHeight=document.documentElement.scrollHeight || document.body.scrollHeight;
+    scrollHeight-=clientHeight; // scrollHeight=scrollHeight-clientHeight
+    if(scrollTop===scrollHeight){ // 바닥을 체크
+      // console.log("바닥입니다.")
+      if(lastPage===page) { // 바닥을 쳤을때 알람표시 및 메서드 종료
+        alert("마지막 페이지입니다.");
+        return;
+      }
+      let list=await loadTagList(page+1); // 2번 페이지를 불러온다.
+      if(list){ // list 가 true 일때, 즉 2번페이지 불러오는게 성공하면!
+        ++page; // 다음 페이지 불러오기
+        tripListCont.insertAdjacentHTML("beforeend",list);
+      }else {
+        alert("불러오기 실패");
+      }
+    }
+  })
+
+  async function loadTagList(pageNum){
+    let url="/trip/[[${tag}]]/ajaxTagList.do?pageNum="+pageNum;
+    const resp=await fetch(url);
+    if(resp.status===200){
+      return await resp.text(); // resp.text() : html 로 받아오기
+    }else {
+      alert("불러오기 실패");
+    }
+  }
+
+  </script>
+  <br><br><br><br><br><br><br><br><br><br>
+  <br><br><br><br><br><br><br><br><br><br>
+
+
+</div>
+</html>

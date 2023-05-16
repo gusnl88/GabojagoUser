@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.plan.PlanMembersMapper">
+    <resultMap id="planMembersMap" type="planMembersDto">
+        <id column="ml_Id" property="mlId"/>
+        <result column="p_id" property="pId"/>
+        <result column="mu_id" property="muId"/>
+    </resultMap>
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="mlId"  parameterType="planMembersDto">
+        INSERT INTO plan_members (p_id, mu_id) VALUE (#{pId}, #{muId})
+    </insert>
+
+    <select id="findByPId" resultMap="com.project.gabojago.gabojagouser.mapper.user.UserMapper.PureUserMap">
+        SELECT u.*
+        FROM plan_members m
+        left join users u
+        on m.mu_id = u.u_id
+        WHERE m.p_id=#{pId}
+    </select>
+</mapper>

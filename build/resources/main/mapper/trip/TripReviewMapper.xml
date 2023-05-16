@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.trip.TripReviewMapper">
+    <resultMap id="TripReviewMap" type="TripReviewDto">
+        <id column="tr_id" property="trId"/>
+        <result column="t_id" property="tId"/>
+        <result column="u_id" property="uId"/>
+        <result column="content" property="content"/>
+        <result column="visit" property="visit"/>
+        <result column="post_time" property="postTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="grade" property="grade"/>
+        <association property="user"
+                        select="com.project.gabojago.gabojagouser.mapper.user.UserMapper.findUserByUId"
+                        column="u_id"
+                        fetchType="lazy"/>
+        <collection property="imgs"
+                    select="com.project.gabojago.gabojagouser.mapper.trip.TripReivewImgMapper.findByTrId"
+                    column="tr_id"
+                    fetchType="lazy"/>
+        <collection property="comments"
+                    select="com.project.gabojago.gabojagouser.mapper.trip.TripReviewCmtMapper.findByTrIdAndParentTrcIdIsNull"
+                    column="tr_id"
+                    fetchType="lazy"/>
+
+        <!-- association 이 collection 보다 위에 있어야 한다. -->
+    </resultMap>
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="trId" parameterType="TripReviewDto">
+        INSERT INTO trip_reviews (t_id, u_id, content, visit, grade)
+        VALUE (#{tId}, #{uId}, #{content}, #{visit}, #{grade})
+    </insert>
+    <update id="updateOne">
+        UPDATE trip_reviews SET content=#{content}, visit=#{visit}, grade=#{grade} WHERE tr_id=#{trId}
+    </update>
+    <delete id="deleteOne">
+        DELETE FROM trip_reviews WHERE tr_id=#{trId}
+    </delete>
+    <select id="findByTrId" resultMap="TripReviewMap">
+        SELECT * FROM trip_reviews WHERE tr_id=#{trId}
+    </select>
+    <select id="findByTId" resultMap="TripReviewMap">
+        SELECT tr.* FROM trip_reviews tr LEFT JOIN trip_review_likes trl ON tr.tr_id=trl.tr_id
+        WHERE t_id=#{tId}
+    </select>
+
+    <select id="averageGradeByTId" resultType="java.lang.Integer">
+        SELECT CEIL(AVG(grade)) AS average_grade FROM trip_reviews WHERE t_id=#{tId}
+    </select>
+    <select id="countGradeByTId" resultType="java.lang.Integer">
+        SELECT COUNT(grade) AS total_grade FROM trip_reviews WHERE t_id=#{tId}
+    </select>
+    <select id="countReviewByTId" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS total_review FROM trip_reviews WHERE t_id=#{tId}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.trip.TripReviewCmtMapper">
+    <resultMap id="TripReviewCmtMap" type="TripReviewCmtDto">
+        <id property="trcId" column="trc_id"/>
+        <result property="trId" column="tr_id"/>
+        <result property="uId" column="u_id"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="postTime" column="post_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="parentTrcId" column="parent_trc_id"/>
+        <result property="imgPath" column="img_path"/>
+
+        <collection property="comments"
+                    select="findByParentTrcId"
+                    column="trc_id"
+                    fetchType="lazy"/>
+    </resultMap>
+
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="trcId" parameterType="TripReviewCmtDto">
+        INSERT INTO trip_review_comments (tr_id, u_id, content, parent_trc_id, img_path)
+        VALUE (#{trId}, #{uId}, #{content}, #{parentTrcId}, #{imgPath});
+    </insert>
+    <update id="updateOne">
+        UPDATE trip_review_comments
+        SET content=#{content}, img_path=#{imgPath}, status=#{status} WHERE trc_id=#{trcId}
+    </update>
+    <delete id="deleteOne">
+        DELETE FROM trip_review_comments
+        WHERE trc_id=#{trcId}
+    </delete>
+    <select id="findByTrIdAndParentTrcIdIsNull" resultMap="TripReviewCmtMap">
+        SELECT * FROM trip_review_comments
+        WHERE parent_trc_id IS NULL
+        AND tr_id=#{trId}
+    </select>
+    <select id="findByParentTrcId" resultMap="TripReviewCmtMap">
+        SELECT * FROM trip_review_comments
+        WHERE parent_trc_id=#{trcId}
+    </select>
+    <select id="findByTrcId" resultMap="TripReviewCmtMap">
+        SELECT * FROM trip_review_comments WHERE trc_id=#{trcId}
+    </select>
+</mapper>

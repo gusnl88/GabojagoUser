@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<div layout:fragment="content" class="container pb-5">
+    <script src="/public/js/CommLike.js" defer></script>
+    <style>
+        #mbtiChk>a{
+            text-decoration: none;
+            color: #7c7cff;
+        }
+        #mbtiChk>a:hover{
+            color:black;
+        }
+        #cateNav a {
+            text-decoration: none;
+            display: inline-block;
+            height: 40px;
+            line-height: 30px;
+            color: #3b3b3b;
+        }
+
+        #cateNav a:hover {
+            color: #0d6efd;
+        }
+
+        #areaCont li a{
+           text-decoration: none;
+            color: #3b3b3b;
+        }
+        #areaCont li a:hover{
+            color: orangered;
+        }
+    </style>
+    <div class="carousel-inner  h-25 ">
+        <div class="carousel-item active" data-bs-interval="10000">
+            <img src="/public/img/comm/commMain.jpeg" class="d-block w-100 img-fluid" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h1 class="display-2 fw-bold ">같이놀자</h1>
+                <form class="d-flex w-75 my-2 mx-auto" role="search">
+                        <div class="input-group" >
+                        <select name="searchField" class="form-control">
+                            <option th:selected="(${#strings.equals(param.searchField,'c_id')})" value="c_id">글번호</option>
+                            <option th:selected="(${#strings.equals(param.searchField,'u_id')})" value="u_id">아이디</option>
+                            <option th:selected="(${#strings.equals(param.searchField,'title')})" value="title">제목</option>
+                            <option th:selected="(${#strings.equals(param.searchField,'content')})" value="content">내용</option>
+                        </select>
+                        <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search"  name="searchValue" th:value="${param.searchValue}">
+                        <button class="btn btn-warning" type="submit"><i class="bi bi-search"></i></button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <section id="commListContainer" class="row">
+        <!--검색창-->
+
+<!--   지역으로 검색 +     글쓰기-->
+<!--        http://localhost:7777/comm/list.do?searchField=area&searchValue=%EC%84%9C%EC%9A%B8-->
+        <div class="d-flex align-items-center justify-content-between mt-3 ">
+            <ul class="nav ms-5" id="cateNav">
+                <a class="nav_link " href="list.do"><i class="bi bi-geo-alt fs-5" ></i></a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=서울>서울</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=인천>인천</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=대전>대전</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=광주>광주</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=대구>대구</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=울산>울산</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=부산>부산</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=세종>세종</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=경기>경기</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=강원>강원</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=충북>충북</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=충남>충남</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=전북>전북</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=전남>전남</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=경북>경북</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=경남>경남</a>
+                <a class="nav_link mx-1" href=list.do?searchField=area&searchValue=제주>제주</a>
+            </ul>
+            <div class="d-flex align-items-center">
+
+                <div class="text-end ms-2" th:if="${session.loginUser!=null}">
+                    <a class="btn btn-outline-success rounded-5 me-5 mb-1" href="/comm/register.do">글쓰기</a>
+                </div>
+
+            </div>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between">
+            <div class= " ms-5">
+                <th:block th:include="/comm/pageNav"></th:block>
+            </div>
+
+            <form class="d-flex w-25 my-2 me-5 " role="search">
+                <div class="input-group me-3" >
+                    <label class="input-group-text bi bi-filter-square text-warning"></label>
+                    <select name="order" class="form-control">
+                        <option value=" ">정렬기준</option>
+                        <option th:selected="(${#strings.equals(param.order,'c_id')})" value="c_id">글번호</option>
+                        <option th:selected="(${#strings.equals(param.order,'u_id')})" value="u_id">글쓴이</option>
+                        <option th:selected="(${#strings.equals(param.order,'post_time')})" value="post_time">작성일</option>
+                        <option th:selected="(${#strings.equals(param.order,'update_time')})" value="update_time">수정일</option>
+                        <option th:selected="(${#strings.equals(param.order,'title')})" value="title">제목</option>
+                        <option th:selected="(${#strings.equals(param.order,'view_count')})" value="view_count">조회수</option>
+                    </select>
+                    <select name="direct" id="" class="form-control">
+                        <option value=" ">정렬방향</option>
+                        <option th:selected="(${#strings.equals(param.direct,'DESC')})" value="DESC">내림차순</option>
+                        <option th:selected="(${#strings.equals(param.direct,'ASC')})" value="ASC">오름차순</option>
+                    </select>
+                    <button class="btn btn-warning">정렬</button>
+                </div>
+              </form>
+        </div>
+        <div class="col-11 mx-auto my-2 " th:each="c:${communities}">
+            <div class="card" >
+                <div class="row no-gutters">
+                    <div class="col-4" th:if="${c.imgs!=null && state.index==0}"th:each="img,state:${c.imgs}">
+                        <img th:src="@{'{path}'(path=${img.imgPath})}" class="col img-thumbnail w-100" alt="게시글 이미지">
+                        <div class="card-img-overlay object-fit-contain col-4" >
+                            <div th:id="'likeCont'+${c.cId}"  th:with="likes=${c.likes},id=${c.cId}">
+                                <th:block th:with="likes=${c.likes},cId=${c.cId}" th:include="/comm/Likes"> </th:block>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-8  d-flex flex-column mb-2" style="">
+                        <div class="card-body">
+                            <h4 class="card-title" >
+                                <i class="bi bi-clipboard text-success"></i>
+                                <a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover " th:text="${c.title}" th:href="@{'/comm/{cId}/detail.do'(cId=${c.cId})}"></a>
+                            </h4>
+                            <p>
+                                <i class="bi bi-person fs-5"></i>
+                                <a href="#" class="profile text-decoration-none link-warning text-dark">
+                                    <strong class="me-1" th:text="${c.user.nkName}"></strong>
+                                </a>
+                                <span class="text-dark"><i class="bi bi-geo-alt fs-5" ></i><span th:text="${c.area}"></span></span>
+                                <small class="text-muted me-1" th:text="작성일.+${#dates.format(c.postTime,'yyyy-MM-dd')}"></small>
+                                <small class="text-muted">조회수 <span th:text="${c.viewCount}"></span></small>
+                            </p>
+                            <div class="card-text w-75 h-25" style="overflow: hidden; white-space:nowrap; text-overflow: ellipsis;" id="contantBox">
+                                <span th:utext="${c.content}"></span>
+                            </div>...
+
+                        </div>
+                        <div class="LastCont d-flex justify-content-between align-content-center">
+                            <div class="card-body">
+                                <p id="mbtiChk">
+                                    <!--http://localhost:7777/comm/list.do?searchField=istp&searchValue=1-->
+                                    <a href="/comm/list.do?searchField=istp&searchValue=1" class="" th:text="${c.istp==1}?'#ISTP':''" ></a>
+                                    <a href="/comm/list.do?searchField=istj&searchValue=1" class="" th:text="${c.istj==1}?'#ISTJ':''" ></a>
+                                    <a href="/comm/list.do?searchField=isfj&searchValue=1" class="" th:text="${c.isfj==1}?'#ISFJ':''" ></a>
+                                    <a href="/comm/list.do?searchField=isfp&searchValue=1" class="" th:text="${c.isfp==1}?'#ISFP':''" ></a>
+                                    <a href="/comm/list.do?searchField=intj&searchValue=1" class="" th:text="${c.intj==1}?'#INTJ':''" ></a>
+                                    <a href="/comm/list.do?searchField=intp&searchValue=1" class="" th:text="${c.intp==1}?'#INTP':''" ></a>
+                                    <a href="/comm/list.do?searchField=infj&searchValue=1" class="" th:text="${c.infj==1}?'#INFJ':''" ></a>
+                                    <a href="/comm/list.do?searchField=infp&searchValue=1" class="" th:text="${c.infp==1}?'#INFP':''" ></a>
+                                    <a href="/comm/list.do?searchField=estj&searchValue=1" class="" th:text="${c.estj==1}?'#ESTJ':''" ></a>
+                                    <a href="/comm/list.do?searchField=estp&searchValue=1" class="" th:text="${c.estp==1}?'#ESTP':''" ></a>
+                                    <a href="/comm/list.do?searchField=esfj&searchValue=1" class="" th:text="${c.esfj==1}?'#ESFJ':''" ></a>
+                                    <a href="/comm/list.do?searchField=esfp&searchValue=1" class="" th:text="${c.esfp==1}?'#ESFP':''" ></a>
+                                    <a href="/comm/list.do?searchField=entj&searchValue=1" class="" th:text="${c.entj==1}?'#ENTJ':''" ></a>
+                                    <a href="/comm/list.do?searchField=entp&searchValue=1" class="" th:text="${c.entp==1}?'#ENTP':''" ></a>
+                                    <a href="/comm/list.do?searchField=enfj&searchValue=1" class="" th:text="${c.enfj==1}?'#ENFJ':''" ></a>
+                                    <a href="/comm/list.do?searchField=enfp&searchValue=1" class="" th:text="${c.enfp==1}?'#ENFP':''" ></a>
+                                </p>
+                            </div>
+                            <div class="text-end me-2 my-2 ">
+                                <a th:if="${session.loginUser!=null && session.loginUser.uId==c.uId}"
+                                   th:href="@{'/comm/{cId}/modify.do'(cId=${c.cId})}" class="btn btn-primary btn-sm me-1">수정</a>
+                                <a th:if="${session.loginUser!=null && session.loginUser.uId==c.uId}"
+                                   th:href="@{'/comm/{cId}/remove.do'(cId=${c.cId})}" class="btn btn-danger btn-sm">삭제</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</html>

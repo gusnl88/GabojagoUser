@@ -1,0 +1,7 @@
+<ul class="list-group">
+    <li th:each="rc:${reviewcmt}"  th:with="user=${review.user}"  class="list-group-item" th:if="${reviewcmt.size()>0}" > <!-- 리뷰의 댓글이 있는 경우만! -->
+        <th:block th:include="/trip/reviewcmt/detail.html"></th:block>
+    </li>
+</ul>
+
+

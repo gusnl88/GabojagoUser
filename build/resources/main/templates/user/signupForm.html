@@ -1,0 +1,158 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>회원가입 폼</title>
+</head>
+<div layout:fragment="content">
+  <form name="signup" action="./signup.do" enctype="multipart/form-data" method="post" style="width: 500px;margin: 0 auto;">
+    <h1 class="my-4">회원가입</h1>
+    <p class="form-floating">
+      <input id="uIdInput" type="text" name="uId" value="" class="form-control" placeholder="??">
+      <label>아이디</label>
+    </p>
+    <p class="form-floating">
+      <input id="pwInput" type="password" name="pw" value="" class="form-control" placeholder="??">
+      <label>패스워드</label>
+    </p>
+    <p class="form-floating">
+      <input id="pwCheckInput" type="password" name="checkPw" value="" class="form-control" placeholder="??">
+      <label>패스워드 확인</label>
+      <br><span id="pwCheckMsg" class="carousel-inner"></span>
+    </p>
+    <p class="form-floating">
+      <input type="text" name="name" value="" class="form-control" placeholder="??">
+      <label>이름</label>
+    </p>
+    <p class="form-floating">
+      <input type="text" name="nkName" value="" class="form-control" placeholder="??">
+      <label>닉네임</label>
+    </p>
+    <p class="form-floating">
+      <input type="text" name="email" value="" class="form-control" placeholder="??">
+      <label>이메일</label>
+    </p>
+    <p class="form-floating">
+      <input type="date" name="birth" value="" class="form-control" placeholder="??">
+      <label>생일</label>
+    </p>
+    <p class="form-floating">
+      <input type="text" name="phone" value="" class="form-control" placeholder="??">
+      <label>핸드폰</label>
+    </p>
+    <p class="form-floating">
+      <input type="text" name="address" value="서울시" class="form-control" placeholder="??">
+      <label>주소</label>
+    </p>
+    <p class="form-floating">
+      <input type="text" name="detailAddress" value="강남" class="form-control" placeholder="??">
+      <label>주소상세</label>
+    </p>
+    <p class="form-floating">
+      <input type="text" name="prContent" value="" class="form-control" placeholder="??">
+      <label>자기소개</label>
+    </p>
+    <p class="form-floating">
+      <select name="mbti" class="form-control">
+        <option value="ISTJ">ISTJ</option>
+        <option value="ISTP">ISTP</option>
+        <option value="ISFJ">ISFJ</option>
+        <option value="ISFP">ISFP</option>
+        <option value="INTJ">INTJ</option>
+        <option value="INTP">INTP</option>
+        <option value="INFJ">INFJ</option>
+        <option value="INFP">INFP</option>
+        <option value="ESTJ">ESTJ</option>
+        <option value="ESTP">ESTP</option>
+        <option value="ESFJ">ESFJ</option>
+        <option value="ESFP">ESFP</option>
+        <option value="ENTJ">ENTJ</option>
+        <option value="ENTP">ENTP</option>
+        <option value="ENFJ">ENFJ</option>
+        <option value="ENFP">ENFP</option>
+      </select>
+      <label>MBTI</label>
+    </p>
+    <p id="imgCont">
+      <button id="imgAddBtn" class="btn btn-secondary" type="button" >
+        프로필 사진
+        <i class="bi bi-plus-square"></i>
+      </button>
+    </p>
+    <p class="form-floating">
+      <select name="permission" class="form-control">
+        <option value="0">일반회원</option>
+        <option value="1">파트너</option>
+      </select>
+    </p>
+    <p class="form-floating">
+      <input type="text" name="storeName" value="" class="form-control" placeholder="??">
+      <label>상호명</label>
+    </p>
+    <p class="form-floating">
+      <input type="text" name="businessId" value="" class="form-control" placeholder="??">
+      <label>사업자번호</label>
+    </p>
+    <p class="text-end">
+      <button class="btn btn-outline-warning" type="reset">초기화</button>
+      <button class="btn btn-outline-primary">확인</button>
+    </p>
+  </form>
+  <script>
+  const uIdInput = document.querySelector('#uIdInput');
+    uIdInput.addEventListener("change", async function () {
+      const uId = uIdInput.value;
+      const response = await fetch(`/user/${uId}/checkId.do`);
+      const result = await response.json();
+      if (result>0) {
+        alert('이미 사용중인 아이디입니다.');
+      } else {
+        alert('사용 가능한 아이디입니다.');
+      }
+    });
+
+  const imgAddBtn=document.getElementById('imgAddBtn');
+  const imgCont=document.getElementById('imgCont');
+  imgAddBtn.addEventListener("click",(e)=>{
+    imgCont.insertAdjacentHTML("beforeend", imgInputComponent())
+  });
+
+  function imgInputComponent(label="이미지",name="img"){
+    return `<p class="input-group w-75 mt-2">
+              <label class="input-group-text">${label}</label>
+              <input class="form-control"  type="file" name="${name}">
+              <button type="button" class="btn btn-danger" onclick="this.closest('.input-group').remove()">
+                <i class="bi bi-x-lg"></i>
+              </button>
+              </p>`;
+  }
+
+  const pwInput=document.getElementById('pwInput');
+  pwInput.addEventListener("change",()=>{
+    const pw=pwInput.value;
+    if(pw.length<8 && pw.length>16){
+      alert('비밀번호는 8자 이상 16자 이하이어야 합니다.');
+      pwInput.value="";
+    } else if(!pw.match(/[a-zA-Z]/g)){
+      alert('비밀번호는 문자를 포함해야 합니다.');
+      pwInput.value="";
+    } else if(!pw.match(/[0-9]/g)){
+      alert('비밀번호는 숫자를 포함해야 합니다.');
+      pwInput.value="";
+    }
+  });
+
+  const pwCheckInput=document.getElementById('pwCheckInput');
+  pwCheckInput.addEventListener("change",()=>{
+    const pw=pwInput.value;
+    const pwCheck=pwCheckInput.value;
+    const pwCheckMsg=document.getElementById('pwCheckMsg');
+    if(pw!=pwCheck){
+      document.getElementById('pwCheckMsg').textContent="비밀번호가 일치하지 않습니다.";
+    } else {
+      document.getElementById('pwCheckMsg').textContent="비밀번호가 일치합니다.";
+    }
+  });
+  </script>
+</div>
+</html>

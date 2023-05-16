@@ -1,0 +1,959 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Do+Hyeon&family=DynaPuff:wght@400;600&family=Noto+Sans+KR:wght@400;500;700;900&family=Russo+One&display=swap');
+
+
+@font-face {
+    font-family: 'KoddiUDOnGothic-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/KoddiUDOnGothic-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TheJamsil5Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil5Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+*{
+    font-family: "Noto Sans KR";
+}
+body{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-use-select: none;
+    user-select: none;
+}
+.unDraggable{
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-use-select: none !important;
+    user-select: none !important;
+}
+.draggable{
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-use-select: all;
+    user-select: all;
+}
+.textCancel{
+    text-decoration: line-through red;
+    text-decoration-thickness: 3px;
+}
+
+a:link { color: black; text-decoration: none;}
+a:visited { color: black; text-decoration: none;}
+a:hover { color: black; text-decoration: none;}
+
+input[type='date'], input[type='date']:focus {
+    font-family: "Noto Sans KR";
+    color: gray;
+}
+input[type='text'], input[type='text']:focus{
+    font-family: "Noto Sans KR";
+    color: gray;
+}
+
+.sB{
+    border: 1px solid transparent;
+    background-color: #b9d5ff;
+    font-family: "Noto Sans KR";
+    font-weight: 700;
+    font-size: 15px;
+    color: white;
+}
+
+
+
+
+
+
+.listMainHeader{
+    width: 100%;
+    height: 40vh;
+}
+
+.listMainHeaderImg{
+    z-index: -999;
+    position: absolute;
+    width: 67.3vw;
+    height: 45vh;
+    opacity: 0.8;
+    filter: contrast(90%) grayscale(10%);
+}
+
+.listHeaderTitle{
+    letter-spacing: 5px;
+    padding-top: 50px;
+    font-family: "Noto Sans KR";
+    color: white;
+    font-weight: 900;
+    font-size: 50px;
+    text-shadow: -1px 0 gray, 1px 1px gray, 1px 2px gray, 0 -1px gray;
+}
+
+
+.listContent {
+    overflow: hidden;
+    padding: 20px 0px 20px 30px
+}
+.listContent div {
+    display: inline-block;
+}
+.flagBox{
+    background-color: rgba(0, 0, 0, 0.24);
+    display: inline-block;
+    font-family: Russo one;
+    color: white;
+    padding: 10px;
+    border-radius: 15px;
+    width: 60%;
+    height: 30vh;
+}
+.flagContent{
+    padding: 0px !important;
+    height: 85%;
+    overflow: hidden;
+}
+.flagContent > canvas {
+    width: 100%;
+
+}
+#flagB{
+    cursor: pointer;
+    font-size: 15px;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+#flagB:hover{
+    color: firebrick;
+    background-color: white;
+}
+
+#newPlanPreviewBox{
+    background-image: url("/public/img/plan/planDefault.jpeg");
+    background-size: cover;
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+    width: 100%;
+    height: 280px;
+}
+
+#newPlanPreview{
+    width: 100%;
+    height: 100%;
+    object-position: center;
+    object-fit: scale-down;
+}
+#newPlanModal h5, .planModalTitle{
+    margin-left: 10px;
+    color: lightgrey;
+    font-family: "Noto Sans KR";
+    font-weight: 400;
+    /*text-shadow: -1px 0 lightgrey, 1px 1px lightgrey, 1px 2px lightgrey, 0 -1px lightgrey;*/
+}
+
+.newPlanModalBody label{
+    font-family: "Noto Sans KR";
+    font-weight: 500;
+    color: gray;
+    padding-left: 25px;
+}
+.newPlanModalBody input{
+    border: 1px solid rgba(240, 240, 240);
+}
+
+
+
+.newPlanStatusBox{
+    color: white;
+    font-size: 25px;
+    position: relative;
+    left: 65%;
+}
+.statusL{
+    cursor: pointer;
+}
+.statusC:checked + label{
+    color: dodgerblue;
+}
+.memberSelectBox{
+    font-family: "Noto Sans KR";
+    font-weight: 500;
+    margin: 0px 12px;
+    padding: 5px 10px;
+    width: 94%;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+}
+.memberSelectBoxHeader{
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #a9a9a9;
+}
+#memberSelectBoxPBtn{
+    cursor: pointer;
+}
+#memberSelectBoxPBtn:hover{
+    color: dodgerblue;
+
+}
+#memberSelectBoxFooter{
+    height: 35px;
+    border: none;
+    background-color: white;
+}
+.memberSearchList label{
+    display: flex;
+    align-items: center;
+    vertical-align: center;
+    padding: 10px 5px 10px 5px;
+    border-bottom: 1px solid whitesmoke;
+    border-top: 1px solid whitesmoke;
+}
+.memberSearchList label:hover{
+    background-color: whitesmoke;
+}
+.memberSearchList label>span{
+    line-height: 30px;
+    margin-left: 20px;
+}
+.memberSearchListCheckBox{
+    margin-right: 20px;
+    width: 15px;
+    height: 15px;
+    border: 1px solid lightblue;
+    border-radius: 50%;
+}
+.memberSearchCheckBoxInput:checked + label>div:first-child{
+    background-color: lightblue;
+
+}
+
+
+
+
+.card {
+    border: 1px solid transparent;
+    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 5px whitesmoke;
+    margin-right: 40px;
+    margin-bottom: 40px;
+}
+.card:hover {
+    box-shadow: 0px 0px 10px 5px #e5e5e5;
+}
+.card img{
+    width: 100%;
+    object-fit: cover;
+    height: 220px;
+    opacity: 0.9;
+}
+
+.cardTitle{
+    font-family: 'TheJamsil5Bold';
+    color: dodgerblue;
+    font-size: 22px;
+    margin-bottom: 7px;
+}
+.card-body{
+    width: 100%;
+    padding: 20px;
+    padding-top: 10px;
+}
+.card-img-top{
+    object-fit: cover;
+    max-height: 250px;
+}
+
+.cardInfo{
+    font-family: 'KoddiUDOnGothic-Regular';
+    min-height: 50px;
+    overflow: hidden;
+}
+.cardSchedule{
+    font-family: 'KoddiUDOnGothic-Regular';
+    color: gray;
+    font-size: 11px;
+    margin: 0px;
+    margin-bottom: 2px;
+}
+.card-footer{
+    height: 50px;
+    border: none;
+    background-color: white;
+}
+.card-footer>div, #memberSelectBoxFooter>div ,.memberSearchList .cardOr{
+    display: inline-block;
+    background-size: contain;
+    box-shadow: 0px 0px 1px 1px rgba(211, 211, 211, 0.57);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+}
+.card-footer>div:hover, #memberSelectBoxFooter>div:hover{
+    box-shadow: 0px 0px 10px 5px #c7c7c7;
+}
+.cardMy{
+    background-color: rgba(99, 196, 255, 0.56);
+}
+.cardOr{
+    background-color: rgba(251, 125, 255, 0.56);
+}
+.cardReview{
+    cursor: pointer;
+    text-align: center;
+    line-height: 35px;
+    border-radius: 50%;
+    padding: 5px;
+    width: 45px;
+    height: 45px;
+    font-size: 27px;
+    background-color: lightgray;
+    color: white;
+    position: absolute;
+    top: 380px;
+    left : 240px;
+}
+.cardReview:hover{
+    color: black;
+    box-shadow: 0px 0px 10px 5px #d5d5d5;
+}
+.cardModify{
+    cursor: pointer;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 50%;
+    padding: 5px;
+    font-size: 17px;
+    color: lightgray;
+    position: absolute;
+    top: 5px;
+    left : 260px;
+    z-index: 3;
+}
+.cardModify:hover, .cardRemove:hover{
+    color: black;
+}
+.cardRemove{
+    cursor: pointer;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 50%;
+    padding: 5px;
+    font-size: 17px;
+    color: lightgray;
+    position: absolute;
+    top: 5px;
+    left : 230px;
+    z-index: 3;
+}
+
+
+
+
+/**/
+
+
+
+body{
+    margin: 0;
+    padding: 0;
+}
+
+canvas{
+    /*border-radius: 0px 20px;*/
+    position: relative;
+    width: 100%;
+
+
+}
+
+
+
+.mainSection{
+    min-height: 95vh;
+}
+.mainHeader{
+    width: 100%;
+    height: 40vh;
+}
+.mainHeader>div{
+    width: 50%;
+    height: 40vh;
+}
+.mainHeaderImg{
+    z-index: -999;
+    position: absolute;
+    width: 67.3vw;
+    height: 45vh;
+    opacity: 0.8
+}
+
+
+.titleBox{
+
+    padding-top: 20vh;
+    padding-left: 80px;
+    font-family: do hyeon;
+    font-size: 15px;
+    color: white;
+}
+.titleInnerBox{
+    width:450px;
+    padding: 10px 30px;
+    border-radius: 15px;
+    /*background-color: rgba(0, 0, 0, 0.3);*/
+}
+.rightBox{
+    text-align: right;
+    padding-top: 4vh;
+    padding-rightt: 50px;
+
+}
+.toDoListBox{
+    background-color: rgba(0, 0, 0, 0.3);
+    text-align: left;
+    display: inline-block;
+    font-family: Russo one;
+    color: white;
+    padding: 10px 10px;
+    /*border: 3px solid white;*/
+    border-radius: 15px;
+    width: 250px;
+    height: 30vh;
+}
+
+.tdlTitle{
+
+    border-bottom: 2px solid rgba(255, 255, 255, 0.61);
+    display: flex;
+    justify-content: space-between;
+}
+.tdlPBtn, .tdlMBtn {
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 0px 5px;
+
+}
+.tdlPBtn:hover, .tdlMBtn:hover {
+    color: #3b3b3b;
+    background-color: white;
+
+}
+.tdlContent{
+
+    padding: 8px 0px;
+    color: white;
+}
+.tdlform{
+    height: 25px;
+    justify-content: space-between;
+    display: flex;
+    padding: 0px 5px;
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+.tdlform input{
+    color: white;
+}
+.tdlCheck{
+
+    display: none;
+}
+.tdlCheckLabel{
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 4px;
+    width: 15px;
+    height: 15px;
+    border: 2px solid white;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+.tdlCheck:checked + label{
+    background-color: #c7c7c7;
+    margin-left: 5px;
+}
+
+.tdlInput{
+    outline: none;
+    color: white;
+    width: 170px;
+    border: none;
+    background-color: transparent;
+}
+.tdlSubmit, .tdlDelete{
+    margin-right: 5px;
+}
+.tdlSubmit:hover{
+    cursor: pointer;
+    color: blue;
+}
+
+
+
+
+.headerTitle{
+    text-shadow: -1px 0 gray, 1px 1px black, 1px 2px gray, 0 -1px gray;
+    font-size: 40px;
+    color: white;
+    font-weight: bold;
+}
+
+
+
+
+.addBox{
+    width: 100%;
+    height: 90vh;
+}
+.searchSelect{
+    /*background-color: rgba(176, 211, 255, 0.66);*/
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    height: 35px;
+    padding: 2px 6px;
+    color: lightgray;
+    font-weight: bold;
+}
+.searchSelect option{
+    height: 35px;
+}
+.searchBtn{
+    background-color: rgba(176, 211, 255, 0.66);
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    display: inline-block;
+    height: 35px;
+    width: 50px;
+    color: white;
+    font-weight: bold;
+}
+.searchInput{
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    display: inline-block;
+    width: 30%;
+    height: 35px !important;
+}
+
+
+
+.scheduleHeader{
+    height: 50px;
+    background-color: whitesmoke;
+    border-radius: 20px 20px 0px 0px;
+    border: 1px solid transparent;
+    line-height: 25px;
+    padding-top: 10px;
+    margin-top: 0px;
+}
+
+.dayBtn{
+    font-family: Russo One;
+    height: 35px;
+    letter-spacing: 2px;
+    margin-left: 35px;
+    border-radius: 10px;
+    font-size: 20px;
+    background-color: rgba(176, 211, 255, 0.66);
+    color: white;
+    text-shadow: -1px 0 lightgrey, 1px 1px gray, 1px 2px gray, 0 -1px lightgrey;
+}
+.catBtn{
+    font-family: "Noto Sans KR";
+    height: 35px;
+    letter-spacing: 2px;
+    margin-left: 35px;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: rgb(175, 210, 255);
+    color: white;
+    text-shadow: -1px 0 lightgrey, 1px 1px gray, 0px 1px gray, 0 -1px lightgrey;
+}
+
+.catBtnC{
+    background-color: lightgrey;
+    width: 85%;
+    font-size: 15px;
+    color: white;
+}
+
+.btnLine{
+    height: 35px;
+
+
+
+}
+.btnLine div{
+    margin-top: -5px;
+    border: none;
+    width: 35px;
+    height: 35px;
+    display: inline-block;
+    background-color: transparent !important;
+    margin-left: 3px;
+    border-radius: 5px;
+}
+.btnLine div i {
+    font-size: 25px;
+}
+.btnLine i {
+    margin: 0px;
+    padding: 0px;
+    font-size: 25px;
+}
+.btnLine button{
+    /*text-align: center;*/
+    width: 35px;
+    height: 35px;
+    border: 0px solid transparent;
+    margin-left: 3px !important;
+
+    border-radius: 5px;
+    color: #5b5b5b;
+
+}
+.btnLine button:hover, #palateBtn{
+    background-color: lightgrey;
+    color: dodgerblue;
+}
+
+.scheduleInputBox{
+    text-align: right;
+}
+
+#newScheduleBtn{
+    cursor: pointer;
+    margin-right: 20px;
+    float: right;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    padding: 0px;
+    font-size: 30px;
+    color: gray;
+    border-radius: 50%;
+    text-shadow: -1px 0 gray, 1px 1px gray, 1px 1px gray, 0 -1px gray;
+}
+#newScheduleBtn:hover{
+    background-color: #595959;
+    color: white;
+    text-shadow: -1px 0 white, 1px 1px white, 1px 1px white, 0 -1px white;
+}
+
+.sFormSection{
+    padding: 5px 10px;
+    padding-left: 0px;
+    border-radius: 10px;
+    background-color: rgb(203, 224, 255);
+    font-weight: bold;
+    font-size: 18px;
+    color: gray;
+    /*text-shadow: -1px 0 lightgray, 1px 1px lightgray, 1px 1px lightgray, 0 -1px lightgray;*/
+
+}
+
+#scheduleInsertForm label{
+    font-family: Do hyeon;
+    color: gray;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 10px;
+}
+#scheduleInsertForm label i {
+    text-shadow: -1px 0 lightgrey, 1px 1px lightgrey, 1px 2px lightgrey, 0 -1px lightgrey;
+    margin-right: 2px;
+}
+#scheduleInsertForm input{
+    border: 3px solid rgba(200, 226, 255, 0.48);
+    color: dodgerblue;
+    font-weight: bold;
+    border-radius: 15px;
+    font-size: 17px;
+}
+.form-floating>.form-control-plaintext~label, .form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label {
+    opacity: 0.4;
+    transform: scale(.65) translateY(-0.5rem) translateX(0.15rem);
+}
+.bkDiv{
+    width: 50%;
+    background-color: #c6e7ff;
+    border-bottom: 1px solid whitesmoke;
+}
+
+.bkBtn {
+    font-family: "Do hyeon";
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    background-color: white;
+}
+.bkLi{
+    display: flex;
+    justify-content: space-between;
+}
+.bkTime{
+    font-family: Russo One;
+    font-size: 13px;
+    color: gray;
+}
+#bookmarkTab button{
+    padding: 5px 8px;
+    color: gray;
+    font-weight: bold;
+    font-size: 12px;
+}
+#bookmarkTabDiv{
+    padding-left: 10px;
+    border-radius: 10px;
+    background-color: rgb(203, 224, 255);
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid whitesmoke;
+}
+#bookmarkTabDiv ul, #bookmarkTabDiv li{
+    display: inline-block;
+}
+#bookmarkTabDiv ul{
+    line-height: 25px;
+}
+
+#bookmarkTab .nav-link.active{
+    color: dodgerblue;
+    background-color: transparent;
+}
+#bookmarkTabContent{
+    padding: 5px;
+}
+#bookmarkTabContent .dropdown-menu{
+    width: 100%;
+}
+#bookmarkTabContent .dropdown-toggle::after {
+    display: none !important;
+}
+
+#bookmarkTabContent h5 {
+    color: dodgerblue;
+    font-weight: bold;
+}
+.tripBookmarkIBtn{
+
+    color: white;
+    line-height: 10px;
+    font-size: 18px;
+
+    height: 35px;
+    border: 1px solid transparent;
+    background-color: lightgray;
+    border-radius: 5px;
+}
+.tripBookmarkIBtn:hover{
+    color: black;
+}
+.bkTxt {
+    color: #696969;
+}
+
+
+
+
+
+
+
+.accordion-body{
+    border: none !important;
+    overflow: hidden! important;
+    height: 130px;
+}
+.accordion-body .newCanvasBtn{
+    font-weight: bold;
+    font-size: 60px;
+    text-align: center;
+    color: lightgrey;
+}
+.accordion-body .newCanvasBtn:hover{
+    color: #7c7cff;
+}
+
+.accordion-header, .accordion-button {
+    border-radius: 15px !important;
+    height: 40px;
+}
+
+.accordion-button{
+    padding: 0px 20px 0px 20px;
+}
+.accordion-item{
+    border: 1px solid transparent;
+    margin-bottom: 15px;
+    background-color: transparent;
+}
+
+
+
+
+#accordionSection{
+    width: 100%;
+    min-height: 50vh;
+    background-color: #fdfdfd;
+    border-top: 10px double whitesmoke;
+    padding: 20px 50px 0px 50px;
+}
+
+.scheduleLeft{
+    width: 20px;
+    height: 20px;
+    background-color: rgb(161, 193, 255);
+    border-radius: 50%;
+    padding-top: 5px;
+    color: lightgrey;
+    text-align: center;
+
+}
+.scheduleTime{
+    margin-right: 15px;
+    text-align: center;
+    min-width: 150px;
+    letter-spacing: 3px;
+    font-weight: 400;
+    color: #6c6c6c;
+    /*text-shadow: -1px 0 lightgrey, 1px 1px gray, 1px 2px gray, 0 -1px lightgrey;*/
+    font-family: Russo One;
+    font-size: 14px;
+}
+.scheduleContainer{
+    padding-left: 15px;
+    margin: 0px;
+    height: 100%;
+}
+.scheduleCenter{
+    line-height: 40px;
+    height: 100%;
+    overflow: hidden !important;
+}
+
+
+/*.scheduleCenter::before{*/
+/*    position: absolute;*/
+/*    content: "";*/
+/*    !*background-image: url("./sample.png");*!*/
+/*    top: 0px;*/
+/*    left: 0px;*/
+/*    right: 0px;*/
+/*    bottom: 0px;*/
+/*    opacity: 0.10;*/
+/*    height: 100%;*/
+
+/*}*/
+
+
+
+.scheduleContent{
+
+    font-weight: bold;
+    color: #8c8c8c;
+    /*text-shadow: -1px 0 lightgrey, 0 1px lightgrey, 1px 0 lightgrey, 0 -1px lightgrey;*/
+    font-size: 15px;
+    padding-left: 25px;
+}
+.scheduleTitle{
+    /*font-family: "Noto sans KR";*/
+    font-family: do hyeon;
+    letter-spacing: 1px;
+    color: #5b5b5b;
+    font-weight: bolder;
+    font-size: 20px;
+    padding: 0px 5px;
+}
+.scheduleSideBtn1, .scheduleSideBtn2 {
+
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    padding: 3px 10px;
+    font-size: 20px;
+    float: right;
+    margin-right: -45px;
+}
+.scheduleSideBtn1{
+    margin-top: 20px;
+}
+.scheduleSideBtn2{
+    margin-top: 60px;
+}
+
+.sbHover:hover{
+    background-color: whitesmoke;
+}
+
+.chatBtn{
+    width: 60px;
+    height: 60px;
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    cursor: pointer;
+    font-size: 50px;
+    transform: scaleX(-1);
+}
+.offcanvas{
+    width: 15.8vw !important;
+}
+.chatBody{
+    height: 95vh;
+}
+#msgBox{
+    padding: 10px;
+    height: 90%;
+    background-color: white;
+    border-radius: 20px;
+}
+.chatSystem{
+    padding: 10px 0px;
+    color: gray;
+    text-align: center;
+    font-size: 12px;
+}
+.chatMy{
+    width: 100%;
+    /*float: right;*/
+    margin: 8px 8px;
+    padding: 0px 5px;
+    color: black;
+    text-align: right;
+    font-size: 12px;
+}
+.chatOrder{
+    width: 100%;
+    /*float: left;*/
+    margin: 8px 8px;
+    color: black;
+    text-align: left;
+    font-size: 12px;
+}
+
+.cB{
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.cTextArea{
+    resize: both;
+    position: absolute;
+    background-color: transparent;
+    border: 2px dashed dodgerblue;
+}
+.cTextArea:focus{
+    outline: none;
+    border: 2px dashed dodgerblue;
+}
+
+

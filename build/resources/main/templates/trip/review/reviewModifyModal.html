@@ -1,0 +1,71 @@
+<div class="modal fade" id="reviewModifyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form enctype="multipart/form-data" name="reviewModifyForm" method="post"
+              class="modal-content">
+            <!-- input 의 value 값들은 /trip/detail 뷰에서 자바스크립트로 넣어줌 -->
+            <input type="hidden" name="trId" value="">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">리뷰 수정</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="form-floating">
+                    <!-- 로그인 안해도 내역 리뷰리스트 볼수있게 if 문처리 // review/detail 안에 리뷰수정모달창이 th:value="${session.loginUser.uId} 값을 줘서 로그인 안하면 값이 안불러와짐  -->
+                     <input th:if="${session.loginUser!=null}" th:value="${session.loginUser.uId}" type="text" name="uId" readonly class="form-control" placeholder="글쓴이">
+                    <label>글쓴이</label>
+                </p>
+
+                <div id="gradeCont" class="star-rating d-flex align-items-center mb-2">
+                    <span>평가</span>
+                    <p class="mb-0" style="direction:rtl">
+                        <input class="" id="mstar-5" type="radio" name="grade" value="5">
+                        <label for="mstar-5" title="5 stars">☆</label>
+                        <input class="" id="mstar-4" type="radio" name="grade" value="4">
+                        <label for="mstar-4" title="4 stars">☆</label>
+                        <input class="" id="mstar-3" type="radio" name="grade" value="3">
+                        <label for="mstar-3" title="3 stars">☆</label>
+                        <input class="" id="mstar-2" type="radio" name="grade" value="2">
+                        <label for="mstar-2" title="2 stars">☆</label>
+                        <input class="" id="mstar-1" type="radio" name="grade" value="1">
+                        <label for="mstar-1" title="1 star">☆</label>
+                    </p>
+                </div>
+
+                <p>
+                    <label><input type="radio" name="visit" value="1">방문</label>
+                    <label><input type="radio" name="visit" value="0">방문전</label>
+                </p>
+
+                <!--                <p class="form-floating"> &lt;!&ndash; trip 게시글 제목은. review 에 없는 데이터라서, th:value 로 가져옴 &ndash;&gt;-->
+<!--                    <input type="text" readonly th:value="${t.title}"-->
+<!--                           class="form-control" placeholder="장소이름">-->
+<!--                    <label>장소이름</label>-->
+<!--                </p>-->
+
+                <div id="imgDelCont"> <!-- imgs 의 img 들의  imgPath -->
+                    <label>이미지 삭제(체크)</label>
+                    <div   class="d-flex form-control mb-2" id="reviewModifyModalImgCont">
+                    </div>
+                    <p id="modifyImgCont">
+                        <button id="modifyImgAddBtn" class="btn btn-danger w-100" type="button">
+                            이미지
+                            <i class="bi bi-plus-square"></i>
+                        </button>
+                    </p>
+                    <p>
+                    </p>
+                    <p class="form-floating">
+                        <input type="text" name="content" class="form-control" placeholder="내용">
+                        <label>내용</label>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button id="removeReviewBtn" class="btn btn-outline-dark" data-bs-dismiss="modal">삭제
+                    </button>
+                    <button type="submit" class="btn btn-outline-danger">등록</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

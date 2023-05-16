@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="">
+
+    <div class="card-header">
+        <h4>관리자 답변</h4>
+    </div>
+        <ul id="comment--box" class="list-group">
+            <li id="comment--1" class="list-group-item d-flex justify-content-between">
+                <a th:each="r:${replys}">
+                    <p>댓글번호: <span th:text="${r.qrId}"> </span></p>
+                    <p>관리자 아이디 : <span th:text="${r.uId}"></span></p>
+                    <p>댓글 내용: <span th:text="${r.content}"></span></p>
+                    <p>작성시간: <span th:text="${r.postTime}"></span></p>
+                </a>
+            </li>
+        </ul>
+
+
+
+
+
+
+

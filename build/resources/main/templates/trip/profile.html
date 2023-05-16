@@ -1,0 +1,9 @@
+<div class="profile d-flex align-items-center">
+    <div class="text-decoration-none text-dark" style="cursor: pointer">
+        <img th:src="@{'{path}'(path=${r.user.imgPath})}" class="border rounded-circle"
+             style="width: 45px; height: 45px;">
+    </div>
+    <div class="ms-1">
+        <strong class="text-decoration-none text-dark" th:text="${r.user.nkName}"></strong><br>
+    </div>
+</div>

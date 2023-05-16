@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.plan.PlanMapper">
+    <resultMap id="planMap" type="PlanDto">
+        <id column="p_id" property="pId"/>
+        <result column="u_id" property="uId"/>
+        <result column="title" property="title"/>
+        <result column="info" property="info"/>
+        <result column="plan_from" property="planFrom"/>
+        <result column="plan_to" property="planTo"/>
+        <result column="post_time" property="postTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="img_path" property="imgPath"/>
+        <result column="plan_status" property="planStatus"/>
+        <result column="review" property="review"/>
+        <result column="nk_name" property="nkName"/>
+        <collection property="contents"
+                    select="com.project.gabojago.gabojagouser.mapper.plan.PlanContentsMapper.findByPId"
+                    column="p_id"
+                    fetchType="lazy"/>
+        <collection property="checkLists"
+                    select="com.project.gabojago.gabojagouser.mapper.plan.PlanCheckListsMapper.findByPId"
+                    column="p_id"
+                    fetchType="lazy"/>
+        <collection property="mUsers"
+                    select="com.project.gabojago.gabojagouser.mapper.plan.PlanMembersMapper.findByPId"
+                    column="p_id"
+                    fetchType="lazy"/>
+
+    </resultMap>
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="pId"  parameterType="PlanDto">
+        INSERT
+        INTO plans (u_id, title, info, plan_from, plan_to, img_path, plan_status)
+        VALUE (#{uId}, #{title}, #{info}, #{planFrom}, #{planTo}, #{imgPath}, #{planStatus})
+    </insert>
+    <update id="updateOne">
+        UPDATE plans
+        SET title=#{title}, info=#{info}, plan_from=#{planFrom}, plan_to=#{planTo}, img_path=#{imgPath}, plan_status=#{planStatus}
+        WHERE p_id=#{pId}
+    </update>
+    <delete id="deleteOne">
+        DELETE FROM plans
+               WHERE p_id=#{pId}
+    </delete>
+    <select id="findAll" resultMap="planMap">
+        SELECT * FROM plans
+    </select>
+    <select id="findByPId" resultMap="planMap">
+        SELECT *, (SELECT nk_name FROM users u WHERE p.u_id = u.u_id) as nk_name
+        FROM plans p
+        WHERE p_id=#{pId}
+    </select>
+
+    <select id="findByUIdNotSearch" resultMap="planMap">
+    SELECT *, (SELECT nk_name FROM users u WHERE p.u_id = u.u_id) as nk_name
+    FROM plans p
+    WHERE u_id = #{uId}
+    OR p.p_id IN (SELECT p_id FROM plan_members WHERE mu_id=#{uId})
+    </select>
+
+    <select id="findByUId" resultMap="planMap" >
+        SELECT *, (SELECT nk_name FROM users u WHERE p.u_id = u.u_id) as nk_name
+        FROM plans p
+        <if test="searchField!=null and searchValue!=null">
+            WHERE (u_id = @loginUserId
+                       OR
+                   p.p_id IN (SELECT p_id FROM plan_members WHERE mu_id=@loginUserId))
+            AND p.${searchField} LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+        <if test="searchField==null or searchValue==null">
+            WHERE u_id = @loginUserId
+            OR p_id IN (SELECT p_id FROM plan_members WHERE mu_id=@loginUserId)
+        </if>
+    </select>
+    <select id="findByBookmarked" resultMap="planMap">
+        SELECT *, (SELECT nk_name FROM users u WHERE p.u_id = u.u_id) AS nk_name
+        FROM plans p
+        INNER JOIN (SELECT * FROM comm_bookmarks WHERE u_id=#{uId}) AS com
+        USING (p_id)
+    </select>
+</mapper>

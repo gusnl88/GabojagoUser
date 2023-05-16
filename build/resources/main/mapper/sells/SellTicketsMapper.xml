@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.sells.SellTicketsMapper">
+    <resultMap id="sellTicketMap" type="SellTicketDto">
+        <id column="st_id" property="stId"/>
+        <result column="sod_id" property="sodId"/>
+        <result column="ticket_num" property="ticketNum"/>
+        <result column="use_check" property="useCheck"/>
+        <result column="use_date" property="useDate"/>
+
+    </resultMap>
+    <insert id="insertOne">
+    INSERT INTO sell_tickets (sod_id, ticket_num) VALUE (#{sodId},#{ticketNum})
+    </insert>
+    <select id="findBySodId" resultMap="sellTicketMap">
+        SELECT * FROM sell_tickets where sod_id=#{sodId}
+    </select>
+</mapper>

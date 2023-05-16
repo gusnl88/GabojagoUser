@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.plan.PlanContentPathsMapper">
+    <resultMap id="planContentPathMap" type="planContentPathsDto">
+        <id column="path_id" property="pathId"/>
+        <result column="con_id" property="conId"/>
+        <result column="can_path" property="canPath"/>
+    </resultMap>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="pathId" >
+        INSERT INTO plan_content_paths (con_id) VALUE (#{conId})
+    </insert>
+    <update id="updateOne">
+        UPDATE plan_content_paths
+        SET can_path=#{canPath}
+        WHERE path_id=#{pathId}
+    </update>
+    <delete id="deleteOne">
+        DELETE FROM plan_content_paths WHERE path_id=#{pathId}
+    </delete>
+
+    <select id="findByConId" resultMap="planContentPathMap">
+        SELECT * FROM plan_content_paths WHERE con_id=#{conId}
+    </select>
+    <select id="findByPathId" resultMap="planContentPathMap">
+        SELECT * FROM plan_content_paths WHERE path_id=#{pathId}
+    </select>
+</mapper>
+

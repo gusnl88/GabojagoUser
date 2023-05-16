@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.trip.TripHashTagMapper">
+    <resultMap id="TripHashTagMap" type="TripHashTagDto">
+        <id property="thId" column="th_id"/>
+        <result property="tId" column="t_id"/>
+        <result property="tag" column="tag"/>
+    </resultMap>
+    <insert id="insertOne">
+        INSERT INTO trip_hashtags (t_id, tag) VALUES (#{tId},#{tag})
+    </insert>
+    <delete id="deleteOne">
+        DELETE FROM trip_hashtags WHERE t_id=#{tId} AND tag=#{tag}
+    </delete>
+    <select id="findByTId" resultMap="TripHashTagMap">
+        SELECT * FROM trip_hashtags WHERE t_id=#{tId}
+    </select>
+    <select id="countByTag" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM trip_hashtags WHERE tag=#{tag}
+    </select>
+</mapper>

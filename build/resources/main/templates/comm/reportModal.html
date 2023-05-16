@@ -1,0 +1,51 @@
+<div id ="reportModal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-center">
+          <i class="bi bi-bell-fill fs-3 text-danger"></i>
+          신고하기
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form name="reportForm" action="" method="post" >
+
+            <label  class="col-4 form-label text-danger h5">신고아이디</label>
+              <input type="text" name="uId" readonly class="form-control-plaintext" th:value="${uId}">
+            <label  class=" col-4 form-label text-danger h5">글번호</label>
+           <input type="text" readonly class="form-control-plaintext" name="cId" th:value="${cId}">
+            <label  class="col-4 form-label text-danger h5">신고내용</label>
+            <div class="col">
+              <textarea class="form-control" name="content" rows="3"></textarea>
+            </div>
+            <p class="d-flex justify-content-end my-2">
+                <button type="submit" class="btn btn-outline-danger me-2">신고하기</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </p>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    let reportForm = document.forms["reportForm"];
+    reportForm.onsubmit=reportSend;
+
+    async function reportSend(e){
+        e.preventDefault();
+        const data=new FormData(reportForm);
+        let url=`/comm/report/handler.do`;
+        const resp=await fetch(url,{method:"POST",body:data});
+        if(resp.status===200){
+            const json=await resp.json();
+            if(json.handler>0){
+                alert("신고완료");
+            }
+        }else{
+            alert("신고 실패, 다시 시도해주세요!");
+        }
+        reportModal.hide();
+    }
+</script>

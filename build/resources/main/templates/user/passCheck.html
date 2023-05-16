@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutMy}">
+<head>
+  <title>마이페이지</title>
+</head>
+<div layout:fragment="content" class="mx-auto">
+  <form name="passCheckForm" class="mx-auto" action="/user/passCheck.do" method="post" style="width: 450px;">
+    <input type="hidden" id="idInput" name="uId" th:value="${session.loginUser.uId}">
+    <h1 class="my-4">패스워드 수정</h1>
+    <p class="form-floating">
+      <input id="currentPwInput" type="password" name="currentPw" value="" class="form-control" placeholder="pw">
+      <label>현재패스워드</label>
+    </p>
+    <p class="form-floating">
+      <input id="pwInput" type="password" name="pw" value="" class="form-control" placeholder="??" disabled>
+      <label>변경할패스워드</label>
+    </p>
+    <p class="form-floating">
+      <input id="pwCheckInput" type="password" name="checkPw" value="" class="form-control" placeholder="??" disabled>
+      <label>패스워드 확인</label>
+      <br><span id="pwCheckMsg" class="carousel-inner"></span>
+    </p>
+    <p class="text-end">
+      <button class="btn btn-primary">변경</button>
+    </p>
+  </form>
+
+  <script>
+    const passCheckForm=document.forms["passCheckForm"];
+    const currentPwInput=document.getElementById('currentPwInput');
+    const idInput=document.getElementById('idInput')
+    currentPwInput.addEventListener("change", async function () {
+      // const uId=idInput.value;
+      // const pw = currentPwInput.value;
+      const response = await fetch(`/user/checkCurrentPw.do`,{method:"POST",body:new FormData(passCheckForm)});
+      const result = await response.json();
+      if (result>0) {
+        alert('패스워드가 일치합니다.변경할 패스워드를 입력해주세요.');
+        pwInput.disabled=false;
+      } else {
+        alert('패스워드가 일치하지않습니다.');
+      }
+    });
+    const pwInput=document.getElementById('pwInput');
+    pwInput.addEventListener("change",()=>{
+      const pw=pwInput.value;
+      if(pw.length<8 && pw.length>16){
+        alert('비밀번호는 8자 이상 16자 이하이어야 합니다.');
+        pwInput.value="";
+      } else if(!pw.match(/[a-zA-Z]/g)){
+        alert('비밀번호는 문자를 포함해야 합니다.');
+        pwInput.value="";
+      } else if(!pw.match(/[0-9]/g)){
+        alert('비밀번호는 숫자를 포함해야 합니다.');
+        pwInput.value="";
+      }else{
+        pwCheckInput.disabled=false;
+      }
+    });
+
+    const pwCheckInput=document.getElementById('pwCheckInput');
+    pwCheckInput.addEventListener("change",()=>{
+      const pw=pwInput.value;
+      const pwCheck=pwCheckInput.value;
+      const pwCheckMsg=document.getElementById('pwCheckMsg');
+      if(pw!=pwCheck){
+        document.getElementById('pwCheckMsg').textContent="비밀번호가 일치하지 않습니다.";
+      } else {
+        document.getElementById('pwCheckMsg').textContent="비밀번호가 일치합니다.";
+      }
+    });
+  </script>
+</div>
+</html>

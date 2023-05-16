@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.trip.TripLikeMapper">
+    <resultMap id="TripLikeStatusCntMap" type="TripLikeStatusCntDto">
+        <result property="likes" column="likes"/>
+        <result property="tId" column="t_id"/>
+        <result property="uId" column="u_id"/>
+        <association
+            property="status"
+            select="findByTIdAndUIdIsLoginUserId"
+            column="t_id"
+            fetchType="eager"
+        /> <!-- sql 쿼리로 상태를 반환하는 status => 쿼리를 만들고, resultMap 에 association -->
+    </resultMap>
+    <resultMap id="TripLikeMap" type="TripLikeDto">
+        <id property="tlId" column="tl_id"/>
+        <result property="tId" column="t_id"/>
+        <result property="uId" column="u_id"/>
+    </resultMap>
+    <insert id="insertOne" parameterType="TripLikeDto" useGeneratedKeys="true" keyProperty="tlId">
+        INSERT INTO trip_likes (t_id, u_id) VALUE (#{tId},#{uId})
+    </insert>
+
+    <delete id="deleteOne">
+        DELETE FROM trip_likes WHERE u_id=#{uId} AND t_id=#{tId}
+    </delete>
+
+    <select id="findByTIdAndUId" resultType="boolean">
+        SELECT COUNT(*) status FROM trip_likes WHERE t_id=#{tId} AND u_id=#{uId}
+    </select>
+    <!-- 유저가 게시글에 좋아요 체크한 여부 // count 는 1 또는 0 => boolean 1(true) 0(false) -->
+    <select id="findByTIdAndUIdIsLoginUserId" resultType="boolean">
+        SELECT COUNT(*) status FROM trip_likes WHERE t_id=#{tId} AND u_id=@loginUserId
+    </select>
+    <select id="countStatusByTId" resultMap="TripLikeStatusCntMap">
+        SELECT COUNT(*) likes, t_id FROM trip_likes WHERE t_id=#{tId}
+    </select>
+
+    <select id="countStatusByUId" resultMap="TripLikeStatusCntMap">
+        SELECT COUNT(*) likes, u_id FROM trip_likes WHERE u_id=#{uId}
+    </select>
+</mapper>

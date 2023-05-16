@@ -1,0 +1,18 @@
+<div class="d-flex align-items-center justify-content-between">
+  <div>
+    <img th:src="@{'{path}'(path=${f.imgPath})}"
+         class="border rounded-circle"
+         style="width:45px;height: 45px">
+    <span th:text="${f.nkName}"></span>
+    (<span th:text="${f.uId}"></span>)
+    <span th:if="${!(f.following)}" class="followCont">
+        <i class="bi bi-dot"></i>
+        <button class="btn btn-link p-0"
+        th:onclick="following([[${f.uId}]],this)">팔로우</button>
+    </span>
+    <div class="ms-5">
+        <p th:text="${f.prContent}"></p>
+    </div>
+  </div>
+
+</div>

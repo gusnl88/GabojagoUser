@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<div class="mb-3 d-flex justify-content-between align-items-center">
+    <a th:onclick="profileModal([[${r.trId}]])">
+        <th:block th:include="/trip/profile.html"></th:block>
+    </a>
+</div>
+
+<div>
+    <div>
+        <span th:text="${r.content}"></span>
+    </div>
+    <div class="d-flex">
+        <div th:each="img:${r.imgs}">
+            <img class="img-thumbnail w-20" style="max-height: 100px; object-fit: cover"
+                 th:src="@{'{path}'(path=${img.imgPath})}" alt="">
+        </div>
+    </div>
+    <div>
+        <div>
+            <p class="text-danger me-2 badge border rounded-5 border-danger border-opacity-50">
+                <i class="bi bi-hash"></i><span>여름</span>
+            </p>
+            <p class="text-danger me-2 badge border rounded-5 border-danger border-opacity-50">
+                <i class="bi bi-hash"></i><span>바다</span>
+            </p>
+            <p class="text-danger me-2 badge border rounded-5 border-danger border-opacity-50">
+                <i class="bi bi-hash"></i><span>제주</span>
+            </p>
+            <p class="text-danger me-2 badge border rounded-5 border-danger border-opacity-50">
+                <i class="bi bi-hash"></i><span>여행</span>
+            </p>
+        </div> <!-- 해시태그 반복문 -->
+    </div>
+    <div class="d-flex align-items-center">
+        <small>평가</small>
+        <div class="star-ratings ms-1 me-2" id="reviewStar">
+            <div class="star-ratings-fill space-x-2 text-lg">
+                <!-- 별점체크 반복문 -->
+                <div th:each="i : ${#numbers.sequence(1, 5)}">
+                  <span class="star">
+                    <i class="bi" th:classappend="${(r.grade >= i) ? 'bi-star-fill' : 'bi-star'}"></i>
+                  </span>
+                </div>
+            </div>
+        </div>
+        <small class="text-muted" th:text="${r.visit}?'방문':'방문전'"></small>
+    </div>
+
+
+    <div class="d-flex justify-content-between align-items-center">
+        <p>
+             <span class="me-2">
+                작성일 :
+                <small th:text="${#dates.format(r.postTime,'yyy.MM.dd')}"></small>
+                 <!-- date.format(데이트객체, 포맷) 으로 날짜 예쁘게 수정하기 -->
+            </span>
+            <!--            <span th:text="${r.imgs}"></span>-->
+        </p>
+        <p class="d-flex align-items-center">
+            <a href="" class="text-muted text-decoration-none me-2">
+                <i class="bi bi-heart text-danger fs-4"></i>
+            </a>
+            <!--            <a href="" class="text-dark text-decoration-none">댓글달기</a>-->
+            <a href="javascript:void(0)" class="btn btn-outline-secondary"
+               th:if="${session.loginUser!=null}" th:onclick="reviewCmtClick([[${r.trId}]],'')">댓글달기</a> <!-- 대댓글 클릭 했다가 리뷰댓글 클릭했을때, 부모댓글번호 삭제하기위해서 '' 추가 -->
+
+            <!-- 작성자에게만 보이기 -->
+            <a href="javascript:void(0)"
+                th:if="${session.loginUser!=null && #strings.equals(session.loginUser.uId,r.uId)}" th:onclick="loadModifyReview([[${r.trId}]])"
+               class="btn btn-outline-danger ms-2">수정</a>
+<!--               th:if="${session.loginUser!=null  && session.loginUser.uId==r.uId}"-->
+        </p>
+    </div>
+</div>
+
+<!-- 프로필 Modal -->
+<th:block th:include="/trip/review/profileModal.html" th:with="r=${r}"></th:block>
+
+<!-- 리뷰작성하기 Modal -->
+<th:block th:include="/trip/review/reviewModifyModal.html"></th:block>
+
+<!-- th:with : 해당하는 태그 안에 지역변수로 변수명을 선언하는 것! => li 태그 안에 user 변수선언 -->
+<ul class="list-group">
+    <li th:each="rc:${r.comments}"  th:with="user=${r.user}" class="list-group-item" th:if="${r.comments.size()>0}" > <!-- 리뷰의 댓글이 있는 경우만! -->
+        <th:block th:include="/trip/reviewcmt/detail.html"></th:block>
+    </li>
+</ul>
+
+<!--프로필 모달창-->
+<script th:inline="javascript">
+    function profileModal(id){
+        const modalId=new bootstrap.Modal(document.getElementById(`profileModal${id}`,{}));
+        modalId.show();
+    }
+</script>
+
+</html>

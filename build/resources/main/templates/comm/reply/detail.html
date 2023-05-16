@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div class="header d-flex justify-content-between pb-1 border-0 "
+         th:classappend="${(session.loginUser!=null && session.loginUser.uId==r.uId)?'border-bottom':''}">
+    <div>
+        @<strong th:text="${r.uId}"></strong>
+        <small>•</small>
+        <a class="" th:href="@{'/user/{uId}/follow.do'(uId=${r.uId})}">팔로우</a>
+    </div>
+    <small th:text="${#dates.format(r.updateTime,'yyyy-MM-dd')}"></small>
+    <!--  <img th:src="@{'{path}'(path=${r.uimgPath})}" alt="프로필이미지">-->
+</div>
+<div class="body p-1 row" >
+    <div class="col">
+        <div th:id="defaultFromCont+${r.ccId}">
+            <span th:text="${r.content}"></span>
+            <span th:value="${r}"></span>
+        </div>
+        <div>
+            <form action="" onsubmit="event.preventDefault(); modifyReply(this);"
+                  th:name="'modifyInsertForm'+${r.ccId}"
+                  class="d-flex align-items-center visually-hidden">
+                <input type="hidden" name="ccId" th:value="${r.ccId}">
+                <input type="text" name="content" th:value="${r.content}" class="input-group col">
+                <button class="btn btn-outline-success btn-sm col-1">등록</button>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+<div class="text-end">
+    <a href="javascript:void(0)"
+       th:onclick="modifyFromPut([[${r.ccId}]])"
+       th:if="${session.loginUser!=null && session.loginUser.uId==r.uId}"
+       class="me-2 text-decoration-none text-success" >수정</a>
+    <a href="javascript:void(0)" type="button"
+       th:onclick="removeReply([[${r.ccId}]]);"
+       th:if="${session.loginUser!=null && session.loginUser.uId==r.uId}"
+       class="me-2 text-decoration-none text-danger" >삭제</a>
+    <a href="javascript:void(0)"
+       th:onclick="replyFromPut([[${r.ccId}]])"
+       class="text-decoration-none text-primary">댓글</a>
+</div>
+
+<!--대댓글등록폼-->
+<div>
+    <form action=""
+          method="POST"
+          onsubmit="event.preventDefault();registerReply(this);"
+          th:name="'replyReplyForm'+${r.ccId}"
+          class="visually-hidden d-flex align-items-center"
+          >
+        <input type="text" name="content" class="input-group col">
+        <input type="hidden" name="cId" th:value="${r.cId}">
+        <input type="hidden" name="parentCrId" th:value="${r.ccId}">
+        <input type="hidden" name="uId" th:value="${r.uId}">
+        <button class="btn btn-outline-success btn-sm col-1">등록</button>
+    </form>
+</div>
+
+    <ul class="list-group border-0">
+        <li class="list-group-item border-0 bg-light"  th:each="r:${r.replies}">
+            <th:block  th:include="/comm/reply/detail"></th:block>
+        </li>
+
+    </ul>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function modifyFromPut (id){
+        document.forms['modifyInsertForm'+id].classList.toggle("visually-hidden")
+    }
+    function replyFromPut(id){
+        document.forms['replyReplyForm'+id].classList.toggle("visually-hidden")
+    }
+
+    /*]]>*/
+</script>
+
+
+
+</html>

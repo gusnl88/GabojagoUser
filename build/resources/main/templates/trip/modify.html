@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>여행지 수정</title>
+    <style>
+        .delImgInput {
+            display: none;
+        }
+        .delImgItem > .delImgInput:checked + img {
+            background-color: lightcoral;
+        }
+
+    </style>
+</head>
+<div layout:fragment="content">
+    <form enctype="multipart/form-data" action="/trip/modify.do" method="post" style="width: 500px; margin: 0 auto;">
+        <h1 class="my-4">여행지 수정</h1>
+        <input type="hidden" th:value="${t.tId}" name="tId"> <!-- tId 받기 -->
+        <p class="form-floating">
+            <input readonly type="text" id="" name="uId" th:value="${t.uId}" class="form-control" placeholder="??">
+            <label for="">아이디(글쓴이)</label>
+        </p>
+
+        <p class="form-floating">
+            <select name="category" id="category" class="form-select">
+                <option value="힐링" th:selected="${#strings.equals(t.category,'힐링')}">힐링</option>
+                <option value="체험" th:selected="${#strings.equals(t.category,'체험')}">체험</option>
+                <option value="반려동물" th:selected="${#strings.equals(t.category,'반려동물')}">반려동물</option>
+                <option value="레저" th:selected="${#strings.equals(t.category,'레저')}">레저</option>
+                <option value="박물관" th:selected="${#strings.equals(t.category,'박물관')}">박물관</option>
+            </select>
+            <label for="category">카테고리</label>
+        </p>
+
+        <p class="form-floating">
+            <select name="area" id="area" class="form-select">
+                <option value="서울" th:selected="${#strings.equals(t.area,'서울')}">서울</option>
+                <option value="인천" th:selected="${#strings.equals(t.area,'인천')}">인천</option>
+                <option value="대전" th:selected="${#strings.equals(t.area,'대전')}">대전</option>
+                <option value="광주" th:selected="${#strings.equals(t.area,'광주')}">광주</option>
+                <option value="대구" th:selected="${#strings.equals(t.area,'대구')}">대구</option>
+                <option value="울산" th:selected="${#strings.equals(t.area,'울산')}">울산</option>
+                <option value="부산" th:selected="${#strings.equals(t.area,'부산')}">부산</option>
+                <option value="세종" th:selected="${#strings.equals(t.area,'세종')}">세종</option>
+                <option value="경기" th:selected="${#strings.equals(t.area,'경기')}">경기</option>
+                <option value="강원" th:selected="${#strings.equals(t.area,'강원')}">강원</option>
+                <option value="충북" th:selected="${#strings.equals(t.area,'충북')}">충북</option>
+                <option value="충남" th:selected="${#strings.equals(t.area,'충남')}">충남</option>
+                <option value="전북" th:selected="${#strings.equals(t.area,'전북')}">전북</option>
+                <option value="전남" th:selected="${#strings.equals(t.area,'전남')}">전남</option>
+                <option value="경북" th:selected="${#strings.equals(t.area,'경북')}">경북</option>
+                <option value="경남" th:selected="${#strings.equals(t.area,'경남')}">경남</option>
+                <option value="제주" th:selected="${#strings.equals(t.area,'제주')}">제주</option>
+            </select>
+            <label for="area">지역</label>
+        </p>
+
+        <p class="form-floating">
+            <input type="text" name="title" th:value="${t.title}" class="form-control" placeholder="??">
+            <label>여행제목</label>
+        </p>
+
+        <p class="form-floating">
+            <input type="text" name="address" th:value="${t.address}" class="form-control" placeholder="??">
+            <label>주소</label>
+        </p>
+
+        <p class="form-floating">
+            <input type="text" name="phone" th:value="${t.phone}" class="form-control" placeholder="??">
+            <label>연락처</label>
+        </p>
+
+        <p class="form-floating">
+            <input type="text" name="urlAddress" th:value="${t.urlAddress}" class="form-control" placeholder="??">
+            <label>홈페이지</label>
+        </p>
+
+        <p>
+            <label>소개글</label>
+            <textarea name="content" th:text="${t.content}" rows="4" class="form-control"></textarea>
+        </p>
+
+        <div class="mb-3">
+            <label class="form-label">태그 삭제</label>
+            <div class="form-control">
+                <th:block th:each="t:${t.tags}">
+                    <!--                    delTag 누른게 t.tag 값으로 넘어간다. -->
+                    <input th:id="${t.tag}" name="delTag" th:value="${t.tag}" type="checkbox" class="btn-check" autocomplete="off">
+                    <label th:for="${t.tag}" class="btn btn-outline-secondary btn-sm rounded-5 m-1">
+                        <span th:text="${t.tag}"></span>
+                        <i class="bi bi-x"></i>
+                    </label>
+                </th:block>
+            </div>
+        </div>
+        <p class="mb-3">
+            <label class="form-label">태그등록</label>
+            <th:block th:include="/trip/tagsinput.html"></th:block>
+        </p>
+
+
+
+
+
+
+        <p>
+            <label for="">메인이미지 변경</label>
+            <div class="form-control mb-3">
+                <label th:each="img:${t.imgs}" class="w-25 delImgItem" th:if="${img.imgMain==true}">
+<!--                    <i class="bi bi-x"></i>-->
+                    <input type="hidden" class="delImgInput" name="delMainImgId" th:value="${img.tiId}">
+                    <img th:src="@{'{path}'(path=${img.imgPath})}" class="img-thumbnail">
+                </label>
+            </div>
+            <input type="file" name="mainImg" class="form-control"> <!-- 수정하는 이미지 -->
+        </p>
+
+
+        <!-- 이미지 삭제 -->
+        <p class="mb-0">
+            <label class="form-label">이미지 삭제</label>
+            <div class="form-control">
+                <label th:each="img:${t.imgs}" class="w-25 delImgItem" style="" th:if="${img.imgMain==false}">
+                    <i class="bi bi-x"></i>
+                    <input type="checkbox" class="delImgInput" name="delImgId" th:value="${img.tiId}">
+                    <img th:src="@{'{path}'(path=${img.imgPath})}" class="img-thumbnail">
+                </label>
+            </div>
+        </p>
+
+        <!-- 이미지 추가 -->
+        <p id="imgCont">
+            <button id="imgAddBtn" class="btn btn-danger w-100" type="button">
+                이미지
+                <i class="bi bi-plus-square"></i>
+            </button>
+        </p>
+
+
+        <label>mbti</label>
+        <div>
+            <p class="d-flex justify-content-around">
+                <label><input type="checkbox" name="istj" th:checked="${t.istj}"> istj</label>
+                <label><input type="checkbox" name="istp" th:checked="${t.istp}"> istp</label>
+                <label><input type="checkbox" name="isfj" th:checked="${t.isfj}"> isfj</label>
+                <label><input type="checkbox" name="isfp" th:checked="${t.isfp}"> isfp</label>
+                <label><input type="checkbox" name="intj" th:checked="${t.intj}"> intj</label>
+                <label><input type="checkbox" name="intp" th:checked="${t.intp}"> intp</label>
+                <label><input type="checkbox" name="infj" th:checked="${t.infj}"> infj</label>
+                <label><input type="checkbox" name="infp" th:checked="${t.infp}"> infp</label>
+            </p>
+            <p class="d-flex justify-content-around">
+                <label><input type="checkbox" name="estj" th:checked="${t.estj}"> estj</label>
+                <label><input type="checkbox" name="estp" th:checked="${t.estp}"> estp</label>
+                <label><input type="checkbox" name="esfj" th:checked="${t.esfj}"> esfj</label>
+                <label><input type="checkbox" name="esfp" th:checked="${t.esfp}"> esfp</label>
+                <label><input type="checkbox" name="entj" th:checked="${t.entj}"> entj</label>
+                <label><input type="checkbox" name="entp" th:checked="${t.entp}"> entp</label>
+                <label><input type="checkbox" name="enfj" th:checked="${t.enfj}"> enfj</label>
+                <label><input type="checkbox" name="enfp" th:checked="${t.enfp}"> enfp</label>
+            </p>
+        </div>
+
+        <div class="text-end my-5">
+            <a href="/trip/list.do" class="btn btn-outline-dark">취소</a>
+            <button type="submit" class="btn btn-outline-danger">등록</button>
+        </div>
+    </form>
+    <script>
+        const imgAddBtn = document.getElementById("imgAddBtn");
+        const imgCont = document.getElementById("imgCont");
+        let imgAddBtnCount=0;
+        imgAddBtn.addEventListener("click", (e) => {
+            if(imgAddBtnCount<5){
+                imgCont.insertAdjacentHTML("beforeend", imgInputComponent());
+                imgAddBtnCount++;
+            }
+        });
+
+        function imgInputComponent(label = "이미지", name = "img") {
+            return `
+                 <p class="input-group mt-2">
+                    <label class="input-group-text">${label}</label>
+                    <input class="form-control" type="file" name="${name}">
+                    <button type="button" class="btn btn-danger" onclick="this.closest('.input-group').remove()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </p>
+            `
+
+        }
+
+    </script>
+</div>
+</html>

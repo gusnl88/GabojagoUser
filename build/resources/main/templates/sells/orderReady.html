@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>판매글 리스트</title>
+
+</head>
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <div class="row mb-5">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-center">가보자고 티켓 구매</h2>
+                        <img class="card-img-top" th:src="${sells.imgMain}"  style="width: 100%; height: 100%;">
+                        <br>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="/kakaoPay.do">
+                            <div class="form-group">
+                                <input type="hidden" name="sId" th:value="${sells.getSId()}">
+                                <p for="product-name"><strong>상품명 :</strong> <span th:text="${sells.title}"></span></p>
+                            </div>
+                            <hr>
+                            <th:block th:each="o:${sellOption}">
+                            <div class="form-group">
+                                <input type="hidden" name="oId" th:value="${o.getOId()}">
+                                <p ><strong>옵션명 :</strong> <span th:text="${o.name}"> </span></p>
+                            </div>
+                            <div class="form-group">
+                                <p ><strong>구매 수량 :</strong> <span th:value="${o.stock}" th:text="${o.stock}"> </span></p>
+                                <input type="hidden"  name="cnt" th:value="${o.stock}">
+                            </div>
+                            <div class="form-group">
+                                <p ><strong>옵션총 가격 :</strong> <span th:text="${o.price}"> </span></p>
+                            </div>
+                                <hr>
+                            </th:block>
+                            <div class="form-group">
+                                <p><label for="mileage">마일리지: </label><input type="number" id="mileage" name="mileage" value="0"><strong>사용가능:</strong><span id="mile" th:value="${mileage}" th:text="${mileage}"></span></p>
+                                <input type="hidden" name="lastMile" id="lastMile" value="0">
+                                <small>(마일리지는 구매금액에 90%만 사용가능합니다.)</small>
+                                <a class="btn btn-primary" id="mileageBtn" >사용하기</a>
+                                <hr>
+                                <p><strong>결제 가격 :</strong>  <br><span id="totalPriceSpan" th:text="${totalPrice}"> </span>원</p>
+
+                                <input type="hidden" name="totalPrice" id="totalPriceInput" th:value="${totalPrice}">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">카카오 결제하기</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    const mileageBtn = document.getElementById('mileageBtn');
+    mileageBtn.addEventListener('click', function() {
+        const mileageInput = document.getElementById('mileage');
+        const totalPriceSpan = document.getElementById('totalPriceSpan');
+        const totalPriceInput = document.getElementById('totalPriceInput');
+        const mile = document.getElementById("mile");
+        const lastMile = document.getElementById("lastMile");
+
+        // 인풋에 입력된 값을 가져옵니다.
+        const mileageValue = parseInt(mileageInput.value);
+
+        // 현재 totalprice 값을 가져옵니다.
+        let totalPrice = parseInt(totalPriceSpan.textContent);
+
+        // 사용 가능 마일리지보다 입력한 마일리지가 높을 경우 경고창을 띄우고 함수 종료
+        if (parseInt(mileageInput.value) > parseInt(mile.textContent)) {
+            alert("사용 가능 마일리지를 넘기셨습니다.");
+            return;
+        }
+
+        if (mileageInput.value===""|| isNaN(mileageInput.value)|| mileageInput.value.includes("-")){
+            alert("정수를 입력 하세요");
+            return;
+        }
+        if (parseInt(mileageInput.value) > totalPrice * 0.9) {
+            alert("총 결제금액의 90% 이상은 마일리지로 결제할 수 없습니다.");
+            return;
+        }
+        if (parseInt(mileageInput.value) >totalPrice){
+            alert("총 결제금액보다 마일리지를 더 사용할수 없습니다.");
+            return;
+        }
+        // 인풋에 입력된 값을 현재 totalprice 값에서 뺍니다.
+        // 마이너스 값을 방지하기 위해 0보다 작아지면 0으로 고정합니다.
+        if (totalPrice < 0) {
+            totalPrice = 0;
+        }
+
+        // 변경된 totalprice 값을 화면에 업데이트합니다.
+        totalPriceSpan.innerHTML = `<br>사용마일리지 :<strong>${mileageValue}-</strong> `;
+        totalPriceSpan.innerHTML += `<br>상품 가격: <strong>${totalPrice}</strong>`
+        totalPrice -= mileageValue;
+        totalPriceSpan.innerHTML += `<br> 결제 총 금액 <strong>${totalPrice}</strong>`;
+        totalPriceInput.value = totalPrice;
+
+        // 사용한 마일리지를 빼서 나머지 마일리지를 lastMile에 넣어줍니다.
+        lastMile.value = parseInt(mile.textContent) - mileageValue;
+        // alert(lastMile.value)
+        mileageBtn.style.display = 'none';
+    });
+</script>
+</div>
+</html>

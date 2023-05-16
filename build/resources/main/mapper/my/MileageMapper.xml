@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.my.MileageMapper">
+    <resultMap id="mileageMap" type="mileageDto">
+        <id column="m_id" property="mId"/>
+        <result column="u_id" property="uId"/>
+        <result column="mileage" property="mileage"/>
+        <result column="content" property="content"/>
+        <result column="post_time" property="postTime"/>
+    </resultMap>
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="mId">
+        INSERT INTO mileages (u_id, mileage, content) VALUES (#{uId},#{mileage},#{content})
+    </insert>
+    <select id="findByUId" resultMap="mileageMap">
+        SELECT * FROM mileages WHERE u_id=#{uId} ORDER BY post_time DESC
+    </select>
+    <select id="sumByUId" resultType="Integer">
+        SELECT SUM(mileage) FROM mileages WHERE u_id=#{uId}
+    </select>
+    <update id="updateOne" >
+        UPDATE mileages SET mileage=#{mileage} WHERE u_id=#{UId}
+    </update>
+</mapper>

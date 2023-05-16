@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.user.UserMapper">
+  <resultMap id="UserMap" type="UserDto">
+    <id column="u_id" property="uId"></id>
+    <result column="pw" property="pw"/>
+    <result column="name" property="name"/>
+    <result column="nk_name" property="nkName"/>
+    <result column="email" property="email"/>
+    <result column="birth" property="birth"/>
+    <result column="phone" property="phone"/>
+    <result column="address" property="address"/>
+    <result column="detail_address" property="detailAddress"/>
+    <result column="pr_content" property="prContent"/>
+    <result column="permission" property="permission"/>
+    <result column="mbti" property="mbti"/>
+    <result column="img_path" property="imgPath"/>
+    <result column="post_time" property="postTime"/>
+    <result column="store_name" property="storeName"/>
+    <result column="business_id" property="businessId"/>
+    <result column="status" property="status"/>
+    <result column="email_check_code" property="emailCheckCode"/>
+    <association property="mileages"
+                 select="com.project.gabojago.gabojagouser.mapper.my.MileageMapper.findByUId"
+                 column="u_id"
+                 fetchType="eager"/>
+    <collection property="followings"
+                select="com.project.gabojago.gabojagouser.mapper.my.FollowMapper.findByFromId"
+                column="u_id"
+                fetchType="lazy"/>
+    <collection property="followers"
+                select="com.project.gabojago.gabojagouser.mapper.my.FollowMapper.findByToId"
+                column="u_id"
+                fetchType="eager"/>
+    <collection property="plans"
+                select="com.project.gabojago.gabojagouser.mapper.plan.PlanMapper.findByUIdNotSearch"
+                column="u_id"
+                fetchType="lazy"/>
+  </resultMap>
+  <resultMap id="PureUserMap" type="UserDto">
+    <id column="u_id" property="uId"/>
+    <result column="pw" property="pw"/>
+    <result column="name" property="name"/>
+    <result column="nk_name" property="nkName"/>
+    <result column="email" property="email"/>
+    <result column="birth" property="birth"/>
+    <result column="phone" property="phone"/>
+    <result column="address" property="address"/>
+    <result column="detail_address" property="detailAddress"/>
+    <result column="pr_content" property="prContent"/>
+    <result column="permission" property="permission"/>
+    <result column="mbti" property="mbti"/>
+    <result column="img_path" property="imgPath"/>
+    <result column="post_time" property="postTime"/>
+    <result column="store_name" property="storeName"/>
+    <result column="business_id" property="businessId"/>
+    <result column="status" property="status"/>
+    <result column="email_check_code" property="emailCheckCode"/>
+  </resultMap>
+  <insert id="insertOne" parameterType="com.project.gabojago.gabojagouser.dto.user.UserDto">
+    INSERT INTO users
+      (u_id, pw, name, nk_name, email, birth, phone, address, detail_address,
+       pr_content, permission, mbti, img_path,  store_name, business_id,status,email_check_code)
+    VALUES
+      (#{uId}, #{pw}, #{name}, #{nkName}, #{email}, #{birth}, #{phone}, #{address}, #{detailAddress},
+       #{prContent}, #{permission}, #{mbti}, #{imgPath}, #{storeName}, #{businessId},#{status},#{emailCheckCode})
+  </insert>
+  <update id="updateOne" parameterType="com.project.gabojago.gabojagouser.dto.user.UserDto">
+    UPDATE users SET
+    pw=#{pw},
+    name=#{name},
+    nk_name=#{nkName},
+    email=#{email},
+    birth=#{birth},
+    phone=#{phone},
+    address=#{address},
+    detail_address=#{detailAddress},
+    pr_content=#{prContent},
+    permission=#{permission},
+    mbti=#{mbti},
+    img_path=#{imgPath},
+    store_name=#{storeName},
+    business_id=#{businessId}
+    WHERE u_id=#{uId}
+  </update>
+    <update id="setLoginUserId">
+      SET @loginUserId=#{uId}
+    </update>
+  <update id="setLoginUserIdNull">
+    SET @loginUserId=NULL;
+  </update>
+  <update id="updateStatusByUIdAndEmailCheckCode">
+    UPDATE users SET status=#{status} WHERE u_id=#{uId} AND email_check_code=#{emailCheckCode}
+  </update>
+  <update id="updatePwByUId">
+    UPDATE users SET pw=#{pw} WHERE u_id=#{uId}
+  </update>
+  <delete id="deleteOne" parameterType="UserDto">
+    DELETE FROM users WHERE u_id=#{uId} AND pw=#{pw}
+  </delete>
+  <select id="findUserByUIdAndPw" resultMap="UserMap">
+    SELECT * FROM users WHERE u_id=#{uId} AND pw=#{pw}
+  </select>
+  <select id="findUserByUId" resultMap="UserMap">
+    SELECT * FROM users WHERE u_id=#{uId}
+  </select>
+
+  <select id="findAll" resultType="com.project.gabojago.gabojagouser.dto.user.UserDto">
+      SELECT * FROM users
+  </select>
+</mapper>

@@ -1,0 +1,13 @@
+<div class="">
+  <a href="javascript:void(0)" th:if="${session.loginUser!=null}" th:onclick="registerBookMark([[${bookmarks.tId}]])"
+     class="mb-1 text-danger d-flex flex-column text-decoration-none align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="">
+    <i class="bi fs-4" th:classappend="${(bookmarks.status)?'bi-heart-fill':'bi-heart'}"></i>
+    <small class="text-dark fs-5" th:text="${bookmarks.bookmarks}"></small>
+    <!--        <div  class="fs-3" th:text="${likes}"></div>-->
+  </a>
+  <a href="javascript:void(0)" th:unless="${session.loginUser!=null}"
+     class="mb-1 text-danger fs-3 disabled" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="">
+    <i class="bi fs-4 bi-heart"></i>
+    <span th:text="${bookmarks.bookmarks}"></span>
+  </a>
+</div>

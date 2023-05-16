@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<div layout:fragment="content" class="container pb-5">
+    <style>
+        a{
+            text-decoration: none;
+        }
+        body{
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .ginfo{
+            font-family: 'Do Hyeon', sans-serif;
+        }
+
+        #cateCont a {
+            text-decoration: none;
+            color: #3b3b3b;
+        }
+
+        #cateCont li {
+            height: 40px;
+            line-height: 30px;
+        }
+
+        #cateCont a:hover {
+            color: #0d6efd;
+        }
+        #cateNav a,
+        #mbtiNav a {
+            /*text-decoration: none;*/
+            display: inline-block;
+            height: 40px;
+            line-height: 30px;
+            color: #3b3b3b;
+        }
+
+        #mbtiNav {
+            display: flex;
+            gap: 10px;
+        }
+
+        #mbtiNav a {
+            border: 1px solid #bbb;
+            margin: 5px 0;
+            border-radius: 5px;
+            padding: 0 5px;
+            height: 35px;
+            font-size: 14px;
+        }
+
+        #cateNav a:hover,
+        #mbtiNav a:hover {
+            color: #0d6efd;
+        }
+
+        #searchTagInput:focus {
+            border: 3px solid;
+            border-color: cornflowerblue;
+            box-shadow: none !important;
+        }
+
+        .delImgInput {
+            display: none;
+        }
+        .delImgItem > .delImgInput:checked + img {
+            background-color: lightcoral;
+        }
+
+        input[type=radio]:checked {
+            accent-color: orangered;
+        }
+
+        .star-rating input[type="radio"] {
+            /*display: none;*/
+        }
+
+        .star-rating label {
+            display: inline-block;
+            font-size: 25px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover~label,
+        .star-rating input[type="radio"]:checked~label{
+            color: orangered;
+
+        }
+
+        .star-ratings-fill {
+            padding: 0;
+            /*position: absolute;*/
+            z-index: 1;
+            display: flex;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            color: orangered;
+        }
+
+        .star-ratings-base {
+            z-index: 0;
+            padding: 0;
+        }
+
+        .star {
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .bi-star {
+            color: #aaa !important;
+        }
+
+        #mainCont {
+            width: 100%;
+            height: 500px;
+
+        }
+
+        #tripMainImg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-image: url("/public/img/trip/tripMain1.jpg");
+            background-repeat: no-repeat;
+            background-position: 0 50%;
+        }
+    </style>
+    <!--        도입부이미지-->
+    <div class="carousel-inner h-25 my-2 ">
+        <div class="carousel-item active" data-bs-interval="10000">
+            <img src="/public/img/gabojagoMain.jpg" class="d-block w-100 img-fluid" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <p class="bg-dark bg-opacity-50 fw-lighter fs-3" style="font-family: 'Nanum Pen Script', cursive;"> 함께 계획하고 꾸미는 플랜으로 더 특별한 국내여행! </p>
+            </div>
+        </div>
+    </div>
+    <h3 class="my-4 ginfo">
+        <i class="bi bi-car-front"></i>
+        가보자고</h3>
+    <div id="tripContainer" class="d-flex justify-content-evenly my-4 row  row-cols-1">
+        <div class="card row-cols-1 p-0" style="overflow: hidden; width: 18rem; height: 350px" th:each="t:${trip}">
+            <div class="card-body p-0" style="height:200px">
+                <div th:id="'carousel'+${t.tId}" >
+                    <div th:if="${t.imgs != null}"  class="carousel-inner">
+                        <div class="carousel-item" th:each="img,state:${t.imgs}" th:classappend="${(state.first)?'':'active'}">
+                            <img th:src="@{'{path}'(path=${img.imgPath})}" class="d-block w-100" alt="게시글 이미지">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" style="height: 100px;">
+                <a class="text-dark" th:href="@{'/trip/{tId}/detail.do'(tId=${t.tId})}"><h5 class="card-title" th:text="${t.title}"></h5></a>
+
+                <div class="card-text" style="font-size: 12px;">
+                    <th:block th:include="/trip/mbtis.html"></th:block>
+                </div>
+
+                <div class="card-text d-flex justify-content-between">
+                    <th:block th:include="/trip/grade.html"></th:block>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <h3 class="ginfo">
+        <i class="bi bi-people"></i>
+        같이놀자</h3>
+    <div id="commContainer" class="d-flex justify-content-evenly my-4 row row-cols-1 ">
+        <div class="card row-cols-1 p-0" style="overflow:hidden; width: 18rem; height: 350px" th:each="c:${comm}">
+            <div class="card-body p-0" style="height:200px">
+                <div th:id="'carousel'+${c.cId}" class="carousel slide" data-bs-ride="carousel">
+                    <div th:if="${c.imgs != null}"  class="carousel-inner">
+                        <div class="carousel-item" th:each="img,state:${c.imgs}" th:classappend="${(state.first)?'active':''}">
+                            <img th:src="@{'{path}'(path=${img.imgPath})}" class="d-block w-100" alt="게시글 이미지">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" th:data-bs-target="'#carousel'+${c.cId}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" th:data-bs-target="'#carousel'+${c.cId}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body row-cols-lg-6" style="height: 100px">
+                <a th:href="@{'/comm/{cId}/detail.do'(cId=${c.getCId()})}"
+                   class="link-dark text-dark"
+                ><h5 class="card-title link-primary text-dark" th:text="${c.title}"></h5></a>
+            </div>
+            <div class="card-body my-3" style="height:50px">
+                <p id="mbtiChk" >
+                    <a href="/comm/list.do?searchField=istp&searchValue=1" class="text-dark link-primary" th:text="${c.istp==1}?'#ISTP':''" ></a>
+                    <a href="/comm/list.do?searchField=istj&searchValue=1" class="text-dark link-primary" th:text="${c.istj==1}?'#ISTJ':''" ></a>
+                    <a href="/comm/list.do?searchField=isfj&searchValue=1" class="text-dark link-primary" th:text="${c.isfj==1}?'#ISFJ':''" ></a>
+                    <a href="/comm/list.do?searchField=isfp&searchValue=1" class="text-dark link-primary" th:text="${c.isfp==1}?'#ISFP':''" ></a>
+                    <a href="/comm/list.do?searchField=intj&searchValue=1" class="text-dark link-primary" th:text="${c.intj==1}?'#INTJ':''" ></a>
+                    <a href="/comm/list.do?searchField=intp&searchValue=1" class="text-dark link-primary" th:text="${c.intp==1}?'#INTP':''" ></a>
+                    <a href="/comm/list.do?searchField=infj&searchValue=1" class="text-dark link-primary" th:text="${c.infj==1}?'#INFJ':''" ></a>
+                    <a href="/comm/list.do?searchField=infp&searchValue=1" class="text-dark link-primary" th:text="${c.infp==1}?'#INFP':''" ></a>
+                    <a href="/comm/list.do?searchField=estj&searchValue=1" class="text-dark link-primary" th:text="${c.estj==1}?'#ESTJ':''" ></a>
+                    <a href="/comm/list.do?searchField=estp&searchValue=1" class="text-dark link-primary" th:text="${c.estp==1}?'#ESTP':''" ></a>
+                    <a href="/comm/list.do?searchField=esfj&searchValue=1" class="text-dark link-primary" th:text="${c.esfj==1}?'#ESFJ':''" ></a>
+                    <a href="/comm/list.do?searchField=esfp&searchValue=1" class="text-dark link-primary" th:text="${c.esfp==1}?'#ESFP':''" ></a>
+                    <a href="/comm/list.do?searchField=entj&searchValue=1" class="text-dark link-primary" th:text="${c.entj==1}?'#ENTJ':''" ></a>
+                    <a href="/comm/list.do?searchField=entp&searchValue=1" class="text-dark link-primary" th:text="${c.entp==1}?'#ENTP':''" ></a>
+                    <a href="/comm/list.do?searchField=enfj&searchValue=1" class="text-dark link-primary" th:text="${c.enfj==1}?'#ENFJ':''" ></a>
+                    <a href="/comm/list.do?searchField=enfp&searchValue=1" class="text-dark link-primary" th:text="${c.enfp==1}?'#ENFP':''" ></a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <h3 class="ginfo">
+        <i class="bi bi-cart"></i>
+        상품판매</h3>
+    <div id="sellContainer" class="d-flex justify-content-evenly my-4 row row-cols-1">
+        <div class="card p-0" style="width: 18rem; height:400px;" th:each="s:${sells}">
+            <div class="card-body p-0" style="height:300px">
+                <div th:id="'carousel'+${s.sId}" class="carousel slide" data-bs-ride="carousel">
+                    <div th:if="${s.sellImgs != null}"  class="carousel-inner">
+                        <div class="carousel-item" th:each="sellImgs,state:${s.sellImgs}" th:classappend="${(state.first)?'active':''}">
+                            <img th:src="@{'{path}'(path=${sellImgs.imgPath})}" class="d-block w-100" alt="게시글 이미지">
+                        </div>
+                    </div>
+                    <div th:unless="${s.sellImgs != null}" class="carousel-inner">
+                        <div class="carousel-item">
+                            <img src="/public/img/comm/1681717713661_1319.jpeg" class="d-block w-100 active" alt="기본이미지">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" th:data-bs-target="'#carousel'+${s.sId}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" th:data-bs-target="'#carousel'+${s.sId}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body pt-1"  style="height: 100px">
+                <a th:href="@{'/comm/{sId}/detail.do'(sId=${s.getSId()})}"
+                   class="link-dark text-dark"
+                ><h5 class="card-title link-primary text-dark" th:text="${s.title}"></h5></a>
+                <p th:text="${#dates.format(s.postTime, 'yyyy.MM.dd')}"></P>
+            </div>
+
+        </div>
+    </div>
+
+
+
+</html>

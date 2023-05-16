@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.sells.SellsOptionMapper">
+    <resultMap id="sellsOptionMap" type="SellsOptionDto">
+        <id column="o_id" property="oId" />
+        <result column="s_id" property="sId" />
+        <result column="name" property="name" />
+        <result column="price" property="price" />
+        <result column="stock" property="stock" />
+    </resultMap>
+
+    <insert id="insertOne">
+        INSERT INTO sell_options (s_id,name,price,stock) VALUES (#{sId},#{name},#{price},#{stock})
+    </insert>
+    <update id="updateOne">
+        UPDATE sell_options SET name=#{name},price=#{price},stock=#{stock} WHERE o_id=#{oId}
+    </update>
+    <delete id="deleteOne">
+        DELETE FROM sell_options WHERE o_id=#{oId}
+    </delete>
+    <select id="findBySId" resultMap="sellsOptionMap">
+        SELECT * FROM sell_options WHERE s_id=#{sId}
+    </select>
+</mapper>

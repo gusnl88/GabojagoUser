@@ -1,0 +1,214 @@
+<div class="modal fade" id="newScheduleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h5 class="modal-title fs-6 planModalTitle" id="staticBackdropLabel">새 일정 등록</h5>
+        <i class="bi bi-x-circle cB" data-bs-dismiss="modal" aria-label="Close"></i>
+      </div>
+      <div class="modal-body px-4">
+        <form id="scheduleInsertForm">
+          <div class="row">
+            <p class="sFormSection"><i class="bi bi-info-circle" style="font-size: 18px; margin-left: 10px"></i> INFO</p>
+
+                <input type="text" name="pId" placeholder="" hidden>
+                <input type="text" name="tId" value="" id="tId" placeholder="" hidden>
+                <input type="text" name="sId" value="" id="sId" placeholder="" hidden>
+
+                <div class="col-4 mb-3 px-1">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" name="title" id="floatingTitle" value="" placeholder=".">
+                    <label for="floatingTitle"><i class="bi bi-airplane"></i> 어디로 여행 하시나요?</label>
+                  </div>
+                </div>
+                <div class="col-2 mb-3 px-1">
+                  <div class="form-floating">
+                    <input type="text" class="form-control px-1" name="sTime" id="sTime" placeholder="." onfocus="(this.type='time')"
+                           style="font-size: 15px">
+                    <label for="sTime"><i class="bi bi-clock"></i> FROM </label>
+                  </div>
+                </div>
+                <div class="col-2 mb-3 px-1">
+                  <div class="form-floating">
+                    <input type="text" class="form-control px-1" name="eTime" id="eTime" placeholder="." value="" onfocus="(this.type='time')"
+                           style="font-size: 15px">
+                    <label for="eTime"><i class="bi bi-clock-history"></i> TO </label>
+                  </div>
+                </div>
+                <div class="col-4 mb-3 px-1">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" name="info" id="info" placeholder=".">
+                    <label for="info"><i class="bi bi-pencil-square"></i> MEMO</label>
+                  </div>
+                </div>
+                <div class="col-12 mb-3 px-1">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" value=" " name="bookmarked" id="bookmarkedV" placeholder="." readonly
+                    style="color: #a1a1a1">
+                    <label for="bookmarkedV"><i class="bi bi-folder-check"></i> Bookmark</label>
+                  </div>
+                </div>
+
+          </form>
+
+
+
+            <div class="col-6" id="bookmarkTabDiv">
+
+              <span class="sFormSection" style="background-color: transparent"><i class="bi bi-pin-angle-fill" style="font-size: 18px"></i> BOOKMARK</span>
+              <!-- 탭 부분 -->
+              <ul class="nav nav-tabs" id="bookmarkTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="trip-tab" data-bs-toggle="tab"
+                          data-bs-target="#tripList" type="button" role="tab"
+                          aria-controls="tripList" aria-selected="true">가보자고</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="comm-tab" data-bs-toggle="tab"
+                          data-bs-target="#commList" type="button" role="tab"
+                          aria-controls="commList" aria-selected="false">같이놀자</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="product-tab" data-bs-toggle="tab"
+                          data-bs-target="#productList" type="button" role="tab"
+                          aria-controls="productList" aria-selected="false">상품판매</button>
+                </li>
+              </ul>
+            </div>
+
+              <!-- 컨텐츠 부분 -->
+              <div class="tab-content" id="bookmarkTabContent">
+                <div class="tab-pane fade show active" id="tripList" role="tabpanel"
+                     aria-labelledby="trip-tab">
+
+                  <th:block th:each="trip:${bTrips}">
+                    <div class="btn-group dropend bkDiv">
+                      <button type="button" class="btn dropdown-toggle bkBtn w-100" data-bs-toggle="dropdown" aria-expanded="false">
+
+                        <span class="bkTxt">
+                          <i class="bi bi-dot"></i>&nbsp;
+                          [<span th:text="${trip.getArea()}"/>, <span th:text="${trip.getCategory()}"/>]
+                        </span>
+
+                        <span class="bkTxt"  th:text="${trip.getTitle()}"></span>
+                        <i class="bi bi-chevron-compact-right"></i>
+
+                      </button>
+                      <ul class="dropdown-menu p-0">
+                        <div class="p-0" >
+                          <th:block th:each="img,state : ${trip.getImgs()}">
+                            <img class="card-img-top" th:if="${state.current.imgMain==true}" th:src="@{'{path}'(path=${img.imgPath})}">
+                          </th:block>
+                          <div class="card-body">
+                            <span th:text="${trip.getArea()}"></span>,
+                            <span th:text="${trip.getAddress()}"></span>
+                            <h5 class="card-title" th:text="${trip.getTitle()}"></h5>
+
+                            <p class="card-text"  th:text="${trip.getContent()}"></p>
+                            <p class="mb-1" style="text-align: right">
+                              <button class="tripBookmarkIBtn" type="button"
+                                      th:onclick="tripBookMarkInsert([[${trip.getTId()}]], [[${trip.getTitle()}]])">
+                                <i class="bi bi-plus-circle"></i> 일정에 추가
+                              </button>
+                            </p>
+                          </div>
+                        </div>
+
+                      </ul>
+                    </div>
+                  </th:block>
+
+                </div>
+                <div class="tab-pane fade" id="commList" role="tabpanel"
+                     aria-labelledby="comm-tab">
+
+                  <th:block th:each="plan:${bPlans}">
+                    <div class="btn-group dropend bkDiv">
+                      <button type="button" class="btn dropdown-toggle bkBtn w-100" data-bs-toggle="dropdown" aria-expanded="false">
+
+                        <span class="bkTxt">
+                          <i class="bi bi-dot"></i>&nbsp;
+                          [<span th:text="${plan.getNkName()} + '님의 일정'"></span>]
+                        </span>
+
+                        <span class="bkTxt"  th:text="${plan.getTitle()}"></span>
+                        <i class="bi bi-chevron-compact-right"></i>
+
+                      </button>
+                      <ul class="dropdown-menu p-0">
+                          <th:block th:each="con:${plan.getContents()}">
+                            <li class="dropdown-item bkLi"
+                                th:onclick="commBookMarkInsert([[${con.getTitle()}]], [[${con.getTime()}]], [[${con.getInfo()}]])">
+                              <span>
+                                <i class="bi bi-stopwatch bkTime"></i>
+                                <span class="bkTime" th:text="${con.getTime()}"></span>
+                              </span>
+                              <span th:text="${con.getTitle()}" style="width: 150px"></span>
+                              <i class="bi bi-plus-circle"></i>
+                            </li>
+                          </th:block>
+                      </ul>
+                    </div>
+                  </th:block>
+
+                </div>
+                <div class="tab-pane fade" id="productList" role="tabpanel"
+                     aria-labelledby="product-tab">
+
+                  <th:block th:each="sell:${bSells}">
+                    <div class="btn-group dropend bkDiv">
+                      <button type="button" class="btn dropdown-toggle bkBtn w-100" data-bs-toggle="dropdown" aria-expanded="false">
+
+                        <span class="bkTxt">
+                          <i class="bi bi-dot"></i>&nbsp;
+                          [<span th:text="${sell.getArea()}"/>]
+                        </span>
+
+                        <span class="bkTxt"  th:text="${sell.getTitle()}"></span>
+                        <i class="bi bi-chevron-compact-right"></i>
+
+                      </button>
+                      <ul class="dropdown-menu p-0">
+                          <img class="card-img-top" th:src="${sell.getImgMain()}">
+                          <div class="card-body">
+                            <span th:text="${sell.getArea()}"></span>,
+                            <span th:text="${sell.getCategory()}"></span>
+                            <h5 class="card-title" th:text="${sell.getTitle()}"></h5>
+
+                            <p class="card-text"  th:text="${sell.getContent()}"></p>
+                            <p class="mb-1" style="text-align: right">
+                              <button class="tripBookmarkIBtn" type="button"
+                                      th:onclick="sellBookMarkInsert([[${sell.getSId()}]], [[${sell.getTitle()}]])">
+                                <i class="bi bi-plus-circle"></i> 일정에 추가
+                              </button>
+                            </p>
+                          </div>
+                      </ul>
+
+                    </div>
+                  </th:block>
+                </div>
+
+              </div>
+            <div class="col-6"> </div>
+
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-primary sB dBtn" style="display: none">삭제</button>
+            <button class="btn btn-primary sB uBtn" style="display: none">수정</button>
+            <button class="btn btn-primary sB sBtn" onclick=registerSchedule()>만들기</button>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+
+
+
+
+
+</script>

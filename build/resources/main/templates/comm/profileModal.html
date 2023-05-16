@@ -1,0 +1,100 @@
+<div id ="profileModal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-center">
+          프로필 정보
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div class="text-center p-0">
+            <p><img class="profile img-thumbnail rounded-circle w-25 h-25" style="image-size:cover"
+                    th:src="@{'{path}'(path=${c.user.imgPath})}"></p>
+            <h5 th:text="${c.user.getNkName()}" class="mb-0"></h5>
+            (<small  class="text-muted" th:text="${c.user.getUId()}"></small>)
+          <div class="d-flex justify-content-center">
+            <small class="me-3">
+              <span class="text-primary">팔로워</span>
+              <span class=" ms-1" th:text="${(c.user.followers!=null)?c.user.followers.size():0}"></span><br>
+            </small>
+            <small>
+              <span class=" text-primary ">팔로잉</span>
+              <span class=" ms-1" th:text="${(c.user.followings!=null)?c.user.followings.size():0}"></span><br>
+            </small>
+          </div>
+          <p class="mt-1">
+            <button  type="button"
+                     th:onclick="toggleFollowing([[${c.uId}]],this)"
+                     class="btn btn-outline-success active btn-sm">팔로잉</button>
+            <a class="btn btn-outline-success btn-sm">쪽지</a>
+          </p>
+        </div>
+        <hr>
+        <div class="">
+
+            <div class="list-group">
+              <a href="#" class="list-group-item list-group-item-action active bg-success" aria-current="true">
+                <h6>
+                  <i class="bi bi-calendar me-2"></i>
+                  <span th:text="${c.user.nkName}"></span> 님의 일정
+                </h6>
+              </a>
+              <th:block  th:each="p:${c.user.plans}">
+                <div class="list-group-item list-group-item-action">
+                  <i class="bi bi-clipboard me-2"></i>
+                  <a class="text-dark link-primary"  th:onclick="planDetail([[${p.pId}]])" th:text="${p.title}" ></a>
+                </div>
+              </th:block >
+            </div>
+              <th:block th:each="plan,index:${c.user.plans}">
+                <th:block th:if="${plan.pId}">
+                <div th:id="'userPlanModal'+${plan.pId}" class="modal" tabindex="-1">
+                  <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" th:text="${plan.title}"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                  <th:block  th:each="p:${plan.contents}">
+                              <div class="accordion accordion-flush" th:id="'accordionFlushExample'+${p.conId}">
+                                <div class="accordion-item" >
+                                  <h2 class="accordion-header">
+                                    <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" th:data-bs-target="'#flush-collapse-' + ${p.conId}"  aria-expanded="false" aria-controls="flush-collapseOne">
+                                      <span th:text="${p.time}" class="text-bg-warning me-4 p-2  border-warning rounded-5"></span>
+                                      <span th:text="${p.title}"></span>
+                                    </button>
+                                  </h2>
+                                  <div th:id="'flush-collapse-' + ${p.conId}" class="accordion-collapse collapse"  th:data-bs-parent="'#accordionFlushExample'+${p.conId}" >
+                                    <div class="accordion-body w-100">
+                                      <div th:if="${p.imgPath!=null}" >
+                                        <img th:src="@{'{path}'(path=${p.imgPath})}" class="img-fluid" alt="일정꾸미는이미지">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                      </th:block>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                    </th:block>
+                  </th:block>
+                </div>
+          </th:block>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <script>
+    function planDetail(id){
+      let planDetailModal=new bootstrap.Modal(document.getElementById(`userPlanModal`+id));
+      planDetailModal.show();
+    }
+  </script>
+</div>

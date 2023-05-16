@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>EmailCheck</title>
+</head>
+<div layout:fragment="content">
+  <form class="mx-auto" action="/user/emailCheck.do" method="post" style="width: 450px;">
+    <input type="hidden" name="uId" th:value="${param.uId}">
+    <h1 class="my-4">이메일 체크 폼</h1>
+    <p class="form-floating">
+      <input type="text" name="emailCheckCode" value="" class="form-control" placeholder="??">
+      <label>이메일 확인 코드</label>
+    </p>
+    <p class="text-end">
+      <button class="btn btn-primary">이메일확인</button>
+    </p>
+  </form>
+</div>
+</html>

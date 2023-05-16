@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+</head>
+
+<body>
+<div id="summernote"></div>
+<!--https://velog.io/@hellocdpa/220307-SpringBoot-%ED%83%80%EC%9E%84%EB%A6%AC%ED%94%84-%EC%8D%B8%EB%A8%B8%EB%85%B8%ED%8A%B8summernote-%EC%A0%80%EC%9E%A5%EA%B3%BC-%EC%A1%B0%ED%9A%8C-->
+<script>
+    $('#summernote').summernote({
+        placeholder: 'gabojago Community Register Form',
+        tabsize: 2,
+        height: 300,
+        toolbar: [
+            ['fontname',['fontname']],
+            ['fontsize', ['fontsize']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['view', ['codeview', 'help']]
+        ],
+        fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New'],
+        fontSizes: ['10','12','14','16','18','20','22','24','28','30','36','50','72'],
+
+    });
+    $('#summernote').summernote({
+        callbacks: {
+            onImageLinkInsert: function (url) {
+                let fileName = Date.now() + '_' + parseInt(Math.random() * 10000);
+                $img = $('<img>').attr({src: "/static/public/img/comm/" + fileName + '.jpg'})
+                $summernote.summernote('insertNode', $img[0]);
+            }
+        }
+    })
+
+
+</script>
+</body>
+</html>

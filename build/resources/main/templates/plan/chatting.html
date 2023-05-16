@@ -1,0 +1,78 @@
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+<div class="offcanvas offcanvas-end" style="background-color: rgb(234,247,255)" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+  <div class="offcanvas-header">
+    <h6 class="offcanvas-title" id="offcanvasScrollingLabel"></h6>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="chatBody container px-0">
+      <div id="msgBox"></div>
+      <div class="col">
+        <div class="input-group mb-3">
+          <input type="text" id="msg" class="form-control">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="msgSendBtn">전송</button>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+<!--<script th:inline="javascript">-->
+
+<!--  let title = [[${plan.getTitle()}]];-->
+<!--  let roomId = [[${plan.getPId()}]];;-->
+<!--  let username = [[${session.loginUser.nkName}]] || "anonymous"-->
+
+<!--  console.log(title + ", " + roomId + ", " + username);-->
+
+<!--  // socketJs가 stomp를 갖고있다-->
+<!--  let sockJs = new SockJS("/gabojago/plan");-->
+<!--  let stomp = Stomp.over(sockJs);-->
+
+<!--  // stomp.connect로 접속하고 구독 상태를 유지-->
+<!--  stomp.connect({}, function (){-->
+<!--    // subscribe(path, callback) => path 경로로 메세지가 들어오면 콜백 함수를 실행-->
+<!--    stomp.subscribe("/sub/plan/room/" + roomId, function (chat) {-->
+<!--      let content = JSON.parse(chat.body);-->
+<!--      let writer = content.writer;-->
+<!--      let system = content.system;-->
+<!--      let str = '';-->
+<!--      if(system){-->
+<!--        str += "<div class='chatSystem'>";-->
+<!--        str += "<b>" + "SYSTEM" + " : " + content.message + "</b>";-->
+<!--        str += "</div>";-->
+<!--        document.querySelector("#msgBox").insertAdjacentHTML('beforeend',str);-->
+<!--      }-->
+<!--      else if(writer === username ){-->
+<!--        str += "<div class='chatMy'>";-->
+<!--        str += "<b>" + writer + " : " + content.message + "</b>";-->
+<!--        str += "</div>";-->
+<!--        document.querySelector("#msgBox").insertAdjacentHTML('beforeend',str);-->
+<!--      }-->
+<!--      else{-->
+<!--        str += "<div class='chatOrder'>";-->
+<!--        str += "<b>" + writer + " : " + content.message + "</b>";-->
+<!--        str += "</div>";-->
+<!--        document.querySelector("#msgBox").insertAdjacentHTML('beforeend',str)-->
+<!--      }-->
+<!--    });-->
+
+<!--    //3. send(path, header, message)로 메세지를 보낼 수 있음-->
+<!--    // 최초 입장시 입장 정보 알림-->
+<!--    stomp.send('/pub/plan/enter', {}, JSON.stringify({roomId: roomId, writer: username, system : true}))-->
+<!--  });-->
+
+<!--    document.querySelector("#button-send").addEventListener("click", function(e){-->
+<!--    let msg = document.getElementById("msg");-->
+
+<!--    console.log(username + ":" + msg.value);-->
+<!--    stomp.send('/pub/plan/message', {}, JSON.stringify({roomId: roomId, message: msg.value, writer: username}));-->
+<!--    msg.value = '';-->
+<!--  });-->
+
+<!--</script>-->
+
+

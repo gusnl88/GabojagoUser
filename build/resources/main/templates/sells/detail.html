@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout}">
+<head>
+    <script src="https://cdn.ckeditor.com/4.16.1/standard/ckeditor.js"></script>
+    <meta charset="UTF-8">
+    <title>판매글 리스트</title>
+    <style>
+        .ckeditor {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<div layout:fragment="content">
+
+    <form  method="post" action="/orderReady.do">
+        <div class="container">
+            <div class="container my-5">
+                <div class="row">
+                    <div th:if="${sells.sellImgs != null}" th:id="'carousel' + ${sells.sId}" class=" col carousel slide" data-bs-ride="carousel" >
+                        <div class="carousel-inner">
+                            <div class="carousel-item " th:each="img, state: ${sells.sellImgs}" th:classappend="${state.first ? 'active' : ''}" style="width: 100%; height: 0; padding-bottom: 70%; position: relative;">
+                                <img th:src="@{'{path}'(path=${img.imgPath})}" class="d-block w-100" alt="게시글 이미지" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" th:data-bs-target="'#carousel' + ${sells.sId}" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" th:data-bs-target="'#carousel' + ${sells.sId}" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="hidden" name="sId" th:value="${sells.getSId()}">
+                        <h2 class="font-weight-bold mb-3" th:text="${sells.title}"></h2>
+                        <span class="text-muted small mb-2" th:text="${sells.category}+'/'"></span>
+                        <span class="small mb-2" th:text="${sells.area}"></span>
+                        <hr class="my-4">
+                        <h4 class="font-weight-bold mb-3" th:text="${#dates.format(sells.postTime,'yyyy-MM-dd')}"  pattern="yyyy-MM-dd"></h4>
+                        <hr class="my-4">
+                        <hr class="my-4">
+                        <form id="optionForm">
+                            <div class="form-group">
+                                <label for="optionSelect">옵션</label>
+                                <select class="form-control" id="optionSelect" name="option">
+                                    <option th:each="op:${sells.getSellOption()}" th:value="${op.getName()+'|'+op.getPrice()+'|'+op.getOId()}" th:text="${op.getName() + ' - ' + op.getPrice() + '원'}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">수량</label>
+                                <div class="input-group">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="down()">-</button>
+                                    <input type="text" class="form-control" readonly id="quantity" name="quantity" value="1" min="1">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="up()">+</button>
+                                </div>
+                            </div>
+                            <button id="addBtn" class="btn btn-warning  mt-2">추가하기</button>
+                        </form>
+                        <div id="selectedOption"></div>
+                        <hr>
+                        <input type="hidden" name="totalPrice" id="totalPriceInput">
+                        <h3 class="text-end" id="totalPrice" ></h3>
+                        <hr>
+                        <div class="text-end">
+                            <th:block th:if="${session.loginUser != null and session.loginUser.uId == sells.uId}">
+                                <a class="btn btn-secondary" th:href="@{'/sells/{sId}/modify.do'(sId=${sells.getSId()})}" >수정하기</a>
+                                <button class="btn btn-primary ">결제하기</button>
+                            </th:block>
+                            <th:block th:unless="${session.loginUser != null and session.loginUser.uId == sells.uId}">
+                                <button class="btn btn-primary ">결제하기</button>
+
+                            </th:block>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="text-center" >
+    <p class="small mb-2" th:utext="${sells.content}"></p>
+    </div>
+    <script>
+        // const btn= document.getElementById("apibtn");
+        // btn.addEventListener("click",async ()=>{
+        //     try {
+        //         const response = await fetch('/jq/kakaopay.do');
+        //         if (response.ok) {
+        //             const data = await response.json();
+        //             let box = data.next_redirect_pc_url;
+        //             window.location.href = box;
+        //         } else {
+        //             throw new Error('네트워크 응답이 올바르지 않습니다.');
+        //         }
+        //     } catch (error) {
+        //         console.error('가져오는 작업에 문제가 있습니다:', error);
+        //     }
+        //
+        // })
+
+        function up(){
+            quantityInput.value++
+        }function down(){
+            quantityInput.value--
+        }
+        const optionSelect=document.getElementById("optionSelect");
+        const totalPriceInput = document.getElementById("totalPriceInput");
+        const quantityInput = document.getElementById("quantity");
+        const selectOpton = document.getElementById("selectedOption");
+        const totalPrice = document.getElementById("totalPrice");
+
+
+        const addBtn= document.getElementById("addBtn");
+        const optionSet=new Set;
+        let totalOptionPrice = 0;
+
+
+        // const optionForm = document.getElementById("optionForm");
+
+        addBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const quantity = quantityInput.value;
+            if (quantityInput.value<=0){alert("수량을 정확히 입력하세요")
+                return;}
+
+            const selectedOption = document.getElementById("optionSelect").value;
+            const optionName = selectedOption.split("|")[0];
+            const price = selectedOption.split("|")[1];
+            const oId = selectedOption.split("|")[2];
+            const total = price * quantity;
+            if(!optionSet.has(optionName)){
+
+
+                optionSet.add(optionName)
+                selectOpton.insertAdjacentHTML("beforeend", selectOptionComponent(optionName,quantity,total,oId));
+                totalOptionPrice += total;
+                totalPrice.textContent = `총 결제금액: ${totalOptionPrice}원`;
+                totalPriceInput.value = totalOptionPrice;
+            }else {
+                alert("이미 추가한 옵션입니다.")
+            }
+        });
+
+        function selectOptionComponent(optionName,quantity,price,oId){
+
+            return `<div class="card mb-3">
+    <div class="card-body d-flex justify-content-between align-items-center">
+      <div>
+      <input type="hidden" name="oId" value="${oId}">
+        <p  class="card-text mb-0"><strong>옵션:</strong> <span>${optionName}</span></p>
+        <input type="hidden" name="optionName" value="${optionName}">
+        <p  class="card-text"><strong>수량:</strong> <span>${quantity}</span></p>
+         <input type="hidden" name="cnt" value="${quantity}">
+        <p  class="card-text"><strong>가격:</strong> <span>${price}</span></p>
+         <input type="hidden" name="price" value="${price}">
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" onclick="removeOption(this, ${price},'${optionName}')"></button>
+    </div>
+  </div>`
+        }
+
+        function removeOption(element, total,optionName) {
+
+            const card = element.closest('.card');
+            totalOptionPrice -= total;
+            card.remove();
+            optionSet.delete(optionName);
+            totalPrice.textContent = totalOptionPrice > 0 ? `${totalOptionPrice}원` : '';
+        }
+
+    </script>
+</div>
+</html>

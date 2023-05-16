@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.sells.SellBookMarksMapper">
+    <resultMap id="sellBookMap" type="sellBookmarksDto">
+        <id column="sb_id" property="sbId"/>
+        <result column="s_id" property="sId"/>
+        <result column="u_id" property="uId"/>
+        <collection property="sellList"
+                    select="com.project.gabojago.gabojagouser.mapper.sells.SellsMapper.findBySId"
+                    column="s_id"
+                    fetchType="lazy"/>
+    </resultMap>
+    <insert id="insertOne">
+        INSERT INTO sell_bookmarks (u_id,s_id) VALUE (#{uId},#{sId})
+    </insert>
+    <delete id="deleteOne" >
+        DELETE FROM sell_bookmarks WHERE sb_id=#{sbId}
+    </delete>
+    <select id="findByUId" resultMap="sellBookMap">
+        SELECT * FROM sell_bookmarks WHERE u_id=#{uId}
+    </select>
+    <!-- 플래너에서 북마크 불러올 때 사용 -->
+    <select id="findSellsByUId" resultMap="com.project.gabojago.gabojagouser.mapper.sells.SellsMapper.sellsMap">
+            SELECT * FROM sells
+            left join sell_bookmarks sb using (s_id)
+            where sb.u_id=#{uId};
+     </select>
+</mapper>

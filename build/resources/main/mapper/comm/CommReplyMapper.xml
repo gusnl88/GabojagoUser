@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.comm.CommReplyMapper">
+    <resultMap id="CommReplyMap" type="CommReplyDto">
+        <id property="ccId" column="cc_id"/>
+        <result property="cId" column="c_id"/>
+        <result property="uId" column="u_id"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="postTime" column="post_time"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="parentCrId" column="parent_cr_id"/>
+        <collection
+                property="replies"
+                select="findByParentCrId"
+                column="cc_id"
+                fetchType="lazy"
+        />
+    </resultMap>
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="ccId" parameterType="commReplyDto">
+        INSERT INTO comm_comment (c_id, u_id, content, parent_cr_id) VALUES(#{cId},#{uId},#{content},#{parentCrId})
+    </insert>
+    <update id="updateOne" parameterType="commReplyDto">
+        UPDATE comm_comment SET content=#{content} WHERE cc_id=#{ccId}
+    </update>
+    <delete id="deleteOne">
+        DELETE FROM comm_comment WHERE cc_id=#{ccId}
+    </delete>
+    <select id="findByCIdAndParentCrIdIsNull" resultMap="CommReplyMap">
+        SELECT * FROM comm_comment  WHERE parent_cr_id IS NULL AND c_id=#{cId}
+    </select>
+    <select id="findByParentCrId" resultMap="CommReplyMap">
+        SELECT * FROM comm_comment WHERE parent_cr_id=#{ccId}
+    </select>
+
+    <select id="findByCcId" resultMap="CommReplyMap">
+        SELECT * FROM comm_coment WHERE cc_id=#{ccId};
+    </select>
+
+</mapper>

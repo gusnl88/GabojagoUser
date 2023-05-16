@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>Login</title>
+</head>
+<div layout:fragment="content" class="container ">
+  <form class="mx-auto mt-5" action="/user/login.do" method="post" style="width: 450px; height: 500px">
+    <h1 class="my-4">로그인 폼</h1>
+    <p class="form-floating">
+      <input type="text" name="uId" value="" class="form-control" placeholder="ID">
+      <label>ID</label>
+    </p>
+    <p class="form-floating">
+      <input type="password" name="pw" value="" class="form-control" placeholder="PassWord">
+      <label>PW</label>
+    </p>
+    <p class="form-check">
+      <input type="checkbox" value="1" name="autoLogin" id="autoLogin" class="form-check-input">
+      <label for="autoLogin" class="form-check-label">
+        자동 로그인
+      </label>
+    </p>
+    <p class="text-end">
+      <a class="btn btn-info" href="/user/signup.do">SignUp</a>
+      <button class="btn btn-primary">Login</button>
+    </p>
+  </form>
+</div>
+</html>

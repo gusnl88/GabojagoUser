@@ -1,0 +1,96 @@
+<div class="modal fade" id="reviewRegisterModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form enctype="multipart/form-data" id="reviewRegisterForm" name="reviewRegisterForm" method="post"
+          class="modal-content">
+      <!--                                    <input type="hidden" name="tId">--> <!-- 이름만 써주고, ajax 로 값 너어준거 -->
+      <input type="hidden" name="trId">
+      <input type="hidden" name="tId" th:value="${t.tId}">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">리뷰 작성하기</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="form-floating">
+          <input type="text" name="uId"  th:if="${session.loginUser!=null}" th:value="${session.loginUser.uId}" readonly class="form-control"
+                 placeholder="글쓴이">
+          <!-- 로그인한 유저만 보이기 -->
+          <!-- <input th:value="${session.loginUser.uId}" type="text" name="uId" readonly class="form-control" placeholder="글쓴이">-->
+          <label>글쓴이</label>
+        </p>
+
+        <div class="star-rating d-flex align-items-center mb-2">
+          <span>평가</span>
+          <p class="mb-0" style="direction:rtl">
+            <input class="d-none" id="star-5" type="radio" name="grade" value="5">
+            <label for="star-5" title="5 stars">☆</label>
+            <input class="d-none" id="star-4" type="radio" name="grade" value="4">
+            <label for="star-4" title="4 stars">☆</label>
+            <input class="d-none" id="star-3" type="radio" name="grade" value="3">
+            <label for="star-3" title="3 stars">☆</label>
+            <input class="d-none" id="star-2" type="radio" name="grade" value="2">
+            <label for="star-2" title="2 stars">☆</label>
+            <input class="d-none" id="star-1" type="radio" name="grade" value="1">
+            <label for="star-1" title="1 star">☆</label>
+          </p>
+        </div>
+
+
+<!--        <div class="star-rating d-flex align-items-center mb-2">-->
+<!--          <span>평가</span>-->
+<!--          <p class="mb-0" style="direction:rtl">-->
+<!--            <input class="d-none" id="star-5" type="radio" name="rating" value="5">-->
+<!--            <label for="star-5" title="5 stars">☆</label>-->
+<!--            <input class="d-none" id="star-4" type="radio" name="rating" value="4">-->
+<!--            <label for="star-4" title="4 stars">☆</label>-->
+<!--            <input class="d-none" id="star-3" type="radio" name="rating" value="3">-->
+<!--            <label for="star-3" title="3 stars">☆</label>-->
+<!--            <input class="d-none" id="star-2" type="radio" name="rating" value="2">-->
+<!--            <label for="star-2" title="2 stars">☆</label>-->
+<!--            <input class="d-none" id="star-1" type="radio" name="rating" value="1">-->
+<!--            <label for="star-1" title="1 star">☆</label>-->
+<!--            <input type="hidden" name="grade" id="rating-value">-->
+<!--          </p>-->
+<!--        </div>-->
+
+
+
+        <p>
+          <label>
+            <input type="radio" name="visit" value="1" checked>
+            방문
+          </label>
+          <label>
+            <input type="radio" name="visit" value="0">
+            방문전
+          </label>
+        </p>
+
+<!--        <p class="form-floating">-->
+<!--          <input type="text" name="title" th:value="${t.title}" readonly-->
+<!--                 class="form-control" placeholder="글쓴이">-->
+<!--          <label>장소이름</label>-->
+<!--        </p>-->
+
+
+        <p id="registerImgCont">
+          <button id="registerImgAddBtn" class="btn btn-danger w-100" type="button">
+            이미지
+            <i class="bi bi-plus-square"></i>
+          </button>
+        </p>
+        <p>
+        </p>
+        <p class="form-floating">
+          <input type="text" name="content" class="form-control" placeholder="내용">
+          <label>내용</label>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">취소
+        </button>
+        <button type="submit" class="btn btn-outline-danger">등록</button>
+      </div>
+    </form>
+  </div>
+</div>

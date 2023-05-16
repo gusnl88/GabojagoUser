@@ -1,0 +1,149 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutMy}">
+<head>
+    <title>마이페이지</title>
+</head>
+
+<div layout:fragment="content" class="container">
+    <h2 class="my-4 ms-3" >
+        <i class="bi bi-bookmark-star-fill text-warning"></i>
+        북마크 리스트
+    </h2>
+    <div class="categoryContainer d-flex justify-content-evenly row my-5" >
+        <div class="card col-5" >
+            <img src="/public/img/gabojago.gif" class="card-img-top" alt="...">
+            <ul class="list-group list-group-flush" id="tripbookMarkList">
+                <li class="list-group-item d-flex align-items-center justify-content-between py-1 px-8" th:each="t:${tripBookMark}">
+                    <p class="p-0">
+                        <a th:href="@{'/trip/{tId}/detail.do'(tId=${t.tId})}" th:text="${t.trips.title}"></a>
+                    </p>
+                    <p class="p-0">
+                        <a href="javascript:void(0)" th:onclick="tripRemoveBookMark([[${t.tbId}]],[[${uId}]])" class="p-0 text-danger text-decoration-none">
+                            <i class="bi bi-x-square-fill"></i>
+                        </a>
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <div class="card col-5" >
+            <img src="/public/img/gachinolja.gif" class="card-img-top" alt="...">
+            <ul class="list-group list-group-flush" id="commbookMarkList">
+                <li class="list-group-item d-flex align-items-center justify-content-between py-1 px-8" th:each="c:${commBookMark}">
+                    <p class="p-0">
+                        <a th:href="@{'/comm/{cId}/detail.do'(cId=${c.cId})}" th:text="${c.comm.title}"></a>
+                    </p>
+                    <p class="p-0">
+                        <a href="javascript:void(0)" th:onclick="commRemoveBookMark([[${c.cbookId}]],[[${uId}]])" class="p-0 text-danger text-decoration-none">
+                            <i class="bi bi-x-square-fill"></i>
+                        </a>
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let tripbookMarkList = document.getElementById("tripbookMarkList");
+        let commbookMarkList = document.getElementById("commbookMarkList");
+
+        async function tripRemoveBookMark(Id,uId) {
+            let check = confirm("북마크를 삭제하시겠습니까?")
+            let url = "/bookmark/trip/" + Id + "/handler.do";
+            if (check) {
+                const resp = await fetch(url, {method: "DELETE"});
+                if (resp.status === 200) {
+                    const json = await resp.json();
+                    if (json.handler > 0) {
+                        alert("북마크 삭제 성공!");
+                        await tripLoadBookMark(uId)
+
+                    } else {
+                        alert("북마크 삭제 실패");
+                    }
+                }
+            }
+        }
+        async function commRemoveBookMark(Id,uId){
+            let check=confirm("북마크를 삭제하시겠습니까?")
+            let url="/bookmark/comm/"+Id+"/handler.do";
+            if(check){
+                const resp= await fetch(url,{method:"DELETE"});
+                if(resp.status===200){
+                    const json=await resp.json();
+                    if(json.handler>0) {
+                        alert("북마크 삭제 성공!");
+                        await commLoadBookMark(uId);
+                    }
+                }else{
+                    alert("북마크 삭제 실패");
+                }
+            }
+        }
+
+
+
+        function tripListComponent(bookObj){
+            return `
+             <li class="list-group-item d-flex align-items-center justify-content-between py-1 px-8" >
+                    <p class="p-0">
+                        <a href="/comm/"+bookObj.tId+"/detail.do">${bookObj.trips.title}</a>
+                    </p>
+                    <p class="p-0">
+                        <a href="javascript:void(0)" onclick="tripRemoveBookMark(${bookObj.tbId},${bookObj.uId})" class="p-0 text-danger text-decoration-none">
+                            <i class="bi bi-x-square-fill"></i>
+                        </a>
+                    </p>
+                </li>
+            `
+        }
+        function commListComponent(bookObj){
+            return `
+             <li class="list-group-item d-flex align-items-center justify-content-between py-1 px-8" >
+                    <p class="p-0">
+                        <a href="/comm/"+bookObj.cId+"/detail.do">${bookObj.comm.title}</a>
+                    </p>
+                    <p class="p-0">
+                        <a href="javascript:void(0)" onclick="tripRemoveBookMark(${bookObj.cbookId},${bookObj.uId})" class="p-0 text-danger text-decoration-none">
+                            <i class="bi bi-x-square-fill"></i>
+                        </a>
+                    </p>
+                </li>
+            `
+        }
+        async function commloadData(uId){
+            let url=`/bookmark/comm/${uId}/list.do`;
+            const resp=await fetch(url);
+            if(resp.status===200){
+                return await resp.json();
+            }
+        }
+        async function triploadData(uId){
+            let url=`/bookmark/trip/${uId}/list.do`;
+            const resp=await fetch(url);
+            if(resp.status===200){
+                return await resp.json();
+            }
+        }
+
+        async function commLoadBookMark(uId){
+            const comms=await commloadData(uId)
+            if(comms){
+               commbookMarkList.innerHTML="";
+               for(const comm of comms){
+                   commbookMarkList.insertAdjacentHTML("beforeend",commListComponent(comm));
+               }
+            }
+        }
+        async function tripLoadBookMark(uId){
+            const trips=await triploadData(uId)
+            if(trips){
+                tripbookMarkList.innerHTML="";
+                for(const trip of trips){
+                    tripbookMarkList.insertAdjacentHTML("beforeend",tripListComponent(trip));
+                }
+            }
+        }
+    </script>
+
+</div>

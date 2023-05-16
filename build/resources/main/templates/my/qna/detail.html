@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout}">
+<body>
+<div layout:fragment="content" class="container mb-50">
+  <h3>고객센터/문의 상세 내역</h3>
+
+  <div class="col-2 d-flex">
+    <a th:href="@{'/my/qna/{qId}/modify.do'(qId=${q.qId})}" class="btn btn-outline-primary btn-sm me-1">수정</a>
+    <a th:href="@{'/my/qna/{qId}/remove.do'(qId=${q.qId})}" class="btn btn-outline-danger btn-sm">삭제</a>
+  </div>
+  <br>
+  <section id="boardCont" class="">
+    <div class="col ps-0">
+      <div class="card col" style="height: 75vh; overflow-y: auto" >
+        <div class="card-header d-flex justify-content-between align-items-center
+                      bg-light position-sticky top-0" style="z-index: 999">
+          <h5 class="card-title">
+            <span class="bg-primary bg-opacity-50 text-white rounded-4 p-1 mb-2">제목</span>
+            <span th:text="${q.title}"></span>
+          </h5>
+        </div>
+        <div class="d-flex my-2">
+          <div class="col-auto">
+            <span class="bg-primary bg-opacity-50 text-white rounded-4 p-1 mb-1">작성유저</span>
+            <small th:text="${q.getUId()}"></small>
+          </div>
+        </div>
+        <hr>
+        <div>
+          <p class="card-text">
+            <sapn th:text="${q.content}"></sapn>
+            <img th:src="@{'{path}'(path=${q.filePath})}" class="d-block w-100" alt="게시글 이미지">
+          </p>
+        </div>
+        </div>
+      </div>
+      <th:block th:include="/my/qna/replyList.html" th:with="replys=${q.replys}"></th:block>
+  </section>
+</div>
+</body>
+</html>
+

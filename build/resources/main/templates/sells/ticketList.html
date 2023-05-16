@@ -1,0 +1,39 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutMy}">
+<head>
+  <title>티켓리스트</title>
+</head>
+<div layout:fragment="content">
+  <div class="container " style="width: 1000px;margin: 0 auto;">
+    <main role="main" class="container">
+      <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">티켓 목록</h1>
+      </div>
+      <div class="card-deck mb-3 text-center" >
+        <!-- 장바구니 항목 -->
+        <div class="card mb-4 box-shadow"  >
+          <div class=" justify-content-between card-header">
+            <p style="font-weight: bold;font-size: 20px;color: orange">티켓 사용 여부</p>
+          </div>
+          <div class="card-body" >
+
+
+              <ul class="list-unstyled mt-3 mb-4 " th:each="t:${ticketList}">
+                  <li>
+                      <strong>티켓 번호:</strong>
+                      <span th:text="${t.ticketNum}"></span>
+                      <b>사용 여부:</b>
+                      <span th:text="${t.useCheck == true ? '사용완료' : '미사용'}" th:style="${t.useCheck == true ? 'color: red' : 'color: blue'}"></span>
+                      <b>사용 시간:</b>
+                      <span th:text="${t.useCheck == true ? t.getUseDate().toLocaleString() : '사용하셔야 표시됩니다.'}"></span>
+
+                  </li>
+              </ul>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

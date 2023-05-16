@@ -1,0 +1,86 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutMy}">
+<head>
+  <title>마이페이지</title>
+</head>
+
+<div layout:fragment="content" class="container">
+  <style>
+    a {
+      text-decoration: none;
+    }
+  </style>
+  <h2 class="my-4">내가 쓴 게시글 (PARTNER)</h2>
+  <h3 class="my-3">
+    <i class="bi bi-airplane text-primary"></i>
+    가보자고</h3>
+    <div class="boardList">
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">글 번호</th>
+          <th scope="col">제목</th>
+          <th scope="col">작성일</th>
+          <th scope="col">수정:삭제</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          <tr th:each="t:${trips}" th:if="${t.uId==user.uId}">
+            <th scope="row">
+              <a class="text-dark fw-light" th:text="${t.tId}"></a>
+            </th>
+            <th scope="row">
+              <a class="text-dark link-primary" th:text="${t.title}" th:href="@{'/trip/{tId}/detail.do'(tId=${t.tId})}"></a>
+            </th>
+            <td>
+              <span class="fw-light" th:text="${#dates.format(t.postTime,'yyyy-MM-dd')}"></span>
+            </td>
+            <td>
+              <a  th:href="@{'/trip/{tId}/modify.do'(tId=${t.tId})}"  class="btn btn-sm btn-outline-dark me-1">수정</a>
+              <a  th:href="@{'/trip/{tId}/remove.do'(tId=${t.tId})}"  class="btn btn-sm btn-outline-danger">삭제</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <th:block  th:if="${page!=null}" th:include="/trip/pageNav"></th:block>
+    </div>
+
+
+  <h3 class="my-3">
+    <i class="bi bi-airplane text-primary"></i>
+    상품판매</h3>
+  <div class="boardList">
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">글 번호</th>
+        <th scope="col">제목</th>
+        <th scope="col">작성일</th>
+        <th scope="col">수정:삭제</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr th:each="s:${sells}" th:if="${s.uId==user.uId}">
+        <th scope="row">
+          <a class="text-dark fw-light" th:text="${s.sId}"></a>
+        </th>
+        <th scope="row">
+          <a class="text-dark link-primary" th:text="${s.title}" th:href="@{'/sells/{sId}/detail.do'(sId=${s.sId})}"></a>
+        </th>
+        <td>
+          <span class="fw-light" th:text="${#dates.format(s.postTime,'yyyy-MM-dd')}"></span>
+        </td>
+        <td>
+          <a  th:href="@{'/sells/{sId}/modify.do'(sId=${s.sId})}"  class="btn btn-sm btn-outline-dark me-1">수정</a>
+          <a  th:href="@{'/sells/{sId}/remove.do'(sId=${s.sId})}"  class="btn btn-sm btn-outline-danger">삭제</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <th:block  th:if="${page!=null}" th:with="page=${sellPage}" th:include="/trip/pageNav"></th:block>
+  </div>
+
+</div>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.trip.TripImgMapper">
+<!--  mybatis mapper 가 db 컬럼명과 dto 를 맵핑  -->
+    <resultMap id="TripImgMap" type="TripImgDto">
+        <id property="tiId" column="ti_id"/>
+        <result property="tId" column="t_id"/>
+        <result property="imgMain" column="img_main"/>
+        <result property="imgPath" column="img_path"/>
+    </resultMap>
+
+    <!-- 등록시 해당 게시글번호, 이미지경로, 메인이미지 등록 -->
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="tiId">
+        INSERT INTO trip_imgs (t_id, img_path, img_main) value(#{tId}, #{imgPath}, #{imgMain})
+    </insert>
+    <!-- 이미지 번호로 삭제 -->
+    <delete id="deleteOne" parameterType="TripImgDto">
+        DELETE FROM trip_imgs WHERE ti_id=#{tiId}
+    </delete>
+    <select id="findByTId" resultMap="TripImgMap">
+        SELECT * FROM trip_imgs WHERE t_id=#{tId}
+    </select>
+    <select id="findByTiId" resultMap="TripImgMap">
+        SELECT * FROM trip_imgs WHERE ti_id=#{tiId}
+    </select>
+</mapper>

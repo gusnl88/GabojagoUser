@@ -1,0 +1,90 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutMy}">
+<head>
+  <title>마이페이지</title>
+</head>
+
+<div layout:fragment="content" class="container">
+  <style>
+    a {
+      text-decoration: none;
+    }
+  </style>
+  <h1 class="my-4">내가 쓴 게시글</h1>
+  <h3 class="my-3">
+    <i class="bi bi-airplane text-primary"></i>
+    같이놀자</h3>
+    <div class="boardList">
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">글 번호</th>
+          <th scope="col">제목</th>
+          <th scope="col">작성일</th>
+          <th scope="col">수정:삭제</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          <tr th:each="c:${comm}" th:if="${c.uId==user.uId}">
+            <th scope="row">
+              <a class="" th:text="${c.cId}"></a>
+            </th>
+            <th scope="row">
+              <a class="" th:text="${c.title}" th:href="@{'/comm/{cId}/detail.do'(cId=${c.cId})}"></a>
+            </th>
+            <td>
+              <span th:text="${#dates.format(c.postTime,'yyyy-MM-dd')}"></span>
+            </td>
+            <td>
+              <a th:if="${session.loginUser!=null && session.loginUser.uId==c.user.uId}" th:href="@{'/comm/{cId}/modify.do'(cId=${c.cId})}"  class="btn btn-sm btn-outline-dark me-1">수정</a>
+              <a th:if="${session.loginUser!=null && session.loginUser.uId==c.user.uId}" th:href="@{'/comm/{cId}/remove.do'(cId=${c.cId})}"  class="btn btn-sm btn-outline-danger">삭제</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mx-auto my-1">
+      <th:block th:include="/trip/pageNav"></th:block>
+    </div>
+
+  <h3 class="my-3">
+    <i class="bi bi-airplane text-primary"></i>
+    상품판매</h3>
+  <div class="boardList">
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">글 번호</th>
+        <th scope="col">제목</th>
+        <th scope="col">작성일</th>
+        <th scope="col">수정:삭제</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr th:each="c:${comm}" th:if="${c.uId==user.uId}">
+        <th scope="row">
+          <a class="" th:text="${c.cId}"></a>
+        </th>
+        <th scope="row">
+          <a class="" th:text="${c.title}" th:href="@{'/comm/{cId}/detail.do'(cId=${c.cId})}"></a>
+        </th>
+        <td>
+          <span th:text="${#dates.format(c.postTime,'yyyy-MM-dd')}"></span>
+        </td>
+        <td>
+          <a th:if="${session.loginUser!=null && session.loginUser.uId==c.user.uId}" th:href="@{'/comm/{cId}/modify.do'(cId=${c.cId})}"  class="btn btn-sm btn-outline-dark me-1">수정</a>
+          <a th:if="${session.loginUser!=null && session.loginUser.uId==c.user.uId}" th:href="@{'/comm/{cId}/remove.do'(cId=${c.cId})}"  class="btn btn-sm btn-outline-danger">삭제</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mx-auto my-1">
+    <th:block th:include="/trip/pageNav"></th:block>
+  </div>
+
+
+</div>

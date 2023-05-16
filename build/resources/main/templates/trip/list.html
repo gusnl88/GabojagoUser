@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>맞춤추천 리스트</title>
+    <script src=""></script>
+
+    <style>
+        #cateCont a {
+            text-decoration: none;
+            color: #3b3b3b;
+        }
+
+        #cateCont li {
+            height: 40px;
+            line-height: 30px;
+        }
+
+        #cateCont a:hover {
+            color: #0d6efd;
+        }
+        #cateNav a,
+        #mbtiNav a {
+            /*text-decoration: none;*/
+            display: inline-block;
+            height: 40px;
+            line-height: 30px;
+            color: #3b3b3b;
+        }
+
+        #mbtiNav {
+            display: flex;
+            gap: 10px;
+        }
+
+        #mbtiNav a {
+            border: 1px solid #bbb;
+            margin: 5px 0;
+            border-radius: 5px;
+            padding: 0 5px;
+            height: 35px;
+            font-size: 14px;
+        }
+
+        #cateNav a:hover,
+        #mbtiNav a:hover {
+            color: #0d6efd;
+        }
+
+        #searchTagInput:focus {
+            border: 3px solid;
+            border-color: cornflowerblue;
+            box-shadow: none !important;
+        }
+
+        .delImgInput {
+            display: none;
+        }
+        .delImgItem > .delImgInput:checked + img {
+            background-color: lightcoral;
+        }
+
+        input[type=radio]:checked {
+            accent-color: orangered;
+        }
+
+        .star-rating input[type="radio"] {
+            /*display: none;*/
+        }
+
+        .star-rating label {
+            display: inline-block;
+            font-size: 25px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover~label,
+        .star-rating input[type="radio"]:checked~label{
+            color: orangered;
+
+        }
+
+        .star-ratings-fill {
+            padding: 0;
+            /*position: absolute;*/
+            z-index: 1;
+            display: flex;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            color: orangered;
+        }
+
+        .star-ratings-base {
+            z-index: 0;
+            padding: 0;
+        }
+
+        .star {
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .bi-star {
+            color: #aaa !important;
+        }
+
+        #mainCont {
+            width: 100%;
+            height: 500px;
+
+        }
+
+        #tripMainImg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-image: url("/public/img/trip/tripMain1.jpg");
+            background-repeat: no-repeat;
+            background-position: 0 50%;
+        }
+
+    </style>
+</head>
+<div layout:fragment="content" class="container">
+    <script src="/public/js/tripLike.js" defer></script>
+    <script src="/public/js/tripHashTag.js" defer></script>
+    <div class="carousel-inner mb-3">
+        <div id="mainCont" class="carousel-item active d-flex align-items-center" data-bs-interval="10000">
+            <img id="tripMainImg" src="/public/img/trip/tripMain1.jpg" class="d-block w-100 img-fluid" alt="...">
+            <div class="">
+                <div class="carousel-caption d-none d-md-block">
+                    <h1 class="display-2 fw-bold " style="text-shadow: 1px 1px 1px gray;">가보자고</h1>
+                    <!--                <h2 class="my-4">가보자고</h2>-->
+                    <nav aria-label="Page navigation example">
+                        <form class="d-flex my-2 mx-auto" role="search" style="width: 400px;">
+                            <div class="input-group">
+                                <select name="searchField" class="form-control form-select w-25">
+                                    <!--                    <option th:selected="(${#strings.equals(param.searchField,'t_id')})" value="t_id">글번호</option>-->
+                                    <option th:selected="(${#strings.equals(param.searchField,'u_id')})" value="u_id" >글쓴이</option>
+                                    <!--                    <option th:selected="(${#strings.equals(param.searchField,'post_time')})" value="post_time">작성일</option>-->
+                                    <!--                    <option th:selected="(${#strings.equals(param.searchField,'update_time')})" value="update_time">수정일</option>-->
+                                    <option th:selected="(${#strings.equals(param.searchField,'title')})" value="title">제목</option>
+                                    <option th:selected="(${#strings.equals(param.searchField,'content')})" value="content">내용</option>
+                                    <option th:selected="(${#strings.equals(param.searchField,'category')})" value="category">테마</option>
+                                    <option th:selected="(${#strings.equals(param.searchField,'area')})" value="area">지역</option>
+                                    <!--                    option(value="status", selected=(params.field==="status")) 상태-->
+
+                                </select>
+                                <input class="form-control w-50" type="text" placeholder="검색어 입력" aria-label="Search" id="searchInput" name="searchValue" th:value="${param.searchValue}">
+                                <button class="btn btn-danger" type="submit" id="searchBtn">검색</button>
+                                <!--                <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>-->
+                            </div>
+                        </form>
+                    </nav>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+<!--    <h2 class="my-4">가보자고</h2>-->
+<!--    <nav aria-label="Page navigation example">-->
+<!--        <form class="d-flex my-2 mx-auto" role="search" style="width: 400px;">-->
+<!--            <div class="input-group">-->
+<!--                <select name="searchField" class="form-control form-select w-25">-->
+<!--                    &lt;!&ndash;                    <option th:selected="(${#strings.equals(param.searchField,'t_id')})" value="t_id">글번호</option>&ndash;&gt;-->
+<!--                    <option th:selected="(${#strings.equals(param.searchField,'u_id')})" value="u_id" >글쓴이</option>-->
+<!--                    &lt;!&ndash;                    <option th:selected="(${#strings.equals(param.searchField,'post_time')})" value="post_time">작성일</option>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    <option th:selected="(${#strings.equals(param.searchField,'update_time')})" value="update_time">수정일</option>&ndash;&gt;-->
+<!--                    <option th:selected="(${#strings.equals(param.searchField,'title')})" value="title">제목</option>-->
+<!--                    <option th:selected="(${#strings.equals(param.searchField,'content')})" value="content">내용</option>-->
+<!--                    <option th:selected="(${#strings.equals(param.searchField,'category')})" value="category">테마</option>-->
+<!--                    <option th:selected="(${#strings.equals(param.searchField,'area')})" value="area">지역</option>-->
+<!--                    &lt;!&ndash;                    option(value="status", selected=(params.field==="status")) 상태&ndash;&gt;-->
+
+<!--                </select>-->
+<!--                <input class="form-control w-50" type="text" placeholder="검색어 입력" aria-label="Search" id="searchInput" name="searchValue" th:value="${param.searchValue}">-->
+<!--                <button class="btn btn-outline-success" type="submit" id="searchBtn">검색</button>-->
+<!--                &lt;!&ndash;                <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>&ndash;&gt;-->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </nav>-->
+<!--    -->
+
+    <div class="d-flex align-items-center justify-content-between">
+        <div>
+            <ul class="nav" id="cateNav">
+                <a class="nav-link active" href="list.do"><i class="bi bi-geo-alt fs-5"></i></a>
+                <a class="nav-link" href="list.do?searchField=category&searchValue=힐링">힐링</a>
+                <a class="nav-link" href="list.do?searchField=category&searchValue=체험">체험</a>
+                <a class="nav-link" href="list.do?searchField=category&searchValue=반려동물">반려동물</a>
+                <a class="nav-link" href="list.do?searchField=category&searchValue=레저">레저</a>
+                <a class="nav-link" href="list.do?searchField=category&searchValue=박물관">박물관</a>
+            </ul>
+
+            <ul class="nav d-flex g-1" id="mbtiNav">
+                <a class="nav-link" href="list.do?searchField=istj&searchValue=1">istj</a>
+                <a class="nav-link" href="list.do?searchField=istp&searchValue=1">istp</a>
+                <a class="nav-link" href="list.do?searchField=isfj&searchValue=1">isfj</a>
+                <a class="nav-link" href="list.do?searchField=isfp&searchValue=1">isfp</a>
+                <a class="nav-link" href="list.do?searchField=intj&searchValue=1">intj</a>
+                <a class="nav-link" href="list.do?searchField=intp&searchValue=1">intp</a>
+                <a class="nav-link" href="list.do?searchField=infj&searchValue=1">infj</a>
+                <a class="nav-link" href="list.do?searchField=infp&searchValue=1">infp</a>
+                <a class="nav-link" href="list.do?searchField=estj&searchValue=1">estj</a>
+                <a class="nav-link" href="list.do?searchField=estp&searchValue=1">estp</a>
+                <a class="nav-link" href="list.do?searchField=esfj&searchValue=1">esfj</a>
+                <a class="nav-link" href="list.do?searchField=esfp&searchValue=1">esfp</a>
+                <a class="nav-link" href="list.do?searchField=entj&searchValue=1">entj</a>
+                <a class="nav-link" href="list.do?searchField=entp&searchValue=1">entp</a>
+                <a class="nav-link" href="list.do?searchField=enfj&searchValue=1">enfj</a>
+                <a class="nav-link" href="list.do?searchField=enfp&searchValue=1">enfp</a>
+            </ul>
+       </div>
+        <div class="d-flex align-items-center mt-4">
+            <div>
+                <a class="btn bg-dark bg-opacity-10 rounded-5" data-bs-toggle="offcanvas" href="#offcanvasSearch" role="button" aria-controls="offcanvasExample">
+                    해시태그 검색
+                    <i class="bi bi-search"></i>
+                </a>
+            </div>
+            <div class="text-end ms-2" th:if="${session.loginUser!=null && #strings.equals(session.loginUser.permission,'PARTNER')}">
+                <a class="btn bg-dark bg-opacity-10 rounded-5" href="/trip/register.do" role="button">
+                    여행지 등록
+<!--                    <i class="bi bi-arrow-up-right"></i>-->
+                    <i class="bi bi-pencil"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 해시태그 검색창 -->
+    <div>
+        <th:block th:include="/trip/tagNavbar.html"></th:block>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-between align-items-center">
+        <h4 class="m-0">맞춤추천</h4>
+        <nav aria-label="Page navigation example">
+            <form class="d-flex my-2" role="search">
+                <div class="input-group">
+<!--                    <label class="input-group-text bi bi-filter-square"></label>-->
+                    <select name="order" class="form-control form-select">
+<!--                        <option value="">정렬기준</option>-->
+                        <option th:selected="(${#strings.equals(param.order,'t_id')})" value="t_id">글번호</option>
+                        <option th:selected="(${#strings.equals(param.order,'u_id')})" value="u_id">글쓴이</option>
+                        <option th:selected="(${#strings.equals(param.order,'post_time')})" value="post_time">작성일</option>
+                        <option th:selected="(${#strings.equals(param.order,'update_time')})" value="update_time">수정일</option>
+                        <option th:selected="(${#strings.equals(param.order,'title')})" value="title">제목</option>
+                        <option th:selected="(${#strings.equals(param.order,'view_count')})" value="view_count">조회수</option>
+                        <option th:selected="(${#strings.equals(param.order,'likes')})" value="likes">좋아요</option>
+                    </select>
+                    <select name="direct" class="form-control form-select">
+<!--                        <option value="">정렬방향</option>-->
+                        <option th:selected="(${#strings.equals(param.direct,'DESC')})" value="DESC">내림순
+                        <option th:selected="(${#strings.equals(param.direct,'ASC')})" value="ASC">오름순
+                    </select>
+
+                    <button class="input-group-text btn btn-outline-success">정렬</button>
+                    <!--                <button class="input-group-text bi bi-search"></button>-->
+                    <!--                <button class="btn btn-primary bi bi-search">검색</button>-->
+                </div>
+            </form>
+        </nav>
+    </div>
+
+
+    <section id="tripListCont" class="row row-cols-lg-4 row-cols-1 g-6">
+        <th:block th:include="/trip/includeList.html"></th:block>
+    </section>
+
+
+    <div class="mx-auto my-5">
+        <th:block th:include="/trip/pageNav.html"></th:block>
+    </div>
+
+
+</div>
+</html>

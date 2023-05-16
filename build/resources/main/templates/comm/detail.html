@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<div layout:fragment="content" class="py-5">
+    <script src="/public/js/CommLike.js" defer></script>
+<style>
+    #mbtiChk>a{
+        text-decoration: none;
+        color: #7c7cff;
+    }
+    #mbtiChk>a:hover{
+        color:black;
+    }
+</style>
+    <div class="w-75 mx-auto my-4">
+        <div class="card" >
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div  class="col-1 me-1" >
+                    <a href="" class="profile">
+                        <img class="profile img-thumbnail rounded-circle w-100 h-100" style="image-size:cover"
+                         th:src="@{'{path}'(path=${c.user.imgPath})}">
+                    </a>
+<!--                         th:src="@{'{path}'(path=${c.user.imgPath})}">-->
+                </div>
+                <div class="col-2 text-center" >
+                    <a href="#" th:text="${c.user.nkName}" class="profile pb-0 text-decoration-none fw-bold"></a><br>
+                    (@<small th:text="${c.user.uId}"></small>)
+                </div>
+                <h4 class="card-title col-7" th:text="${c.title}"></h4>
+                <div class="col-2 d-flex">
+                    <a th:if="${session.loginUser!=null && session.loginUser.uId==c.user.uId}" th:href="@{'/comm/{cId}/modify.do'(cId=${c.cId})}"  class="btn btn-sm btn-outline-dark me-1">수정</a>
+                    <a th:if="${session.loginUser!=null && session.loginUser.uId==c.user.uId}" th:href="@{'/comm/{cId}/remove.do'(cId=${c.cId})}"  class="btn btn-sm btn-outline-danger">삭제</a>
+                </div>
+            </div>
+            <p class="text-end text-muted me-2">
+                <small>작성일: <span th:text="${#dates.format(c.postTime,'yyyy-MM-dd')}"></span></small>
+                <small><i class="bi bi-eye"></i>조회수 <span th:text="${c.viewCount}"></span></small>
+            </p>
+            <div class="card-body">
+                <div th:id="'carousel'+${c.cId}" class="carousel slide" data-bs-ride="carousel">
+                    <div th:if="${c.imgs != null}"  class="carousel-inner">
+                        <div class="carousel-item" th:each="img,state:${c.imgs}" th:classappend="${(state.first)?'active':''}">
+                            <img th:src="@{'{path}'(path=${img.imgPath})}" class="d-block w-100" alt="게시글 이미지">
+                        </div>
+                    </div>
+                    <div th:unless="${c.imgs != null}" class="carousel-inner">
+                        <div class="carousel-item">
+                            <img src="/public/img/comm/1681717713661_1319.jpeg" class="d-block w-100 active" alt="기본이미지">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" th:data-bs-target="'#carousel'+${c.cId}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" th:data-bs-target="'#carousel'+${c.cId}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <h5 class="card-title" >일정</h5>
+                <th:block th:if="${c.user!=null}" th:each="plan,index:${c.user.plans}">
+                    <th:block th:if="${plan.pId==c.pId}">
+                        <th:block  th:each="p:${plan.contents}">
+                            <div class="accordion accordion-flush" th:id="'accordionFlushExample'+${p.conId}">
+                                <div class="accordion-item" >
+                                    <h2 class="accordion-header">
+                                        <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" th:data-bs-target="'#flush-collapse-' + ${p.conId}"  aria-expanded="false" aria-controls="flush-collapseOne">
+                                            <span th:text="${p.time}" class="text-bg-warning me-4 p-2  border-warning rounded-5"></span>
+                                            <span th:text="${p.title}"></span>
+                                        </button>
+                                    </h2>
+                                    <div th:id="'flush-collapse-' + ${p.conId}" class="accordion-collapse collapse"  th:data-bs-parent="'#accordionFlushExample'+${p.conId}" >
+                                        <div class="accordion-body w-100">
+                                            <div th:if="${p.imgPath!=null}" >
+                                                <img th:src="@{'{path}'(path=${p.imgPath})}" class="img-fluid" alt="일정꾸미는이미지">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                    </th:block>
+                </th:block>
+
+                </div>
+            </div>
+            <hr>
+            <div class="card-body d-flex justify-content-end align-items-center" >
+                <div class="d-flex justify-content-end fs-3">
+                    <div th:id="'likeCont'+${c.cId}"  th:with="likes=${c.likes},id=${c.cId}">
+                        <th:block th:with="likes=${c.likes},cId=${c.cId}" th:include="/comm/Likes"> </th:block>
+                    </div>
+                    <div>
+                    <a href="javascript:void(0)" id="myPlanAdd" th:onclick="registerPlan([[${c.pId}]])"><i class="bi bi-calendar-plus text-secondary me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="내일정바로추가"></i></a>
+                    <a href="javascript:void(0)" th:if="${session.loginUser.uId!=c.uId}" th:onclick="registerBookMark([[${c.cId}]],[[${c.pId}]])"><i class="bi bi-bookmark-plus text-warning me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="북마크"></i></a>
+                    <a href="javascript:void(0)" th:unless="${session.loginUser.uId!=c.uId}" th:onclick="alert('본인이 쓴 글은 신고할 수 없습니다.')"><i class="bi bi-bookmark-plus text-warning me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="북마크"></i></a>
+                    <a href="javascript:void(0)" id="commReport" ><i class="bi bi-bell-fill text-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="신고하기"></i></a>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-body me-4 fs-4 text-center ">
+                <a  class="text-decoration-none text-muted" href="#contentPage" >상세페이지</a>
+                <span>|</span>
+                <a class="text-decoration-none text-muted" href="#repliesPage" >덧글</a>
+            </div>
+
+            <div class="card-body" id="contentPage">
+                <p th:utext="${c.content}"> </p>
+            </div>
+
+            <!--답글 구현-->
+            <div class="card-body" id="repliesPage">
+                <h5>댓글</h5>
+                <div>
+                    <ul class="list-group border-0"  id="replyCont">
+                        <li class="list-group-item border-0" th:each="r:${c.getReplies()}" >
+                            <!--댓글리스트 영역-->
+                            <th:block th:include="/comm/reply/detail"></th:block>
+                        </li>
+                        <!--일반댓글입력영역-->
+
+                    </ul>
+                    <div class="list-group-item border-0 bg-light " id="">
+                        <form name="replyInsertForm"  action="" method="post"
+                              onsubmit="event.preventDefault();registerReply(this);"
+                        >
+                            <input type="hidden" name="uId" th:value="${c.getUId()}">
+                            <input type="hidden" name="cId" th:value="${c.cId}">
+                            <div class="d-flex">
+                                <div class="col-3 p-0">
+                                    <input type="hidden" class="form-control" name="parentCrId"  >
+                                    <input type="text" class="form-control" name="nkName" th:value="${(session.loginUser==null)?'':session.loginUser.nkName}"  >
+                                </div>
+                                <div class="col p-0">
+                                    <input type="text" class="form-control" name="content" placeholder="댓글내용">
+                                </div>
+                                <button class="btn btn-secondary">제출</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <div class="text-end">
+            <a class="btn btn-outline-warning my-2" href="/comm/list.do"> 목록으로</a>
+        </div>
+        </div>
+
+    <!--😎 모달창 -->
+    <th:block th:include="/comm/reportModal" th:with="uId=${c.getUId()},cId=${c.getCId()}"></th:block>
+    <th:block th:include="/comm/profileModal"></th:block>
+
+
+    <script>
+        const reportModal=new bootstrap.Modal(document.getElementById('reportModal',{}));
+        const profileModal=new bootstrap.Modal(document.getElementById('profileModal',{}));
+        const profile=document.getElementsByClassName("profile");
+        const commReport=document.getElementById("commReport");
+        const myPlanAdd=document.getElementById("myPlanAdd");
+        const bookMarkCheck=document.getElementById("bookMarkCheck");
+        const replyContainer=document.getElementById("replyCont");
+        const replyInsertForm=document.forms["replyInsertForm"];
+        const replyReplyForm=document.forms["replyReplyForm"];
+
+        //프로필 클릭시 프로필 모달창뜸
+        Array.from(profile).forEach((p)=>{
+            p.addEventListener("click",(e)=>{
+                e.preventDefault();
+             profileModal.show();
+        })});
+        //신고글 클릭시 모달창
+        commReport.addEventListener("click",(e)=>{
+            reportModal.show();
+        })
+
+
+
+        async function loadReplies(cId){
+            let url=`/comm/reply/${cId}/list.do`
+            const resp=await fetch(url);
+            if(resp.status===200){
+                let text=await resp.text();
+                replyContainer.innerHTML=text;
+            }
+        }
+
+
+        async function registerReply(replyInsertForm){
+            const data= new FormData(replyInsertForm);
+            let url="/comm/reply/handler.do";
+            const resp= await fetch(url,{method:"POST",body:data});
+            if(resp.status===200){
+                const json=await resp.json();
+                if(json.handler>0){
+                    alert("등록성공!")
+                    await loadReplies(replyInsertForm.cId.value);                }
+            }else{
+                alert("등록실패"+resp.status);
+            }
+        }
+
+
+
+        async function modifyReply(modifyForm){//수정이 시작될떄 핸들러
+            let url="/comm/reply/handler.do"
+            const data=new FormData(modifyForm);
+            const resp=await fetch(url,{method:"PUT",body:data});
+            if(resp.status===200){
+                const json=await resp.json();
+                if(json.handler>0) {
+                    alert("수정성공!");
+                    await loadReplies(replyInsertForm.cId.value);
+                }
+            }else{
+                alert("수정통신실패");
+            }
+        }
+
+        async function removeReply(replyNum) {
+            let check = confirm("삭제하시겠습니까?");
+            let url = "/comm/reply/handler.do";
+            const data=new FormData();
+            data.set("ccId",replyNum);
+            if (check) {
+                const resp = await fetch(url, {method:"DELETE",body:data})
+                if (resp.status === 200) {
+                    const json = await resp.json();
+                    if(json.handler>0){
+                        alert("삭제 성공");
+                        await loadReplies(replyInsertForm.cId.value);
+                  }
+                }else{
+                    alert("삭제 통신 실패 status: " + resp.status)
+                }
+            }
+        }
+    //북마크 클릭시 등록
+
+     async function registerBookMark(cId,pId){
+         let check=confirm("북마크를 등록하시겠습니까?");
+         let url="/bookmark/comm/"+cId+"/"+pId+"/handler.do";
+         if(check){
+             const resp= await fetch(url,{method:"POST"});
+             if(resp.status===200){
+                 const json=await resp.json();
+                 if(json.handler>0) {
+                     alert("북마크 등록 성공!");
+                 }
+             }else{
+                 alert("이미 북마크를 하셨습니다!");
+             }
+         }
+     }
+
+     //내일정 추가
+        async function registerPlan(pId){
+            let check=confirm("내 일정에 추가하시겠습니까?")
+            let url="/comm/plan/"+pId+"/handler.do";
+            if(check){
+                const resp= await fetch(url,{method:"POST"});
+                if(resp.status===200){
+                    const json=await resp.json();
+                    if(json.handler>0) {
+                        alert("일정 등록 성공!");
+                    }
+                }else{
+                    alert("이미 등록한 일정입니다.!");
+                }
+            }
+        }
+
+    </script>
+</div>
+</html>

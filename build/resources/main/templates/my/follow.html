@@ -1,0 +1,68 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutMy}">
+<head>
+    <title>마이페이지</title>
+</head>
+
+<section layout:fragment="content" class="container mx-auto">
+
+    <div class="followCnt ms-5 my-5 w-75">
+            <div class="text-center p-0">
+                <p><img class="profile img-thumbnail rounded-circle w-25 h-25" style="image-size:cover"
+                        th:src="@{'{path}'(path=${user.imgPath})}"></p>
+                <h5 th:text="${user.getNkName()}" class="mb-0"></h5>
+                (<small  class="text-muted" th:text="${user.getUId()}"></small>)
+
+                <p th:text="${user.prContent}">
+            </div>
+
+        <ul class="nav nav-pills my-2" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">
+                    팔로워 (<span th:text="${(user.followers!=null)?user.followers.size():0}"></span>)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">
+                    팔로잉 (<span th:text="${(user.following!=null)?user.followings.size():0}"></span>)
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content my-3" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+<!--                팔로우리스트-->
+                <h3>팔로워 리스트</h3>
+                <div id="followerCont" class="list-group">
+                    <div th:each="f:${user.followers}"
+                         class="list-group-item ">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <th:block th:include="/my/followDetail"></th:block>
+                            <div>
+                                <button  type="button"
+                                         th:onclick="toggleFollower([[${f.uId}]],this)"
+                                         class="btn btn-outline-danger">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+                <h3>팔로잉 리스트</h3>
+                <div id="followingsCont" class="list-group">
+                    <div th:each="f:${user.followings}"
+                         class="list-group-item ">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <th:block th:include="/my/followDetail"></th:block>
+                            <div>
+                                <button  type="button"
+                                         th:onclick="toggleFollowing([[${f.uId}]],this)"
+                                         class="btn btn-outline-primary active">팔로잉</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

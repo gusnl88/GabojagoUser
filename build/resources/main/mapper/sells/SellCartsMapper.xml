@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.sells.SellCartsMapper">
+    <resultMap id="sellCartMap" type="SellCartDto">
+        <id column="u_id" property="uId"/>
+        <result column="s_id" property="sId"/>
+        <result column="cart_id" property="cartId"/>
+        <collection property="sellList"
+                    select="com.project.gabojago.gabojagouser.mapper.sells.SellsMapper.findBySId"
+                    column="s_id"
+                    fetchType="lazy"/>
+    </resultMap>
+    <insert id="insertOne">
+        INSERT INTO sell_carts (u_id,s_id) VALUE (#{uId},#{sId})
+    </insert>
+    <delete id="deleteOne">
+        DELETE FROM sell_carts WHERE cart_id=#{cartId}
+    </delete>
+    <select id="findByUId" resultMap="sellCartMap">
+        SELECT * FROM sell_carts WHERE u_id=#{uId}
+    </select>
+</mapper>

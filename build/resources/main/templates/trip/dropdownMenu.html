@@ -1,0 +1,15 @@
+<div class="dropdown" th:if="${session.loginUser!=null && #strings.equals(session.loginUser.uId,t.uId)}">
+<!--<div class="dropdown" th:if="${session.loginUser!=null && session.loginUser.getUId().equals(${t.uId})}">-->
+  <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-three-dots-vertical text-muted"></i>
+  </a>
+  <ul class="dropdown-menu">
+    <!-- 로그인 + 로그인유저와 게시글의 유저가 동일할때 보이기! -->
+    <li>
+<!--    <li th:if="${session.loginUser!=null}">-->
+<!--    <li th:if="${session.loginUser!=null && #strings.equals(session.loginUser.uId,t.uId)}">-->
+      <a class="dropdown-item" th:href="@{'/trip/{tId}/modify.do'(tId=${t.tId})}">수정폼</a>
+    </li>
+    <li><a class="dropdown-item" th:href="@{'/trip/{tId}/remove.do'(tId=${t.tId})}">삭제</a></li>
+  </ul>
+</div>

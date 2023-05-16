@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutMy}">
+<head>
+  <title>탈퇴하기</title>
+</head>
+<div layout:fragment="content" class="mx-auto">
+  <form class="mx-auto" action="/user/dropout.do" method="post" style="width: 450px;">
+    <h1 class="my-4">탈퇴 확인</h1>
+    <p class="text-danger">아이디와 비밀번호 확인이 필요합니다.</p>
+    <p class="form-floating">
+      <input type="text" name="uId" value="" class="form-control" placeholder="ID를 입력해주세요.">
+      <label>ID</label>
+    </p>
+    <p class="form-floating">
+      <input type="password" name="pw" value="" class="form-control" placeholder="PassWord를 입력해주세요.">
+      <label>PW</label>
+    </p>
+    <p class="text-end" id="dropBtn">
+      <button class="btn btn-primary">탈퇴하기</button>
+    </p>
+  </form>
+
+  <script>
+    const dropBtn = document.getElementById('dropBtn');
+    dropBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const uId = document.getElementsByName('uId')[0].value;
+      const pw = document.getElementsByName('pw')[0].value;
+      if (uId === '' || pw === '') {
+        alert('ID와 PW를 입력해주세요.');
+        return;
+      }
+      if (confirm('정말 탈퇴하시겠습니까?')) {
+        document.forms[0].submit();
+      }
+    });
+  </script>
+</div>
+</html>

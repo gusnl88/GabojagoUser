@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.trip.TripReivewImgMapper">
+    <resultMap id="TripReviewImgMap" type="TripReviewImgDto">
+        <id property="triId" column="tri_id"/>
+        <result property="trId" column="tr_id"/>
+        <result property="imgPath" column="img_path"/>
+    </resultMap>
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="triId" parameterType="TripReviewImgDto">
+        INSERT INTO trip_review_imgs (tr_id, img_path) VALUE (#{trId},#{imgPath})
+    </insert>
+
+    <delete id="deleteOne">
+        DELETE FROM trip_review_imgs WHERE tri_id=#{triId}
+    </delete>
+    <select id="findByTrId" resultMap="TripReviewImgMap">
+        SELECT * FROM trip_review_imgs WHERE tr_id=#{trId}
+    </select>
+    <select id="findByTriId" resultMap="TripReviewImgMap">
+        SELECT * FROM trip_review_imgs WHERE tri_id=#{triId}
+    </select>
+</mapper>

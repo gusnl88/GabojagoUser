@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.comm.CommReportMapper">
+    <resultMap id="CommReportMap" type="commReportDto">
+        <id column="cr_id" property="crId"/>
+        <result column="u_id" property="uId"/>
+        <result column="c_id" property="cId"/>
+        <result column="content" property="content"/>
+        <result column="post_time" property="postTime"/>
+    </resultMap>
+    <insert id="insertOne"  useGeneratedKeys="true" keyProperty="crId">
+        INSERT INTO comm_reports (u_id,c_id,content)
+        VALUE (#{uId},#{cId},#{content})
+    </insert>
+    <delete id="deleteOne">
+        DELETE FROM comm_reports WHERE cr_id=#{cr_id};
+    </delete>
+    <select id="findAll" resultMap="CommReportMap">
+       SELECT * FROM comm_reports
+    </select>
+    <select id="findByCrId" resultMap="CommReportMap">
+        SELECT * FROM comm_reports WHERE cr_id=#{cr_id}
+    </select>
+
+</mapper>

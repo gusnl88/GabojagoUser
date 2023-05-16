@@ -1,0 +1,37 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<div layout:fragment="content" class="container">
+  <table class="table w-75 mx-auto my-5" >
+    <thead>
+    <tr>
+      <th scope="">작성자</th>
+      <td  th:text="${n.UId}"></td>
+      <td></td>
+      <td></td>
+      <th>조회수</th>
+      <td th:text="${n.viewCount}"></td>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <th >작성일</th>
+      <td colspan="5" th:text="${n.postTime.toLocaleString()}"></td>
+
+    </tr>
+    <tr>
+      <th scope="">제목</th>
+      <td colspan="5" th:text="${n.title}"></td>
+
+    </tr>
+    <tr>
+      <td class="py-4 px-3" colspan="6">
+        <span th:text="${n.content}"></span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>

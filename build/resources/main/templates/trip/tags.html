@@ -1,0 +1,7 @@
+<ul class="list-unstyled ">
+<!--    <li th:each="t:${t.tags}" class="text-muted me-2 badge rounded-5 bg-primary bg-opacity-10">-->
+    <li th:each="t:${t.tags}" class="text-danger text-opacity-70 me-2 badge rounded-5 bg-danger bg-opacity-10">
+<!--    <li th:each="t:${t.tags}" class="text-muted me-2 badge border rounded-5 bg-secondary bg-opacity-10">-->
+      <i class="bi bi-hash"></i><span th:text="${t.tag}"></span>
+    </li>
+</ul>

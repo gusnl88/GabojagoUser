@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<body>
+    <div layout:fragment="content" class="container">
+        <form name="registerForm" class="mx-auto w-80" action="/comm/modify.do" method="post"  enctype="multipart/form-data" >
+            <input type="hidden" name="content" value="">
+            <input type="hidden" name="cId" th:value="${c.cId}">
+
+            <h2 class="my-4">Community 글수정 양식</h2>
+            <p class="form-floating">
+                <input id="uIdInput" type="text" name="uId" class="form-control" th:value="${session.loginUser.uId}" readonly placeholder="??">
+                <label>글쓴이</label>
+            </p>
+            <p class="form-floating">
+                <input id="titleInput" type="text" name="title" class="form-control" th:value="${c.title}" >
+                <label>글 제목</label>
+            </p>
+
+
+            <th:block th:include="../static/summernote/summerBoard.html"></th:block>
+            <input type="hidden"  id="contentVal" th:value="${c.content}">
+            <script>
+                let content=document.getElementById("contentVal");
+                 $('#summernote').summernote('pasteHTML',content.value);
+            </script>
+
+            <ul class="list-group my-4">
+                <li class="list-group-item listHeaderTitle list-group-item-action active">
+                    <h5>일정 등록</h5>
+                </li>
+                <li class="list-group-item" th:each="p:${session.loginUser.plans}">
+                    <input class="form-check-input me-1" type="radio" name="pId"  th:value="${p.pId}" id="firstRadio" checked>
+                    <label class="form-check-label" for="firstRadio" th:text="${p.title}">\</label>
+                </li>
+            </ul>
+
+            <h5 class="mt-2 my-0 p-0">mbti</h5>
+
+            <div class="d-flex justify-content-evenly">
+                <label><p><input class="form-check-input" name="istj" type="checkbox" value="1" th:checked="${c.istj==1}"> istj</p></label>
+                <label><p><input class="form-check-input" name="istp" type="checkbox" value="1" th:checked="${c.istp==1}"> istp</p></label>
+                <label><p><input class="form-check-input" name="isfj" type="checkbox" value="1" th:checked="${c.isfj==1}"> isfp</p></label>
+                <label><p><input class="form-check-input" name="intj" type="checkbox" value="1" th:checked="${c.intj==1}"> intj</p></label>
+                <label><p><input class="form-check-input" name="intp" type="checkbox" value="1" th:checked="${c.intp==1}"> intp</p></label>
+                <label><p><input class="form-check-input" name="infj" type="checkbox" value="1" th:checked="${c.infj==1}"> infj</p></label>
+                <label><p><input class="form-check-input" name="infp" type="checkbox" value="1" th:checked="${c.infp==1}"> infp</p></label>
+            </div>
+            <div class="d-flex justify-content-evenly">
+                <label><p><input class="form-check-input" name="estj" type="checkbox" value="1" th:checked="${c.estj==1}"> estj</p></label>
+                <label><p><input class="form-check-input" name="estp" type="checkbox" value="1" th:checked="${c.estp==1}"> estp</p></label>
+                <label><p><input class="form-check-input" name="esfj" type="checkbox" value="1" th:checked="${c.esfj==1}"> esfj</p></label>
+                <label><p><input class="form-check-input" name="esfp" type="checkbox" value="1" th:checked="${c.esfp==1}"> esfp</p></label>
+                <label><p><input class="form-check-input" name="entj" type="checkbox" value="1" th:checked="${c.entj==1}"> entj</p></label>
+                <label><p><input class="form-check-input" name="entp" type="checkbox" value="1" th:checked="${c.entp==1}"> entp</p></label>
+                <label><p><input class="form-check-input" name="enfj" type="checkbox" value="1" th:checked="${c.enfj==1}"> enfj</p></label>
+                <label><p><input class="form-check-input" name="enfp" type="checkbox" value="1" th:checked="${c.enfp==1}"> enfp</p></label>
+            </div>
+
+
+            <p class="form-floating mt-3">
+                <select class="form-select" name="area" placeholder="??">
+                    <option value="서울">서울</option>
+                    <option value="인천">인천</option>
+                    <option value="대전">대전</option>
+                    <option value="광주">광주</option>
+                    <option value="대구">대구</option>
+                    <option value="울산">울산</option>
+                    <option value="부산">부산</option>
+                    <option value="세종">세종</option>
+                    <option value="경기">경기</option>
+                    <option value="강원">강원</option>
+                    <option value="충북">충북</option>
+                    <option value="충남">충남</option>
+                    <option value="전북">전북</option>
+                    <option value="전남">전남</option>
+                    <option value="경북">경북</option>
+                    <option value="경남">경남</option>
+                    <option value="제주">제주</option>
+                </select>
+                <label>지역</label>
+            </p>
+
+            <p id="imgDelCont">
+            <h4>이미지 삭제(체크)</h4>
+            <label th:each="img,state:${c.imgs}" class="w-25 delImgItem">
+                <input type="checkbox"  name="delImgId" class="delImgInput" th:value="${img.ciId}">
+                <img th:src="@{'{path}'(path=${img.imgPath})}" class="img-thumbnail">
+            </label>
+            </p>
+            <p id="imgCont">
+                <button id="imgAddBtn" class="btn btn-light w-100"  type="button" >
+                    New 이미지
+                    <i class="bi bi-plus-square"></i>
+                </button>
+            </p>
+
+            <div class="text-end m-2">
+                <button type="submit" class="btn btn-primary me-1">등록</button>
+                <button type="reset" class="btn btn-warning me-1">초기화</button>
+            </div>
+
+
+        </form>
+        <script>
+            const imgAddBtn=document.getElementById('imgAddBtn');
+            const imgCont=document.getElementById('imgCont');
+            imgAddBtn.addEventListener("click",(e)=>{
+                imgCont.insertAdjacentHTML("beforeend", imgInputComponent())
+            });
+
+            function imgInputComponent(label="이미지",name="img"){//이 이름과 resgister의 img 이름이 넘어감.
+                return `<p class="input-group mt-2">
+              <label class="input-group-text">${label}</label>
+              <input class="form-control" type="file" name="${name}" >
+              <button type="button" class="btn btn-danger" onclick="this.closest('.input-group').remove()">
+                <i class="bi bi-x-lg"></i>
+              </button>
+              </p>`;
+            }
+
+            const registerForm=document.forms["registerForm"];
+                registerForm.onsubmit=function (e){
+                e.preventDefault();
+                let markupStr = $('#summernote').summernote('code');
+                registerForm.content.value=markupStr;
+                registerForm.submit();      }
+
+
+        </script>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.sells.SellOrderDetailMapper">
+    <resultMap id="SellOderDetailMap" type="SellOrderDetailDto">
+        <id property="sodId" column="sod_id"/>
+        <result property="soId" column="so_id"/>
+        <result property="uId" column="u_id"/>
+        <result property="sId" column="s_id"/>
+        <result property="oId" column="o_id"/>
+        <result property="cnt" column="cnt"/>
+        <result property="postTime" column="post_time"/>
+        <result property="useCheck" column="use_check"/>
+        <result property="useDate" column="use_date"/>
+        <collection property="sellList"
+                    select="com.project.gabojago.gabojagouser.mapper.sells.SellsMapper.findBySId"
+                    column="s_id"
+                    fetchType="lazy"/>
+        <collection property="sellOption"
+                    select="com.project.gabojago.gabojagouser.mapper.sells.SellsOptionMapper.findBySId"
+                    column="s_id"
+                    fetchType="lazy"/>
+        <collection property="orderList"
+                    select="com.project.gabojago.gabojagouser.mapper.sells.SellOderMapper.findBySoId"
+                    column="so_id"
+                    fetchType="lazy"/>
+    </resultMap>
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="sodId">
+        INSERT INTO sell_order_details ( u_id, s_id, o_id, so_id, cnt) VALUE
+        (#{uId},#{sId},#{oId},#{soId},#{cnt})
+    </insert>
+    <select id="findByUId" resultMap="SellOderDetailMap">
+        SELECT * FROM sell_order_details WHERE u_id=#{uId}
+    </select>
+</mapper>

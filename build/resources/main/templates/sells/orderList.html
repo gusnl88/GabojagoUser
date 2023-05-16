@@ -1,0 +1,53 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutMy}">
+<head>
+  <title>마이페이지</title>
+    <style>
+        #ticketGo{
+            text-decoration: none;
+            color: orangered;
+            font-size: larger;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<div layout:fragment="content">
+  <div class="container " style="width: 1000px;margin: 0 auto;">
+    <main role="main" class="container">
+      <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">구매 목록</h1>
+
+      </div>
+      <div class="card-deck mb-3 text-center" th:each="d:${detailList}">
+        <!-- 장바구니 항목 -->
+        <div class="card mb-4 box-shadow" th:each="o:${d.getSellList()}" >
+          <div class="d-flex justify-content-between card-header d-flex justify-content-between">
+<!--            <p><b>티켓사용:</b><span th:text="${d.isUseCheck() ? '사용' : '미사용'}"></span></p>-->
+            <a id="ticketGo" th:href="@{'/sells/{sodId}/ticket.do'(sodId=${d.getSodId()})}">티켓보러가기</a>
+            <h4 class="my-0 font-weight-normal"  th:text="${o.title}"></h4>
+            <p></p>
+          </div>
+          <div class="card-body d-flex" >
+
+            <a th:href="@{'/sells/{sodId}/ticket.do'(sodId=${d.getSodId()})}"   >
+              <img class="btn " style="width: 500px;height: 300px;" th:src="@{'{path}'(path=${o.imgMain})}" >
+            </a>
+
+            <ul class="list-unstyled mt-3 mb-4 align-items-center" th:each="option:${d.getSellOption()}" th:if="${d.getOId()==option.getOId()}" style="float:right; text-align:left;">
+
+              <li><b>옵션 이름:</b><span th:text="${option.getName()}"></span></li>
+              <li><b>개당 가격:</b><span th:text="${option.getPrice()}"></span></li>
+              <li><b>구매수량:</b><span th:text="${d.getCnt()}"></span></li>
+              <li><b>구매수량:</b><span th:text="${o.getPostTime().toLocaleString()}"></span></li>
+              <li>
+                <a style="text-decoration: none" th:href="@{'/sells/{sId}/detail.do'(sId=${d.getSId()})}"  th:if="${d.getSId()==o.getSId()}" >상품보러가기</a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

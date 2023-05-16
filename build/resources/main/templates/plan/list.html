@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>게시판 상세</title>
+    <link th:href="@{/public/css/plan/plan.css}" rel="stylesheet" />
+
+</head>
+
+<div layout:fragment="content" class="container-fluid px-0">
+        <div class="row">
+            <div class="col-2" id="forModal"></div><!-- 이거 없애야됨 -->
+
+            <div class="col-md-8 mainSection px-0">
+                <div class="row listMainHeader px-0 ">
+                    <img class="listMainHeaderImg mx-0 px-0" src="/public/img/plan/listheader2.jpg">
+                    <div class="col-6 titleBox">
+                        <div class="titleInnerBox">
+                        <p class="headerTitle">나의 여행 기록</p>
+                        <span class="headerFrom">최근 여행 : 취업 기원 제주도 여행 (D+084)</span>
+                        <br>
+                        <span class="headerStatus">다가오는 여행 : 제주도 한 달 살기 (D-002)</span>
+
+                        </div>
+                    </div>
+                    <div class="col-6 rightBox">
+                        <div class="flagBox">
+                            <div class="tdlTitle">
+                                <span>　Travel Flag</span>
+                                <span><i class="bi bi-flag-fill" id="flagB"></i>
+                                    <span class="tdlPBtn" id="mapP" style="margin-right: 5px">+</span>
+                                    <span class="tdlPBtn" id="mapM" style="margin-right: 5px">-</span>
+                                </span>
+                            </div>
+
+                            <div class="flagContent">
+                                <canvas id="listMap"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-12 scheduleHeader">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-secondary btn-lg dropdown-toggle catBtn py-0 border-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                        전체보기
+                                    </button>
+                                    <ul class="dropdown-menu p-0 border-0" style="text-align: center; background-color: transparent" role="tablist">
+                                        <li><a class="dropdown-item catBtn mx-0 catBtnC" style="color: white" href="#" id="day01-tab" data-bs-toggle="tab"
+                                               data-bs-target="#day01" type="button" role="tab" aria-controls="userinfo"
+                                               aria-selected="true">내가 만든 일정</a>
+                                        </li>
+                                        <li><a class="dropdown-item catBtn mx-0 catBtnC" style="color: white; font-size: 13px" href="#" id="day02-tab" data-bs-toggle="tab"
+                                               data-bs-target="#day02" type="button" role="tab" aria-controls="myreview"
+                                               aria-selected="true">내가 참여한 일정</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-8" style="text-align: right">
+                                <form role="search">
+                                    <select name="searchField" class="searchSelect">
+                                        <option th:selected="(${#strings.equals(param.searchField,'title')})" value="title">제 목</option>
+                                        <option th:selected="(${#strings.equals(param.searchField,'info')})" value="info">내 용</option>
+                                    </select>
+                                    <input type="text" name="searchValue" class="searchInput" placeholder="">
+                                    <button type="submit" class="searchBtn">검 색</button>
+                                </form>
+                            </div> <!--col 8-->
+
+                            <div class="col-md-2 scheduleInputBox">
+                                <div id="newScheduleBtn">
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                            </div>
+                        </div> <!--내부로우 수정필요-->
+                    </div> <!--스케쥴헤더-->
+
+                    <div class="col-12" id="accordionSection">
+                        <div class="listContent" style="overflow: hidden">
+                            <th:block th:each="plan:${plans}">
+
+                                    <div class="card">
+                                        <div class="cardReview" data-bs-toggle="tooltip" data-bs-placement="top" th:data-bs-title="리뷰작성">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </div>
+                                        <div class="cardModify" th:data-u-id="${plan.getUId()}" th:data-p-id="${plan.getPId()}" onclick="planModify(this)" >
+                                            <i class="bi bi-gear-fill"></i>
+                                        </div>
+                                        <div class="cardRemove" th:data-u-id="${plan.getUId()}" th:data-p-id="${plan.getPId()}" onclick="planRemove(this)" >
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </div>
+                                        <img class="card-img-top" th:if="${plan.getImgPath()==null}" src="/public/img/plan/planSample.jpg">
+                                        <img class="card-img-top" th:if="${plan.getImgPath()!=null}" th:src="${plan.getImgPath()}">
+                                        <a th:href="@{'{pId}/detail.do'(pId=${plan.getPId()})}">
+                                        <div class="card-body" style="width: 100%;">
+                                            <p class="cardSchedule text-end"><span th:text="${plan.getPlanFrom()}"/> ~ <span th:text="${plan.getPlanTo()}"/></p>
+                                            <p class="cardTitle" th:text="${plan.getTitle()}"></p>
+                                            <hr style="width: 60px; color: grey; margin: 5px 0px">
+                                            <p class="card-text cardInfo mb-3" th:text="${plan.getInfo()}"></p>
+                                        </div>
+                                        </a>
+                                        <div class="card-footer">
+                                                <div class="cardMy" style="background-image:url('/public/img/plan/profileDefault.png')"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" th:data-bs-title="${plan.getNkName()}">
+                                                </div>
+                                            <th:block th:each="mu:${plan.getMUsers()}">
+                                                <div class="cardOr" style="background-image:url('/public/img/plan/profileDefault.png')"
+                                                     data-bs-toggle="tooltip" data-bs-placement="top" th:data-bs-title="${mu.getNkName()}">
+                                                </div>
+                                            </th:block>
+                                        </div>
+                                    </div>
+
+
+                            </th:block>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-2" ></div>
+                </div> <!--메인섹션닫기-->
+            </div> <!--그리드 row 닫기-->
+
+
+            <!--새 플랜 만들기 모달 부분-->
+            <div class="modal fade" id="newPlanModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                    <form id="newPlanModalForm"  method="post" action="./insert.do" enctype="multipart/form-data">
+                        <div class="modal-header bg-primary bg-opacity-25 py-2">
+                            <h1 class="modal-title fs-4" id="staticBackdropLabel">새 여행 계획</h1>
+                            <div class="newPlanStatusBox">
+                                <input class="form-check-input statusC" type="radio" name="planStatus" id="flexRadioDefault1" value="PUBLIC" checked style="display: none" >
+                                <label class="form-check-label statusL" for="flexRadioDefault1">
+                                    <i class="bi bi-unlock-fill"></i>
+                                </label>
+                                <input class="form-check-input statusC" type="radio" name="planStatus" value="PRIVATE" id="flexRadioDefault2" style="margin-left: 10px; display: none" >
+                                <label class="form-check-label statusL" for="flexRadioDefault2">
+                                    <i class="bi bi-lock-fill"></i>
+                                </label>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body newPlanModalBody pb-1">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div id="newPlanPreviewBox" class="mb-3">
+                                            <img id="newPlanPreview">
+                                        </div>
+                                        <input type="file" class="form-control col-12 mb-3" id="newPlanImg" name="img" placeholder="">
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <input type="text" class="form-control" name="uId" th:value="${session.loginUser.getUId()}" placeholder="" hidden>
+                                            <input type="text" class="form-control" name="members" value="" placeholder="" hidden>
+                                            <div class="form-floating col-12 mb-3">
+                                                <input type="text" class="form-control" name="title" id="floatingTitle" placeholder="타이틀">
+                                                <label for="floatingTitle">타 이 틀</label>
+                                            </div>
+                                            <div class="form-floating col-6">
+                                                <input type="text" class="form-control" name="planFrom" id="floatingFrom" placeholder="일정 시작" onfocus="(this.type='date')">
+                                                <label for="floatingFrom">FROM.</label>
+                                            </div>
+                                            <div class="form-floating col-6 mb-3">
+                                                <input type="text" class="form-control" name="planTo" id="floatingTo" placeholder="일정 끝" onfocus="(this.type='date')">
+                                                <label  for="floatingTo">TO.</label>
+                                            </div>
+                                            <div class="form-floating col-12 mb-3">
+                                                <input type="text" class="form-control" name="info" id="floatingInfo" placeholder="설 명" style="height: 100px">
+                                                <label for="floatingInfo">설 명</label>
+                                            </div>
+                                            <div class="memberSelectBox">
+                                                <div class="memberSelectBoxHeader mb-1">
+                                                    <span>멤 버 리 스 트</span>
+                                                    <span id="memberSelectBoxPBtn"><i class="bi bi-plus-circle"></i></span>
+                                                </div>
+                                                <div id="memberSelectBoxFooter">
+                                                    <div class="cardMy" style="background-image:url('/public/img/plan/profileDefault.png')"
+                                                         data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="나">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer py-1">
+                                        <button type="submit" class="btn btn-primary sB">생 성</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="modal" id="newMemberModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered  modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">멤버 추가</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form id="memberSearchForm">
+                            <div class="modal-body memberSearchList py-1">
+                                <input type="checkbox" class="memberSearchCheckBoxInput" value="USER02" name="members" id="mcb1" style="display: none">
+                                <label For="mcb1">
+                                    <div class="memberSearchListCheckBox"></div>
+                                    <div class="cardOr" style="background-image:url('/public/img/plan/profileDefault.png')"></div>
+                                    <span>USER02</span>
+                                </label>
+                                <input type="checkbox" class="memberSearchCheckBoxInput" value="USER03" name="members" id="mcb2" style="display: none">
+                                <label For="mcb2">
+                                    <div class="memberSearchListCheckBox"></div>
+                                    <div class="cardOr" style="background-image:url('/public/img/plan/profileDefault.png')"></div>
+                                    <span>USER03</span>
+                                </label>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="memberSelectBoxIBtn" class="btn btn-primary">추가</button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+    <script th:inline="javascript">
+
+        // 플랜 수정
+        async function planModify(ele){
+            if([[${session.loginUser.uId}]] !== ele.dataset.uId) {
+                alert("플랜을 생성한 사람만 수정 할 수 있습니다!")
+            }
+            else {
+                let url =`/plan/${ele.dataset.pId}/modify.do`
+                const resp = await fetch(url,{method:"GET"});
+                const result = await resp.text();
+                if(resp.status===200){
+                    document.getElementById("forModal").insertAdjacentHTML("beforeend",result)
+                    let modalForm = document.getElementById('modifyPlanModal');
+                    new bootstrap.Modal(modalForm, {}).show();
+                } else {
+                    alert("플랜 정보를 불러오지 못했습니다! :" + resp.status);
+                }
+            }
+        }
+
+        // 플랜 삭제
+        async function planRemove(ele){
+            if([[${session.loginUser.uId}]] !== ele.dataset.uId) {
+                alert("플랜을 생성한 사람만 삭제 할 수 있습니다!")
+            }
+            else {
+                if(confirm("삭제된 정보는 복구할 수 없습니다. 그래도 삭제 할까요?")) {
+                    let data = new FormData();
+                    data.set("pId", ele.dataset.pId);
+                    data.set("uId", ele.dataset.uId);
+                    let url ='/plan/delete.do';
+                    const resp = await fetch(url,{method:"DELETE", body: data});
+                    const result = await resp.json()
+                    if(resp.status===200 && result === 1){
+                        alert("삭제 성공!")
+                        location.href="/plan/list.do"
+                    }else {
+                        alert("플랜 삭제 실패 status : " + resp.status);
+                    }
+                }
+            }
+        }
+
+        // 새 플랜 작성 시 대표이미지 미리보기
+        const img = document.getElementById("newPlanImg")
+        const imgBox = document.getElementById("newPlanPreviewBox")
+        img.addEventListener("change",()=>{
+            let selectedFile = img.files[0];
+            let fileReader = new FileReader();
+            fileReader.readAsDataURL(selectedFile);
+            fileReader.onload = function () {
+                document.getElementById("newPlanPreview").src = fileReader.result;
+            };
+            imgBox.style.backgroundImage="none";
+        })
+
+        // 새 플랜 작성시 멤버 추가 모달
+        const memPBtn = document.getElementById("memberSelectBoxPBtn")
+        memPBtn.onclick =()=>{
+            const modal = new bootstrap.Modal(document.getElementById('newMemberModal'), {});
+            modal.show();
+            const memIBtn = document.getElementById("memberSelectBoxIBtn")
+            memIBtn.onclick = ()=>{
+                const form = document.getElementById("memberSearchForm")
+                const inputFormFooter = document.getElementById("memberSelectBoxFooter");
+                let formArr = [];
+                for(let member of form["members"]){
+                    if(member.checked){
+                        formArr.push(member.value)
+                        inputFormFooter.insertAdjacentHTML('beforeend',`
+                     <div class="cardOr" style="background-image:url('/public/img/plan/profileDefault.png')"
+                             data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="${member.value}">
+                        </div>
+                    `)
+                    }
+                }
+                const tooltipTriggerList = document.querySelectorAll('.cardOr')
+                const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+                const newPlanModalForm = document.getElementById("newPlanModalForm")
+                newPlanModalForm["members"].value=formArr;
+
+                modal.hide();
+            }
+        }
+
+        const newPlanBtn = document.querySelector("#newScheduleBtn");
+        newPlanBtn.onclick = ()=>{
+            new bootstrap.Modal(document.getElementById('newPlanModal'), {}).show();
+        }
+
+        // 깃발 꽂기.. 그냥 해봄
+        window.addEventListener("load",()=>{
+            const box = document.querySelector(".flagContent")
+            const pBtn = document.getElementById("mapP")
+            const mBtn = document.getElementById("mapM")
+            const canvas = document.getElementById("listMap")
+            const ctx = canvas.getContext("2d")
+            canvas.width = 300;
+            canvas.height = 500;
+            let mapScale = 1.0;
+            ctx.save();
+            let currentC = new Image();
+
+            const map = new Image();
+            map.src = "/public/img/plan/listMap.png"
+            map.addEventListener('load', ()=>{
+                ctx.drawImage(map, 0, 0);
+                currentC.src = canvas.toDataURL();
+
+
+            });
+            function clearC(){
+                ctx.clearRect(0,0,300,500)
+            }
+            function xy(xy){
+                return xy/(box.clientWidth/300)
+            }
+            function load(){
+                ctx.scale(mapScale,mapScale);
+                ctx.drawImage(map,0,0);
+                ctx.restore();
+                ctx.save();
+            }
+            pBtn.addEventListener("click",()=>{
+                if(mapScale<5){
+                    clearC()
+                    mapScale*=1.2;
+                    load()
+                    currentC.src = canvas.toDataURL();
+
+
+                    // clearC()
+                    // mapScale*=1.2;
+                    // ctx.scale(1.2,1.2);
+                    // ctx.drawImage(currentC,0,0)
+                    // ctx.scale(1/1.2,1/1.2)
+                    // currentC.src = canvas.toDataURL();
+                }
+
+            })
+            mBtn.addEventListener("click",()=>{
+                if(mapScale>0.5){
+                    clearC()
+                    mapScale/=1.2;
+                    load()
+                    currentC.src = canvas.toDataURL();
+                }
+            })
+
+
+            let isOn = false;
+            canvas.addEventListener('mousemove', (event) => {
+                let x = event.offsetX;
+                let y = event.offsetY;
+                let data = ctx.getImageData(xy(x), xy(y), 1, 1).data;
+
+                if(data[0]!==0 && isOn===false){
+                    canvas.style.cursor="pointer"
+                    isOn = true;
+                    let mX=null,mY=null
+                    let a = 0,b = 0
+                    while (mX==null || mY==null){
+                        if(ctx.getImageData(xy(x)-a, xy(y), 1, 1).data[0]!==0)a += xy(1);
+                        else mX = xy(x) - a
+                        if (ctx.getImageData(xy(x), xy(y) - b, 1, 1).data[0] !==0) b += xy(1);
+                        else mY = xy(y) - b;
+                    }
+                    ctx.fillStyle="dodgerblue"
+                    ctx.fillRect(mX,mY,10,10)
+                } else if(data[0]===0 && data[1]===0 && data[2]===0 && isOn === true) {
+                    canvas.style.cursor="default"
+                    isOn =false;
+                    clearC();
+                    load();
+                }
+
+            });
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+
+</div>
+</html>
+

@@ -1,0 +1,17 @@
+<p class="card-text text-dark text-end me-3">
+    <a th:if="${session.loginUser!=null}"  href="javascript:void(0)"
+                 th:onclick=" commLikeHandler([[${(likes.cId==null)?cId:likes.cId}]])"
+                 class="text-danger text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="좋아요">
+        <i class="bi fs-3"
+           th:classappend="${(likes.status)?'bi-heart-fill':'bi-heart'}"
+        ></i>
+        <span th:text="${(likes.likes>0)?likes.likes:'0'}"></span>
+    </a>
+    <a th:unless="${session.loginUser!=null}"  href="javascript:void(0)"
+                 class="text-danger text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="좋아요">
+        <i class="bi fs-3"
+           th:classappend="${(likes.status)?'bi-heart-fill':'bi-heart'}"
+        ></i>
+        <span th:text="${(likes.likes>0)?likes.likes:'0'}"></span>
+    </a>
+</p>

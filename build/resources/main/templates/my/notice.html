@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<div layout:fragment="content" class="container pb-5">
+  <div class="carousel-inner h-25 my-2 ">
+    <div class="carousel-item active" data-bs-interval="10000">
+      <img src="/public/img/gabojagoMain.jpg" class="d-block w-100 img-fluid" alt="...">
+      <div class="carousel-caption d-none d-md-block">
+        <h1 class="bg-dark bg-opacity-50 fw-lighter fs-3" > 공지사항 </h1>
+      </div>
+    </div>
+  </div>
+  <h3 class="my-3">
+    <i class="bi bi-airplane text-primary"></i>
+    공지사항</h3>
+  <div class="boardList">
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">글 번호</th>
+        <th scope="col">제목</th>
+        <th scope="col">작성일</th>
+        <th scope="col">조회수</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr th:each="n:${notices}" >
+        <th scope="row">
+          <span class="text-dark fw-light" th:text="${n.nId}"></span>
+        </th>
+        <th scope="row">
+          <a class="text-dark link-primary  text-decoration-none" th:text="${n.title}" th:href="@{'/notice/{nId}/detail.do'(nId=${n.nId})}"></a>
+        </th>
+        <td>
+          <span th:text="${#dates.format(n.postTime,'yyyy-MM-dd')}"></span>
+        </td>
+        <td>
+          <span th:text="${n.viewCount}"></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mx-auto my-1">
+    <th:block th:include="/my/pageNav"></th:block>
+  </div>
+
+</div>

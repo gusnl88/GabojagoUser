@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.plan.PlanCheckListsMapper">
+    <resultMap id="planCheckListsMap" type="planCheckListsDto">
+        <id column="cl_id" property="clId"/>
+        <result column="p_id" property="pId"/>
+        <result column="content" property="content"/>
+        <result column="check_status" property="checkStatus"/>
+    </resultMap>
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="clId">
+        INSERT INTO plan_check_lists (p_id, content, check_status) value (#{pId},#{content},#{checkStatus})
+    </insert>
+    <update id="updateCheckStatus">
+        UPDATE plan_check_lists SET check_status=#{checkStatus} WHERE cl_id=#{clId}
+    </update>
+    <delete id="deleteOne">
+        DELETE FROM plan_check_lists WHERE cl_id=#{clId}
+    </delete>
+    <select id="findByPId" resultMap="planCheckListsMap">
+        SELECT * FROM plan_check_lists WHERE p_id=#{pId}
+    </select>
+
+</mapper>

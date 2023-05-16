@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.comm.CommLikeMapper">
+    <resultMap id="LikeStatusCntMap" type="LikeStatusCntDto">
+        <result property="likes" column="likes"/>
+        <result property="cId" column="c_id"/>
+        <result property="uId" column="u_id"/>
+        <association
+                property="status"
+                select="findByCIdAndUIdIsLoginUserId"
+                column="c_id"
+                fetchType="eager"/>
+    </resultMap>
+    <resultMap id="CommLikeMap" type="CommLikeDto" >
+        <id property="clId" column="cl_id"/>
+        <result property="cId" column="c_id"/>
+        <result property="uId" column="u_id"/>
+    </resultMap>
+    <insert id="insertOne" parameterType="commLikeDto" useGeneratedKeys="true" keyProperty="clId">
+        INSERT INTO comm_likes (c_id,u_id) VALUE (#{cId},#{uId})
+    </insert>
+
+    <delete id="deleteOne">
+        DELETE FROM comm_likes WHERE u_id=#{uId} AND c_id=#{cId}
+    </delete>
+    <select id="countStatusByCId" resultMap="LikeStatusCntMap">
+        SELECT COUNT(*) likes, c_id FROM comm_likes WHERE c_id=#{cId}
+    </select>
+    <select id="countStatusByUId" resultMap="LikeStatusCntMap">
+        SELECT COUNT(*) likes, u_id FROM comm_likes WHERE u_id=#{uId}
+    </select>
+    <select id="findByCIdAndUId" resultType="boolean">
+        SELECT COUNT(*) status FROM comm_likes WHERE c_id=#{cId} AND u_id=#{uId}
+    </select>
+    <select id="findByCIdAndUIdIsLoginUserId" resultType="boolean">
+        SELECT COUNT(*) status FROM comm_likes WHERE c_id=#{cId} AND u_id=@loginUserId
+    </select>
+
+
+</mapper>

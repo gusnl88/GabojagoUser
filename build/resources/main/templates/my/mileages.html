@@ -1,0 +1,38 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layoutMy}">
+<div layout:fragment="content" class="mx-auto">
+  <div class="bg-light my-5 text-center px-5 py-3">
+    <h3>총 마일리지</h3>
+    <h5 class="fw-bold text-danger text-opacity-75 " th:text="${sumMile}"></h5>
+  </div>
+  <div class="boardList" style="width:700px" >
+    <table class="table text-center " style="width:700px">
+      <thead>
+      <tr>
+        <th scope="col">번호</th>
+        <th scope="col">적립 및 사용일자</th>
+        <th scope="col">적립내용</th>
+        <th scope="col">적립금</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr th:each="m:${mileage}" >
+        <th scope="row">
+          <span class="" th:text="${m.mId}"></span>
+        </th>
+        <th scope="row">
+          <span th:text="${m.postTime.toLocaleString()}" ></span>
+        </th>
+        <td>
+          <span th:text="${m.content}" ></span>
+        </td>
+        <td>
+          <span th:classappend="${(m.mileage>=0)?'text-primary':'text-danger'}" th:text="${m.mileage}"></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

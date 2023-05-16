@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.my.MyUserQnaReplyMapper">
+    <resultMap id="MyUserQnaReplyMap" type="com.project.gabojago.gabojagouser.dto.my.MyUserQnaReplyDto">
+        <id property="qrId" column="qr_id"/>
+        <result property="qId" column="q_id"/>
+        <result property="uId" column="u_id"/>
+        <result property="content" column="content"/>
+        <result property="postTime" column="post_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="parentQnaId" column="parent_qna_id"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="findByQIdAndParentQrIdIsNull"
+            resultMap="MyUserQnaReplyMap">
+        SELECT * FROM qna_replys  WHERE parent_qna_id IS NULL AND q_id=#{qId}
+    </select>
+    <select id="findAll"  resultMap="MyUserQnaReplyMap">
+        SELECT * FROM qna_replys
+    </select>
+    <select id="findByStatus" resultType="boolean">
+        SELECT COUNT(*) status FROM qna_replys WHERE q_id=#{qId} AND u_id=#{uId}
+    </select>
+</mapper>

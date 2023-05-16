@@ -1,0 +1,29 @@
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed scheduleBtn" type="button" data-bs-toggle="collapse" th:data-bs-target="'#content_'+${content.getConId()}"
+                  aria-expanded="false" th:aria-controls="'#content_'+${content.getConId()}">
+              <div class="scheduleTime" th:text="${content.getTime()}"/>
+              <div class="scheduleLeft"><br><i class="bi bi-three-dots-vertical"></i></div>
+              <div class="scheduleContainer">
+                  <p class="scheduleCenter">
+                      <span class="scheduleTitle" th:text="${content.getTitle()}"></span>
+                      <span class="scheduleContent" th:text="${content.getInfo()}"></span>
+                  </p>
+              </div>
+          </button>
+      </h2>
+
+        <div th:id="'content_'+${content.getConId()}" class="accordion-collapse collapse " data-bs-parent="#accordionSection">
+            <p class="scheduleSideBtn1 sbHover" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="일정 수정 및 삭제" th:onclick="scheduleModify([[${content.getConId()}]])">
+                <i class="bi bi-three-dots"></i>
+            </p>
+            <p class="scheduleSideBtn2 sbHover" onclick=newCanvasDel(this) data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="캔버스 삭제">
+                <i class="bi bi-trash3"></i>
+            </p>
+            <div class="accordion-body">
+                <p class="newCanvasBtn" onclick=newCanvasReg(this.parentElement)><i class="bi bi-plus-circle"></i></p>
+            </div>
+        </div>
+
+
+
+

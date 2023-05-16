@@ -1,0 +1,39 @@
+<div class="d-flex align-items-center">
+<!--    <div class="star-ratings ms-1" id="reviewStar">-->
+<!--        <div class="star-ratings-fill space-x-2 text-lg">-->
+<!--            &lt;!&ndash; 별점체크 반복문 &ndash;&gt;-->
+<!--            <div th:each="i : ${#numbers.sequence(1, 5)}">-->
+<!--                  <span class="star">-->
+<!--                    <i class="bi" th:classappend="${(r.grade >= i) ? 'bi-star-fill' : 'bi-star'}"></i>-->
+<!--                  </span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+  <div class="star-ratings " id="reviewStar">
+    <div class="star-ratings-fill space-x-2 text-lg">
+    <span class="star">
+        <i class="bi" th:classappend="${(t.averageGrade>=1)? 'bi-star-fill' : 'bi-star'}"></i>
+    </span>
+    <span class="star">
+        <i class="bi" th:classappend="${(t.averageGrade>=2)? 'bi-star-fill' : 'bi-star'}"></i>
+    </span>
+        <span class="star">
+            <i class="bi" th:classappend="${(t.averageGrade>=3)? 'bi-star-fill' : 'bi-star'}"></i>
+        </span>
+      <span class="star">
+                                    <i class="bi" th:classappend="${(t.averageGrade>=4)? 'bi-star-fill' : 'bi-star'}"></i>
+                                </span>
+      <span class="star">
+                                    <i class="bi" th:classappend="${(t.averageGrade>=5)? 'bi-star-fill' : 'bi-star'}"></i>
+                                </span>
+    </div>
+  </div>
+  <div class="text-dark">
+    <!-- 평균별점 / 별점 총 개수 -->
+    <span class="ms-1" th:text="${t.averageGrade}"></span>
+    <span class="text-muted">
+        (<span th:text="${t.totalGradeCnt}"></span>)
+    </span>
+  </div>
+</div>

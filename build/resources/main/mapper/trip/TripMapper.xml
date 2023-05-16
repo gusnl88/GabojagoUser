@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.trip.TripMapper">
+    <resultMap id="TripMap" type="TripDto">
+        <id column="t_id" property="tId"/>
+        <result column="u_id" property="uId"/>
+        <result column="title" property="title"/>
+        <result column="post_time" property="postTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="area" property="area"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="url_address" property="urlAddress"/>
+        <result column="content" property="content"/>
+        <result column="istj" property="istj"/>
+        <result column="istp" property="istp"/>
+        <result column="isfj" property="isfj"/>
+        <result column="isfp" property="isfp"/>
+        <result column="intj" property="intj"/>
+        <result column="intp" property="intp"/>
+        <result column="infj" property="infj"/>
+        <result column="infp" property="infp"/>
+        <result column="estj" property="estj"/>
+        <result column="estp" property="estp"/>
+        <result column="esfj" property="esfj"/>
+        <result column="esfp" property="esfp"/>
+        <result column="entj" property="entj"/>
+        <result column="entp" property="entp"/>
+        <result column="enfj" property="enfj"/>
+        <result column="enfp" property="enfp"/>
+        <result column="category" property="category"/>
+        <result column="view_count" property="viewCount"/>
+
+        <!-- 조인) 리뷰, 좋아요한 유저, 이미지, 북마크, 좋아요, 조회수 -->
+        <!-- association 은 collection 위에  // 출력안하고 로그인만 해도, 조인시키려고 eager-->
+        <association property="likes"
+                     select="com.project.gabojago.gabojagouser.mapper.trip.TripLikeMapper.countStatusByTId"
+                     column="t_id"
+                     fetchType="eager"/> <!-- 카운트는 집계결과가 1개라서. 결과 인덱스 1 에 likes, t_id 값 나온다. -->
+
+        <association property="bookmarks"
+                    select="com.project.gabojago.gabojagouser.mapper.trip.TripBookmarkMapper.countStatusByTId"
+                    column="t_id"
+                    fetchType="eager"/>
+
+        <association property="averageGrade"
+                        select="com.project.gabojago.gabojagouser.mapper.trip.TripReviewMapper.averageGradeByTId"
+                        column="t_id"
+                        fetchType="lazy"/>
+
+        <association property="totalGradeCnt"
+                        select="com.project.gabojago.gabojagouser.mapper.trip.TripReviewMapper.countGradeByTId"
+                        column="t_id"
+                        fetchType="lazy"/>
+
+        <association property="totalReviewCnt"
+                     select="com.project.gabojago.gabojagouser.mapper.trip.TripReviewMapper.countReviewByTId"
+                     column="t_id"
+                     fetchType="lazy"/>
+
+        <collection property="reviews"
+                    select="com.project.gabojago.gabojagouser.mapper.trip.TripReviewMapper.findByTId"
+                    column="t_id"
+                    fetchType="lazy"/>
+
+        <!-- 🍉property Dto 필드명 -->
+        <collection property="imgs"
+                    select="com.project.gabojago.gabojagouser.mapper.trip.TripImgMapper.findByTId"
+                    column="t_id"
+                    fetchType="lazy"/>
+
+        <collection property="tags"
+                    select="com.project.gabojago.gabojagouser.mapper.trip.TripHashTagMapper.findByTId"
+                    column="t_id"
+                    fetchType="lazy"/>
+    </resultMap>
+
+    <insert useGeneratedKeys="true" keyProperty="tId" id="insertOne" parameterType="TripDto">
+        INSERT INTO trips
+        (u_id, title, area, address, phone, url_address, content,
+         istj, istp, isfj, isfp, intj, intp, infj, infp, estj, estp, esfj,
+         esfp, entj, entp, enfj, enfp,
+         category)
+            VALUE
+            (#{uId}, #{title}, #{area}, #{address}, #{phone}, #{urlAddress}, #{content},
+             #{istj}, #{istp}, #{isfj}, #{isfp}, #{intj}, #{intp}, #{infj},
+             #{infp}, #{estj}, #{estp}, #{esfj}, #{esfp}, #{entj}, #{entp}, #{enfj}, #{enfp},
+             #{category})
+    </insert>
+<!--        # mbti 가 true 일때만 업데이트, false 일때는 0-->
+    <update id="updateOne" parameterType="TripDto">
+        UPDATE trips
+        SET title=#{title},
+            area=#{area},
+            address=#{address},
+            phone=#{phone},
+            url_address=#{urlAddress},
+            content=#{content},
+            istj =#{istj},
+            istp=#{istp},
+            isfj=#{isfj},
+            isfp=#{isfp},
+            intj=#{intj},
+            intp=#{intp},
+            infj=#{infj},
+            infp=#{infp},
+            estj=#{estj},
+            estp=#{estp},
+            esfj=#{esfj},
+            esfp=#{esfp},
+            entj=#{entj},
+            entp=#{entp},
+            enfj=#{enfj},
+            enfp=#{enfp},
+            category=#{category}
+        WHERE t_id=#{tId}
+    </update>
+
+    <update id="updateIncrementViewCountByTId">
+        UPDATE trips SET view_count=(view_count+1) WHERE t_id=#{tId}
+    </update>
+
+    <delete id="deleteOne" parameterType="TripDto">
+        DELETE FROM trips WHERE t_id=#{tId}
+    </delete>
+
+    <select id="findAll" resultMap="TripMap">
+        SELECT * FROM trips
+        <if test="searchField!=null and searchValue!=null">
+            WHERE ${searchField} LIKE CONCAT('%',#{searchValue},'%')
+        </if>
+    </select>
+
+    <select id="findByTId" resultMap="TripMap">
+        SELECT * FROM trips WHERE t_id=#{tId}
+    </select>
+
+
+    <select id="countListBylikes" resultMap="TripMap">
+        SELECT t.*, COUNT(l.tl_id) AS likes
+        FROM trips t
+                 LEFT JOIN trip_likes l ON t.t_id = l.t_id
+        GROUP BY t.t_id
+        ORDER BY likes DESC;
+    </select>
+
+    <select id="findByTag" resultMap="TripMap">
+        SELECT trips.* FROM trips INNER JOIN trip_hashtags
+            USING(t_id)
+            WHERE tag=#{tag}
+    </select>
+    <select id="findByUId"  resultMap="TripMap">
+        SELECT * FROM trips WHERE u_id=#{uId}
+    </select>
+
+
+</mapper>

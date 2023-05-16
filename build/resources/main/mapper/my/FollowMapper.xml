@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.my.FollowMapper">
+    <resultMap id="UserMap" type="UserDto">
+        <id column="u_id" property="uId"/>
+        <result column="pw" property="pw"/>
+        <result column="name" property="name"/>
+        <result column="nk_name" property="nkName"/>
+        <result column="email" property="email"/>
+        <result column="birth" property="birth"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+        <result column="detail_address" property="detailAddress"/>
+        <result column="pr_content" property="prContent"/>
+        <result column="permission" property="permission"/>
+        <result column="mbti" property="mbti"/>
+        <result column="img_path" property="imgPath"/>
+        <result column="post_time" property="postTime"/>
+        <result column="store_name" property="storeName"/>
+        <result column="business_id" property="businessId"/>
+        <result column="following" property="following"/>
+    </resultMap>
+    <insert id="insertOne" parameterType="FollowDto">
+        INSERT INTO follows (to_users, from_users) VALUES (#{toUsers},#{fromUsers})
+    </insert>
+    <delete id="deleteByFromIdAndToId">
+        DELETE FROM follows WHERE from_users=#{fromUsers} AND to_users=#{toUsers}
+    </delete>
+    <select id="findByFromId" resultMap="UserMap">
+        SELECT u.*,(true) following
+            FROM follows f LEFT JOIN users u on f.to_users = u.u_id
+            WHERE from_users=#{uId}
+
+    </select>
+    <select id="findByToId" resultMap="UserMap">
+        SELECT u.*
+             ,(SELECT COUNT(*) FROM follows
+                               WHERE from_users=@loginUserId AND to_users=f.from_users) following
+        FROM  follows f LEFT JOIN users u ON f.from_users=u.u_id
+        WHERE to_users=#{uId}
+    </select>
+    <select id="findByToIdAndFromIdIsLoginUserId" resultMap="UserMap">
+        SELECT COUNT(*) FROM follows WHERE from_users=@loginUserId AND to_users=#{uId};
+    </select>
+
+</mapper>

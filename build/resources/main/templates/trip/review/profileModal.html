@@ -1,0 +1,58 @@
+<div th:id="profileModal+${r.trId}" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">
+                    프로필 정보
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center p-0">
+                    <p><img class="profile img-thumbnail rounded-circle w-25 h-25" style="image-size:cover"
+                            th:src="@{'{path}'(path=${r.user.imgPath})}"></p>
+                    <h5 th:text="${r.user.nkName}" class="mb-0"></h5>
+                    (<small  class="text-muted" th:text="${r.user.getUId()}"></small>)
+                    <div class="d-flex justify-content-center">
+                        <small class="me-3">
+                            <span class="text-primary">팔로워</span>
+                            <span class=" ms-1" th:text="${(r.user.followers!=null)?r.user.followers.size():0}"></span><br>
+                        </small>
+                        <small>
+                            <span class=" text-primary ">팔로잉</span>
+                            <span class=" ms-1" th:text="${(r.user.followings!=null)?r.user.followings.size():0}"></span><br>
+                        </small>
+                    </div>
+                    <p class="mt-1">
+                        <button  type="button"
+                                 th:onclick="toggleFollowing([[${r.uId}]],this)"
+                                 class="btn btn-outline-success active btn-sm">팔로잉</button>
+                        <a class="btn btn-outline-success btn-sm">쪽지</a>
+                    </p>
+                </div>
+                <hr>
+                <div class="">
+
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action active bg-success" aria-current="true">
+                            <h6>
+                                <i class="bi bi-calendar me-2"></i>
+                                <span th:text="${r.user.nkName}"></span> 님의 일정
+                            </h6>
+                        </a>
+                        <th:block  th:each="p:${r.user.plans}">
+                            <div class="list-group-item list-group-item-action">
+                                <i class="bi bi-clipboard me-2"></i>
+                                <a  class="text-dark link-primary" href="#"  th:text="${p.title}"></a>
+                            </div>
+                        </th:block>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>

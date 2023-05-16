@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.gabojago.gabojagouser.mapper.comm.CommImgMapper">
+    <resultMap id="CommImgMap" type="CommImgDto">
+        <id property="ciId" column="ci_id"/>
+        <result property="cId" column="c_id"/>
+        <result property="imgPath" column="img_path"/>
+        <result property="imgMain" column="img_main"/>
+    </resultMap>
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="ciId" parameterType="commImgDto">
+        INSERT INTO comm_imgs (c_id,img_path,img_main) VALUE (#{cId},#{imgPath},#{imgMain})
+    </insert>
+    <delete id="deleteOne">
+        DELETE FROM comm_imgs WHERE ci_id=#{ciId}
+    </delete>
+    <select id="findByCId" resultMap="CommImgMap">
+        SELECT * FROM comm_imgs WHERE c_id=#{cId}
+    </select>
+    <select id="findByCiId" resultMap="CommImgMap">
+        SELECT * FROM comm_imgs WHERE ci_id=#{ciId}
+    </select>
+</mapper>

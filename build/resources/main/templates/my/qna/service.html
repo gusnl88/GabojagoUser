@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>문의하기</title>
+</head>
+<div layout:fragment="content">
+    <form enctype="multipart/form-data" name="serviceForm" action="./service.do" method="post" style="width: 500px;margin: 0 auto;">
+        <h1 class="my-4">관리자에게 문의하기</h1>
+        <p class="form-floating">
+            <input id="uIdInput" type="text" name="uId" th:value="${session.loginUser.uId}" readonly class="form-control" placeholder="??">
+            <input name="status" type="text" hidden="true">
+            <label class="">아이디(글쓴이)</label>
+        </p>
+        <p class="form-floating">
+            <select name="category" id="category" class="form-select">
+                <option value=""></option>
+                <option value="맞춤추천">맞춤추천</option>
+                <option value="일정">일정</option>
+                <option value="커뮤니티">커뮤니티</option>
+                <option value="상품">상품</option>
+                <option value="기타/이용문의">기타/이용문의</option>
+            </select>
+            <label for="category">문의 내용 선택하기</label>
+        </p>
+        <p id="imgCont">
+                <span>
+                    파일을 추가해주세요 (문의 해결에 도움이 됩니다.)
+                </span>
+        <div class="input-group mt-2">
+            <input class="form-control" type="file" name="img">
+        </div>
+
+        </p>
+        <p class="form-floating">
+            <input id="titleInput" type="text" name="title" value="" class="form-control" placeholder="??">
+            <label class="">제목</label>
+        </p>
+        <p>
+            <label for="contentInput" class="form-label">문의내용</label>
+            <textarea id="contentInput" name="content" rows="4" class="form-control" placeholder=""></textarea>
+        </p>
+        <p class="text-end">
+            <button type="submit" class="btn btn-primary">등록하기</button>
+        </p>
+    </form>
+</div>
